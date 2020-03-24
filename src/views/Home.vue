@@ -1,14 +1,24 @@
 <template>
   <v-container>
-    <Login />
+    <v-content>
+      <v-btn @click="logout" dense>logout</v-btn>
+    </v-content>
   </v-container>
 </template>
 
 <script>
-import Login from "../components/Login";
+import { mapGetters, mapActions } from "vuex";
 export default {
-  components: {
-    Login
+  components: {},
+  computed: {
+    ...mapGetters({
+      isAuth: "USER_AUTH"
+    })
+  },
+  methods: {
+    ...mapActions({
+      logout: "LOGOUT"
+    })
   }
 };
 </script>

@@ -10,8 +10,8 @@ import "firebase/auth";
 import "firebase/database";
 import "firebase/firestore";
 import Notifications from "vue-notification";
+import "vue-material-design-icons/styles.css";
 Vue.config.productionTip = false;
-
 Vue.use(Notifications);
 
 Vue.config.productionTip = false;

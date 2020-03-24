@@ -1,43 +1,45 @@
 <template>
-  <v-form ref="form" v-model="valid" :lazy-validation="lazy">
-    <v-text-field
-      v-model="email"
-      label="Email"
-      clearable
-      required
-      outlined
-      :rules="emailRules"
-    ></v-text-field>
+  <v-container>
+    <v-form ref="form" v-model="valid" :lazy-validation="lazy">
+      <v-text-field
+        v-model="email"
+        label="Email"
+        clearable
+        required
+        outlined
+        :rules="emailRules"
+      ></v-text-field>
 
-    <v-text-field
-      :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
-      :type="show1 ? 'text' : 'password'"
-      class="input-group--focused"
-      @click:append="show1 = !show1"
-      v-model="password"
-      label="Пароль"
-      required
-      clearable
-      outlined
-      :rules="passwordRules"
-    ></v-text-field>
+      <v-text-field
+        :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+        :type="show1 ? 'text' : 'password'"
+        class="input-group--focused"
+        @click:append="show1 = !show1"
+        v-model="password"
+        label="Пароль"
+        required
+        clearable
+        outlined
+        :rules="passwordRules"
+      ></v-text-field>
 
-    <v-btn
-      class="mr-4"
-      @click="submit"
-      color="success"
-      :loading="loading"
-      outlined
-    >
-      <v-icon>mdi-login</v-icon>
-      Войти
-    </v-btn>
-    <!-- <router-link to="/restore">
+      <v-btn
+        class="mr-4"
+        @click="submit"
+        color="success"
+        :loading="loading"
+        outlined
+      >
+        <v-icon>mdi-login</v-icon>
+        Войти
+      </v-btn>
+      <!-- <router-link to="/restore">
       <v-btn class="mr-4" outlined color="warning">
         Забыли пароль?
       </v-btn>
     </router-link> -->
-  </v-form>
+    </v-form>
+  </v-container>
 </template>
 
 <script>
@@ -72,6 +74,7 @@ export default {
           type: "success",
           text: "Успешный вход"
         });
+        this.$router.push("/");
         this.loading = false;
       }
     },
