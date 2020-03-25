@@ -74,24 +74,25 @@ export default {
           type: "success",
           text: "Успешный вход"
         });
-        this.$router.push("/");
+        this.$router.push("/admin");
         this.loading = false;
       }
     },
     error(error) {
-      this.$notify({
-        group: "app",
-        type: "error",
-        title: "Ошибка входа",
-        text: error
-      });
+      if (error != null) {
+        this.$notify({
+          group: "app",
+          type: "error",
+          title: "Ошибка входа",
+          text: error
+        });
+      }
       this.loading = false;
     }
   },
   computed: {
     ...mapGetters({
       error: "ERROR",
-      processing: "PROCESSING",
       isAuth: "USER_AUTH"
     })
   },

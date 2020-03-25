@@ -1,21 +1,28 @@
 export default {
   state: {
-    processing: null,
-    error: null
+    error: null,
+    success: {
+      is: false,
+      text: null
+    }
   },
   getters: {
-    PROCESSING: s => s.processing,
-    ERROR: s => s.error
+    ERROR: s => s.error,
+    SUCCESS: s => s.success
   },
   mutations: {
-    SET_PROCESSING(state, payload) {
-      state.processing = payload;
-    },
     SET_ERROR(state, payload) {
+      state.error = null;
       state.error = payload;
     },
     CLEAR_ERROR(state) {
       state.error = null;
+    },
+    SET_SUCCESS(state) {
+      state.success = true;
+    },
+    CLEAR_SUCCESS(state) {
+      state.success = null;
     }
   }
 };
