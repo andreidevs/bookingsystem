@@ -22,9 +22,7 @@ Vue.config.productionTip = false;
 
 firebase.initializeApp(firebaseConfig);
 
-const db = firebase.firestore();
-
-Vue.$db = db;
+Vue.$db = firebase.firestore();
 
 new Vue({
   router,
@@ -32,5 +30,3 @@ new Vue({
   vuetify,
   render: h => h(App)
 }).$mount("#app");
-
-export default db;

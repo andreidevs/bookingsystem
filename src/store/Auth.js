@@ -24,7 +24,7 @@ export default {
   actions: {
     INIT_AUTH({ commit, dispatch, state }) {
       return new Promise(resolve => {
-        if (state.unsbscribeAuth);
+        if (state.unsbscribeAuth) state.unsbscribeAuth();
 
         let unsubcribe = firebase.auth().onAuthStateChanged(function(user) {
           dispatch("STATE_CHANGE", user);
@@ -34,21 +34,27 @@ export default {
       });
     },
     SIGNIN({ commit }, payload) {
+      commit("CLEAR_SUCCESS");
       commit("CLEAR_ERROR");
       firebase
         .auth()
         .signInWithEmailAndPassword(payload.email, payload.password)
-        .then(() => {})
+        .then(() => {
+          commit("SET_SUCCESS");
+        })
         .catch(error => {
           commit("SET_ERROR", error.message);
         });
     },
     LOGOUT({ commit }) {
+      commit("CLEAR_SUCCESS");
       commit("CLEAR_ERROR");
       firebase
         .auth()
         .signOut()
-        .then(() => {})
+        .then(() => {
+          commit("SET_SUCCESS");
+        })
         .catch(error => {
           commit("SET_ERROR", error.message);
         });

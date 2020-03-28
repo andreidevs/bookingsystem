@@ -12,7 +12,6 @@ export default {
   },
   mutations: {
     SET_ERROR(state, payload) {
-      state.error = null;
       state.error = payload;
     },
     CLEAR_ERROR(state) {
