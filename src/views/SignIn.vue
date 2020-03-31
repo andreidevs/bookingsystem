@@ -1,6 +1,14 @@
 <template>
-  <v-container>
-    <v-form ref="form" v-model="valid" :lazy-validation="lazy">
+  <v-card
+    class="mx-auto pa-10"
+    style="margin-top: 20vh"
+    outlined
+    max-width="400"
+  >
+    <h1 class="headline mt-n4 mb-6 text-center font-weight-light">
+      Вход в админ панель
+    </h1>
+    <v-form ref="form" v-model="valid" :lazy-validation="lazy" class="">
       <v-text-field
         v-model="email"
         label="Email"
@@ -26,7 +34,7 @@
       <v-btn
         class="mr-4"
         @click="submit"
-        color="success"
+        color="primary"
         :loading="loading"
         outlined
       >
@@ -39,7 +47,7 @@
       </v-btn>
     </router-link> -->
     </v-form>
-  </v-container>
+  </v-card>
 </template>
 
 <script>
@@ -105,7 +113,11 @@ export default {
     submit() {
       if (this.$refs.form.validate()) {
         this.loading = true;
-        this.signIn({ email: this.email, password: this.password });
+        if (this.isAuth === true) {
+          this.$router.push("/admin");
+        } else {
+          this.signIn({ email: this.email, password: this.password });
+        }
       }
     }
   }

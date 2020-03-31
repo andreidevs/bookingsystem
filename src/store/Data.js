@@ -2,11 +2,13 @@ import vue from "vue";
 export default {
   state: {
     coachList: [],
-    typeWorkoutList: []
+    typeWorkoutList: [],
+    allGroups: []
   },
   getters: {
     COACH: s => s.coachList,
-    TYPEWORKOUT: s => s.typeWorkoutList
+    TYPEWORKOUT: s => s.typeWorkoutList,
+    ALLGROUPS: s => s.allGroups
   },
   mutations: {
     SET_COACH_LIST(state, payload) {
@@ -14,6 +16,9 @@ export default {
     },
     SET_TYPEWORKOUT_LIST(state, payload) {
       state.typeWorkoutList = payload;
+    },
+    SET_ALL_GROUPS(state, payload) {
+      state.allGroups = payload;
     }
   },
   actions: {
@@ -85,6 +90,18 @@ export default {
         .catch(function(error) {
           commit("SET_ERROR", error);
         });
+    },
+    GET_ALL_GROUPS({ commit }) {
+      let groups = [];
+      vue.$db
+        .collection("groups")
+        .get()
+        .then(function(querySnapshot) {
+          querySnapshot.forEach(function(doc) {
+            groups.push(doc.data());
+          });
+        });
+      commit("SET_ALL_GROUPS", groups);
     }
   }
 };

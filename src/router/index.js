@@ -12,7 +12,7 @@ const routes = [
   {
     path: "/admin",
     name: "Admin",
-    meta: { AuthRequired: true },
+    meta: { AuthRequired: true, layout: "admin" },
     component: () => import("../views/Admin.vue")
   },
   {
