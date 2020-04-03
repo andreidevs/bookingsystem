@@ -10,13 +10,12 @@ import firebaseConfig from "./config/firebase";
 import "firebase/auth";
 import "firebase/firestore";
 
-import VueMask from "v-mask";
-
+import VueTheMask from "vue-the-mask";
 import Notifications from "vue-notification";
 
 Vue.config.productionTip = false;
 Vue.use(Notifications);
-Vue.use(VueMask);
+Vue.use(VueTheMask);
 
 Vue.config.productionTip = false;
 

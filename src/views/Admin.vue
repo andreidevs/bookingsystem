@@ -185,11 +185,16 @@ export default {
     createGroup() {
       this.loadingCard = true;
       let massData = {
+        id: Math.random()
+          .toString(36)
+          .substr(2, 9),
         weekDays: [],
         time: "",
         coach: "",
         name: "",
-        typeWorkout: ""
+        typeWorkout: "",
+        count: 10,
+        users: []
       };
       this.chip.forEach(item => {
         if (item.active) massData.weekDays.push(item.title);
@@ -203,9 +208,9 @@ export default {
       massData.name = `${days} ${massData.time} ${massData.coach}`;
       massData.typeWorkout = this.selectTypeWorkout;
       this.createGrooup(massData);
-      this.chip.forEach(item => {
-        item.active = false;
-      });
+      // this.chip.forEach(item => {
+      //   item.active = false;
+      // });
       this.loadingCard = false;
     }
   }

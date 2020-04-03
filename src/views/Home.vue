@@ -7,8 +7,7 @@
       </h1>
     </div>
     <v-card
-      class="ml-auto"
-      style="margin-right: 27%; margin-top: -6%"
+      class="ml-auto cardMain"
       max-width="500"
       outlined
       :loading="loading"
@@ -65,8 +64,11 @@
         <v-data-table
           :headers="headers"
           :items="sampleGroups"
+          :page.sync="page"
+          hide-default-footer
           item-key="name"
           sort-by="time"
+          @page-count="pageCount = $event"
         >
           <template v-slot:item.actions="{ item }">
             <v-btn
@@ -88,13 +90,66 @@
             >
           </template>
         </v-data-table>
+        <v-pagination v-model="page" :length="pageCount" circle></v-pagination>
         <v-card-actions>
           <v-btn
-            color="accent"
+            color="secondary"
             small
-            style="margin-top: -5%; margin-left: 2%"
+            style="margin-top: -10%; margin-left: 2%"
             @click="step = 1"
             ><v-icon class="ml-1">mdi-arrow-left</v-icon>Назад</v-btn
+          >
+        </v-card-actions>
+      </div>
+      <div v-if="step === 3" class="pa-5">
+        <v-alert border="bottom" color="success" dark>
+          Группа {{ this.nameGroup }}
+        </v-alert>
+        <v-form ref="formStep3" v-model="validForm3">
+          <v-text-field
+            dense
+            outlined
+            v-model="nameStep3"
+            placeholder="ФИО"
+            clearable
+            :rules="requiredRules"
+            label="ФИО"
+          >
+          </v-text-field>
+          <v-text-field
+            dense
+            v-model="phoneStep3"
+            v-mask="'+7(###)###-##-##'"
+            outlined
+            clearable
+            :rules="requiredRules"
+            label="Телефон"
+          >
+          </v-text-field>
+          <v-text-field
+            dense
+            v-model="emailStep3"
+            :rules="emailRules"
+            outlined
+            clearable
+            label="Email"
+          >
+          </v-text-field>
+          <v-radio-group v-model="radioGroup" class="mt-n4">
+            <v-radio
+              v-for="item in radioItems"
+              :key="item.text"
+              :label="item.text"
+              :value="item.value"
+            ></v-radio>
+          </v-radio-group>
+        </v-form>
+        <v-card-actions class="d-flex justify-space-between">
+          <v-btn color="secondary" style="" @click="step = 2"
+            ><v-icon class="ml-1">mdi-arrow-left</v-icon>Назад</v-btn
+          >
+          <v-btn color="success" @click="stepTree"
+            >Записаться <v-icon>mdi-pencil</v-icon></v-btn
           >
         </v-card-actions>
       </div>
@@ -109,6 +164,20 @@ export default {
   data() {
     return {
       loading: false,
+      validForm3: true,
+      nameStep3: "",
+      requiredRules: [v => !!v || "Обязательно для заполнения"],
+      emailStep3: "",
+      phoneStep3: "",
+      emailRules: [],
+      radioGroup: "1500",
+      radioItems: [
+        { text: "Разовое занятие - 1500тг", value: "1500" },
+        { text: "8 занятий - 8000тг", value: "8000" },
+        { text: "12 занятий - 12000тг", value: "12000" }
+      ],
+      page: 1,
+      pageCount: 0,
       chip: [
         { title: "Пн", active: false, color: "red" },
         { title: "Вт", active: false, color: "purple" },
@@ -138,6 +207,8 @@ export default {
         "21"
       ],
       step: 1,
+      nameGroup: "",
+      uidGroup: null,
       headers: [
         {
           text: "Дни недели",
@@ -159,9 +230,32 @@ export default {
       sampleGroups: []
     };
   },
+  watch: {
+    success(is) {
+      if (is != null) {
+        this.$notify({
+          group: "app",
+          type: "info",
+          title: "Успешно"
+        });
+      }
+    },
+    error(error) {
+      if (error != null) {
+        this.$notify({
+          group: "app",
+          type: "error",
+          title: "Ошибка",
+          text: error
+        });
+      }
+    }
+  },
   computed: {
     ...mapGetters({
-      allGroups: "ALLGROUPS"
+      allGroups: "ALLGROUPS",
+      error: "ERROR",
+      success: "SUCCESS"
     })
   },
   created() {
@@ -169,7 +263,8 @@ export default {
   },
   methods: {
     ...mapActions({
-      getGroups: "GET_ALL_GROUPS"
+      getGroups: "GET_ALL_GROUPS",
+      writeUserGroup: "WRITE_USER_GROUP"
     }),
     addWeekday(chip) {
       this.chip.forEach(item => {
@@ -182,7 +277,9 @@ export default {
       this.loading = true;
       this.sampleGroups = [];
       this.allGroups.forEach(item => {
-        this.sampleGroups.push(item);
+        if (item.count > 0) {
+          this.sampleGroups.push(item);
+        }
       });
       setTimeout(() => {
         this.loading = false;
@@ -193,32 +290,91 @@ export default {
       this.loading = true;
       this.sampleGroups = [];
       let weekdays = [];
-      setTimeout(() => {
-        this.loading = false;
-      }, 2000);
-
       this.chip.forEach(item => {
         if (item.active) weekdays.push(item.title);
       });
-      this.allGroups.forEach(item => {
-        if (!item.time.indexOf(this.timeHour)) {
+      if (this.timeHourNone) {
+        this.allGroups.forEach(item => {
           if (weekdays.length > 0) {
             weekdays.forEach(day => {
               if (!item.weekDays.indexOf(day)) {
-                this.sampleGroups.push(item);
+                if (item.count > 0) {
+                  this.sampleGroups.push(item);
+                }
               }
             });
           } else {
-            this.sampleGroups.push(item);
+            if (item.count > 0) {
+              this.sampleGroups.push(item);
+            }
           }
-        }
-      });
-
+        });
+      } else {
+        this.allGroups.forEach(item => {
+          if (!item.time.indexOf(this.timeHour)) {
+            if (weekdays.length > 0) {
+              weekdays.forEach(day => {
+                if (!item.weekDays.indexOf(day)) {
+                  if (item.count > 0) {
+                    this.sampleGroups.push(item);
+                  }
+                }
+              });
+            } else {
+              if (item.count > 0) {
+                this.sampleGroups.push(item);
+              }
+            }
+          }
+        });
+      }
+      setTimeout(() => {
+        this.loading = false;
+      }, 2000);
       this.step = 2;
+    },
+    stepTwo(item) {
+      this.nameGroup = item.name;
+      this.uidGroup = item.id;
+      // console.log("uid", item.id)
+      this.step = 3;
+    },
+    stepTree() {
+      if (this.emailStep3 !== "") {
+        this.emailRules = [
+          v => /.+@.+\..+/.test(v) || "E-mail введен не верно"
+        ];
+      } else {
+        this.emailRules = [];
+      }
+      if (this.$refs.formStep3.validate()) {
+        let payload = {
+          id: Math.random()
+            .toString(36)
+            .substr(2, 9),
+          name: this.nameStep3,
+          phone: this.phoneStep3,
+          email: this.emailStep3,
+          nameGroup: this.nameGroup,
+          uidGroup: this.uidGroup
+        };
+
+        this.writeUserGroup(payload);
+      }
     }
-  },
-  stepTwo() {}
+  }
 };
 </script>
 
-<style></style>
+<style scoped>
+.cardMain {
+  margin-right: 27%;
+  margin-top: -6%;
+}
+@media (max-width: 600px) {
+  .cardMain {
+    margin-right: 0;
+    margin-top: 0;
+  }
+}
+</style>
