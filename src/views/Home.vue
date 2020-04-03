@@ -264,7 +264,8 @@ export default {
   methods: {
     ...mapActions({
       getGroups: "GET_ALL_GROUPS",
-      writeUserGroup: "WRITE_USER_GROUP"
+      writeUserGroup: "WRITE_USER_GROUP",
+      writeSingleLesson: "WRITE_USER_SINGLE"
     }),
     addWeekday(chip) {
       this.chip.forEach(item => {
@@ -348,18 +349,31 @@ export default {
         this.emailRules = [];
       }
       if (this.$refs.formStep3.validate()) {
-        let payload = {
-          id: Math.random()
-            .toString(36)
-            .substr(2, 9),
-          name: this.nameStep3,
-          phone: this.phoneStep3,
-          email: this.emailStep3,
-          nameGroup: this.nameGroup,
-          uidGroup: this.uidGroup
-        };
-
-        this.writeUserGroup(payload);
+        if (this.radioGroup === "1500") {
+          let payload = {
+            name: this.nameStep3,
+            phone: this.phoneStep3,
+            email: this.emailStep3,
+            nameGroup: this.nameGroup,
+            subscription: this.radioGroup,
+            paid: false
+          };
+          this.writeSingleLesson(payload);
+        } else {
+          let payload = {
+            id: Math.random()
+              .toString(36)
+              .substr(2, 9),
+            name: this.nameStep3,
+            phone: this.phoneStep3,
+            email: this.emailStep3,
+            nameGroup: this.nameGroup,
+            uidGroup: this.uidGroup,
+            subscription: this.radioGroup,
+            paid: false
+          };
+          this.writeUserGroup(payload);
+        }
       }
     }
   }

@@ -142,6 +142,21 @@ export default {
         .catch(function(error) {
           commit("SET_ERROR", error);
         });
+    },
+    WRITE_USER_SINGLE({ commit }, payload) {
+      commit("CLEAR_SUCCESS");
+      commit("CLEAR_ERROR");
+      vue.$db
+        .collection("singleLesson")
+        .add({
+          ...payload
+        })
+        .then(function() {
+          commit("SET_SUCCESS");
+        })
+        .catch(function(error) {
+          commit("SET_ERROR", error);
+        });
     }
   }
 };
