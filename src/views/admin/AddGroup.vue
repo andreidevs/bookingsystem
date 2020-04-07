@@ -59,6 +59,13 @@
         >Создать</v-btn
       >
     </v-card-actions>
+    <v-btn
+      style="position:fixed!important; bottom:10px; left:10px; z-index:1000;"
+      @click="$router.go(-1)"
+    >
+      <v-icon>mdi-keyboard-backspace</v-icon>
+      Назад
+    </v-btn>
   </v-card>
 </template>
 

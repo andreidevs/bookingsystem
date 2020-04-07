@@ -31,7 +31,7 @@
 
     <v-app-bar app color="indigo" dark>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
-      <v-toolbar-title>Онлайн запись</v-toolbar-title>
+      <v-toolbar-title>Панель администратора</v-toolbar-title>
     </v-app-bar>
 
     <v-dialog v-model="dialogAddCoach" persistent max-width="600px">

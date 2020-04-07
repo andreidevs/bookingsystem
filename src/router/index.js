@@ -10,10 +10,22 @@ const routes = [
     component: () => import("../views/Home.vue")
   },
   {
-    path: "/admin",
-    name: "Admin",
+    path: "/admin/addgroup",
+    name: "AdminAddGroup",
     meta: { AuthRequired: true, layout: "admin" },
-    component: () => import("../views/Admin.vue")
+    component: () => import("../views/admin/AddGroup.vue")
+  },
+  {
+    path: "/admin/reviewusers",
+    name: "AdminReviewUser",
+    meta: { AuthRequired: true, layout: "admin" },
+    component: () => import("../views/admin/ReviewUsers.vue")
+  },
+  {
+    path: "/admin",
+    name: "AdminMain",
+    meta: { AuthRequired: true, layout: "admin" },
+    component: () => import("../views/admin/index.vue")
   },
   {
     path: "/signin",

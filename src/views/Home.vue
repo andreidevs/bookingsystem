@@ -22,7 +22,7 @@
             v-for="item in chip"
             :key="item.title"
             class="ma-2"
-            :color="item.active ? item.color : ''"
+            :color="item.active ? 'success' : ''"
             :text-color="item.active ? 'white' : 'black'"
             @click="addWeekday(item)"
           >
@@ -52,10 +52,10 @@
           </v-col>
         </v-row>
         <v-card-actions class="d-flex justify-space-between mt-n4">
-          <v-btn color="info" outlined @click="showMore"
+          <v-btn color="secondary" outlined @click="showMore"
             >Просмотреть все <v-icon class="ml-1">mdi-more</v-icon></v-btn
           >
-          <v-btn color="primary" @click="stepOne"
+          <v-btn color="success" @click="stepOne"
             >Далее <v-icon class="ml-1">mdi-arrow-right</v-icon></v-btn
           >
         </v-card-actions>
@@ -90,7 +90,12 @@
             >
           </template>
         </v-data-table>
-        <v-pagination v-model="page" :length="pageCount" circle></v-pagination>
+        <v-pagination
+          v-model="page"
+          :length="pageCount"
+          circle
+          color="success"
+        ></v-pagination>
         <v-card-actions>
           <v-btn
             color="secondary"
@@ -110,7 +115,6 @@
             dense
             outlined
             v-model="nameStep3"
-            placeholder="ФИО"
             clearable
             :rules="requiredRules"
             label="ФИО"
@@ -137,6 +141,7 @@
           </v-text-field>
           <v-radio-group v-model="radioGroup" class="mt-n4">
             <v-radio
+              color="success"
               v-for="item in radioItems"
               :key="item.text"
               :label="item.text"
@@ -331,7 +336,7 @@ export default {
       }
       setTimeout(() => {
         this.loading = false;
-      }, 2000);
+      }, 1000);
       this.step = 2;
     },
     stepTwo(item) {
@@ -370,7 +375,8 @@ export default {
             nameGroup: this.nameGroup,
             uidGroup: this.uidGroup,
             subscription: this.radioGroup,
-            paid: false
+            paid: false,
+            datePay: ""
           };
           this.writeUserGroup(payload);
         }

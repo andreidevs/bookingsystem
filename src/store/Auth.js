@@ -30,6 +30,7 @@ export default {
           dispatch("STATE_CHANGE", user);
           resolve(user);
         });
+        dispatch("CHECK_PAY_DATE");
         commit("SET_SUBSCRIBE_AUTH", unsubcribe);
       });
     },
