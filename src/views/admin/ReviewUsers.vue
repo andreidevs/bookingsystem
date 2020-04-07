@@ -45,7 +45,7 @@
           outlined
           small
           @click="(selectedItem = item), (dialogPay = true)"
-          color="info"
+          color="success"
           min-width="120"
         >
           {{ item.paid === false ? "Оплатить" : "Оплачен" }}
@@ -214,7 +214,7 @@ export default {
   computed: {
     ...mapGetters({
       allUsersState: "ALLUSERS",
-       error: "ERROR",
+      error: "ERROR",
       success: "SUCCESS"
     })
   },

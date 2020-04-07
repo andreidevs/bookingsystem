@@ -3,7 +3,7 @@
     <v-navigation-drawer v-model="drawer" app>
       <v-list-item link href="/admin/users">
         <v-list-item-action>
-          <v-icon>mdi-account-multiple</v-icon>
+          <v-icon color="success">mdi-account-multiple</v-icon>
         </v-list-item-action>
         <v-list-item-content>
           <v-list-item-title>Список пользователей</v-list-item-title>
@@ -12,7 +12,7 @@
 
       <v-list-item link href="/admin/groups">
         <v-list-item-action>
-          <v-icon>mdi-folder-account</v-icon>
+          <v-icon color="success">mdi-folder-account</v-icon>
         </v-list-item-action>
         <v-list-item-content>
           <v-list-item-title>Список групп</v-list-item-title>
@@ -21,7 +21,7 @@
 
       <v-list-item link @click="dialogAddCoach = true">
         <v-list-item-action>
-          <v-icon>mdi-account-plus</v-icon>
+          <v-icon color="success">mdi-account-plus</v-icon>
         </v-list-item-action>
         <v-list-item-content>
           <v-list-item-title>Добавить тренера</v-list-item-title>
@@ -30,7 +30,7 @@
 
       <v-list-item link @click="dialogAddTypeWorkout = true">
         <v-list-item-action>
-          <v-icon>mdi-alpha-t-box</v-icon>
+          <v-icon color="success">mdi-alpha-t-box</v-icon>
         </v-list-item-action>
         <v-list-item-content>
           <v-list-item-title>Добавить тип тренеровки</v-list-item-title>
@@ -39,7 +39,7 @@
 
       <v-list-item link @click="logOut">
         <v-list-item-action>
-          <v-icon>mdi-exit-to-app</v-icon>
+          <v-icon color="success">mdi-exit-to-app</v-icon>
         </v-list-item-action>
         <v-list-item-content>
           <v-list-item-title>Выйти</v-list-item-title>
@@ -47,7 +47,7 @@
       </v-list-item>
     </v-navigation-drawer>
 
-    <v-app-bar app color="indigo" dark>
+    <v-app-bar app color="success" dark>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
       <v-toolbar-title>Панель администратора</v-toolbar-title>
     </v-app-bar>

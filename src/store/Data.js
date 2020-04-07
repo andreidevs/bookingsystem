@@ -277,13 +277,13 @@ export default {
                 .then(function() {
                   commit("SET_SUCCESS");
                 })
-                .catch(function (error) {
+                .catch(function(error) {
                   commit("SET_ERROR", error);
-                })
+                });
             })
-            .catch(function (error) {
+            .catch(function(error) {
               commit("SET_ERROR", error);
-            })
+            });
         })
         .catch(function(error) {
           commit("SET_ERROR", error);
