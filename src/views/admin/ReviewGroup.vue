@@ -2,33 +2,52 @@
   <v-container>
     <v-row>
       <v-col cols="4">
-        <v-select
-          v-model="selectGroup"
-          dense
+        <v-text-field
+          v-model="selectName"
+          label="Имя клиента"
           outlined
-          :items="itemsSelectGroup"
-          label="Группа"
-        ></v-select
-      ></v-col>
+          dense
+          @input="changeFilter(selectName)"
+        ></v-text-field>
+      </v-col>
       <v-col cols="4">
-        <v-text-field v-model="selectName" label="Имя клиента" outlined dense>
+        <v-text-field
+          v-model="selectPhone"
+          label="Номер телефона"
+          outlined
+          dense
+          @input="changeFilter(selectPhone)"
+          v-mask="'+7(###)###-##-##'"
+        >
         </v-text-field>
       </v-col>
     </v-row>
     <v-data-table
+      dense
       :headers="tableHeaders"
       :items="sampleUsers"
       :page.sync="page"
       hide-default-footer
       item-key="name"
+      :loading="loading"
+      loading-text="Загрузка... Пожалуйста подождите"
       sort-by="nameGroup"
       @page-count="pageCount = $event"
+      :search="searchFilter"
     >
       <template v-slot:item.actions="{ item }">
-        <v-btn class="mr-4" @click="stepTwo(item)" outlined small color="info"
-          >Записаться
-          <v-icon small>
-            mdi-pencil
+        <v-btn
+          :disabled="item.paid"
+          class="mr-4"
+          outlined
+          small
+          @click="(selectedItem = item), (dialogPay = true)"
+          color="info"
+          min-width="120"
+        >
+          {{ item.paid === false ? "Оплатить" : "Оплачен" }}
+          <v-icon small v-if="!item.paid" class="ml-1">
+            mdi-cash-usd
           </v-icon></v-btn
         >
       </template>
@@ -45,6 +64,33 @@
       circle
       color="success"
     ></v-pagination>
+    <v-row justify="center">
+      <v-dialog v-model="dialogPay" persistent max-width="290">
+        <v-card>
+          <v-card-title class="headline">Подтвердить оплату </v-card-title>
+          <v-card-text
+            >Стоимость абонемента {{ selectedItem.subscription }}тг Клиент
+            {{ selectedItem.name }}</v-card-text
+          >
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="green darken-1" text @click="dialogPay = false"
+              >Отмена</v-btn
+            >
+            <v-btn
+              color="green darken-1"
+              text
+              @click="
+                dialogPay = false;
+                setPayStatus(selectedItem);
+                updateTable();
+              "
+              >Подтвердить</v-btn
+            >
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </v-row>
     <v-btn
       style="position:fixed!important; bottom:10px; left:10px; z-index:1000;"
       @click="$router.go(-1)"
@@ -75,36 +121,32 @@ export default {
           value: "phone"
         },
         {
+          text: "Абонемент",
+          value: "subscription"
+        },
+        {
           text: "Дата оплаты",
           value: "datePay"
         },
         {
           text: "Статус оплаты",
-          value: "paid"
-        },
-        {
-          text: "",
           value: "actions"
         }
       ],
-      tableItems: [],
+      loading: false,
       pageCount: 1,
-      itemsSelectGroup: [],
-      selectGroup: "",
+      selectPhone: "",
       selectName: "",
-      allUsers: [],
-      changedUsers: [],
-      sampleUsers: []
+      sampleUsers: [],
+      searchFilter: "",
+      selectedItem: {},
+      dialogPay: false
     };
   },
   created() {
-    this.getAllUsers();
-    this.allUsers = this.allUsersState;
-    this.sampleUsers = this.allUsers;
-    for (const item in this.allUsers) {
-      this.sampleUsers.push(item);
-    }
+    this.updateTable();
   },
+  watch: {},
   mounted() {},
   computed: {
     ...mapGetters({
@@ -113,8 +155,26 @@ export default {
   },
   methods: {
     ...mapActions({
-      getAllUsers: "GET_ALL_USERS"
-    })
+      getAllUsers: "GET_ALL_USERS",
+      setPayStatus: "SET_PAY_SUB"
+    }),
+    updateTable() {
+      this.loading = true;
+      this.sampleUsers = [];
+      this.getAllUsers();
+      this.sampleUsers = this.allUsersState;
+      setTimeout(() => {
+        this.loading = false;
+      }, 1000);
+    },
+    changeFilter(item) {
+      this.searchFilter = "";
+      if (item === this.selectName) {
+        this.searchFilter = this.selectName;
+      } else {
+        this.searchFilter = this.selectPhone;
+      }
+    }
   }
 };
 </script>

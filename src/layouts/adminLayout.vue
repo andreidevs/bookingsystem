@@ -1,6 +1,24 @@
 <template>
   <v-container>
     <v-navigation-drawer v-model="drawer" app>
+      <v-list-item link href="/admin/users">
+        <v-list-item-action>
+          <v-icon>mdi-account-multiple</v-icon>
+        </v-list-item-action>
+        <v-list-item-content>
+          <v-list-item-title>Список пользователей</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+
+      <v-list-item link href="/admin/groups">
+        <v-list-item-action>
+          <v-icon>mdi-folder-account</v-icon>
+        </v-list-item-action>
+        <v-list-item-content>
+          <v-list-item-title>Список групп</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+
       <v-list-item link @click="dialogAddCoach = true">
         <v-list-item-action>
           <v-icon>mdi-account-plus</v-icon>
@@ -21,7 +39,7 @@
 
       <v-list-item link @click="logOut">
         <v-list-item-action>
-          <v-icon>mdi-account-arrow-left</v-icon>
+          <v-icon>mdi-exit-to-app</v-icon>
         </v-list-item-action>
         <v-list-item-content>
           <v-list-item-title>Выйти</v-list-item-title>

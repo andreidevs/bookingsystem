@@ -21,11 +21,15 @@
         >
         </v-text-field>
       </v-col>
+      <v-col cols="4" class="mt-n3">
+        <v-switch v-model="dense" label="Маленькая таблица"></v-switch>
+      </v-col>
     </v-row>
     <v-data-table
       :headers="tableHeaders"
       :items="sampleUsers"
       :page.sync="page"
+      :dense="dense"
       hide-default-footer
       item-key="name"
       :loading="loading"
@@ -50,6 +54,11 @@
           </v-icon></v-btn
         >
       </template>
+      <template v-slot:item.removes="{ item }">
+        <v-icon @click="(selectedItem = item), (dialogRemoveUser = true)"
+          >mdi-close</v-icon
+        >
+      </template>
       <template v-slot:no-data>
         <span
           >К сожалению мы не нашли подходящие тренеровки вернитесь назад и
@@ -64,13 +73,14 @@
       color="success"
     ></v-pagination>
     <v-row justify="center">
-      <v-dialog v-model="dialogPay" persistent max-width="290">
+      <v-dialog v-model="dialogPay" persistent max-width="400">
         <v-card>
           <v-card-title class="headline">Подтвердить оплату </v-card-title>
           <v-card-text
-            >Стоимость абонемента {{ selectedItem.subscription }}тг Клиент
-            {{ selectedItem.name }}</v-card-text
-          >
+            >Стоимость абонемента
+            <strong>{{ selectedItem.subscription }}тг</strong> Клиент
+            <strong> {{ selectedItem.name }}</strong>
+          </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn color="green darken-1" text @click="dialogPay = false"
@@ -82,6 +92,34 @@
               @click="
                 dialogPay = false;
                 setPayStatus(selectedItem);
+                updateTable();
+              "
+              >Подтвердить</v-btn
+            >
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </v-row>
+    <v-row justify="center">
+      <v-dialog v-model="dialogRemoveUser" persistent max-width="400">
+        <v-card>
+          <v-card-title class="headline">Подтвердить удаление </v-card-title>
+          <v-card-text
+            >Вы действительно хотите удалить клиента
+            <strong> {{ selectedItem.name }}</strong> из группы
+            <strong>{{ selectedItem.nameGroup }}</strong>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="green darken-1" text @click="dialogRemoveUser = false"
+              >Отмена</v-btn
+            >
+            <v-btn
+              color="green darken-1"
+              text
+              @click="
+                dialogRemoveUser = false;
+                deleteUser(selectedItem);
                 updateTable();
               "
               >Подтвердить</v-btn
@@ -106,14 +144,15 @@ export default {
   data() {
     return {
       page: 1,
+      dense: false,
       tableHeaders: [
-        {
-          text: "Группа",
-          value: "nameGroup"
-        },
         {
           text: "Имя",
           value: "name"
+        },
+        {
+          text: "Группа",
+          value: "nameGroup"
         },
         {
           text: "Телефон",
@@ -130,6 +169,10 @@ export default {
         {
           text: "Статус оплаты",
           value: "actions"
+        },
+        {
+          text: "",
+          value: "removes"
         }
       ],
       loading: false,
@@ -139,23 +182,47 @@ export default {
       sampleUsers: [],
       searchFilter: "",
       selectedItem: {},
-      dialogPay: false
+      dialogPay: false,
+      dialogRemoveUser: false
     };
   },
   created() {
     this.updateTable();
   },
-  watch: {},
+  watch: {
+    success(is) {
+      if (is != null) {
+        this.$notify({
+          group: "app",
+          type: "info",
+          title: "Успешно"
+        });
+      }
+    },
+    error(error) {
+      if (error != null) {
+        this.$notify({
+          group: "app",
+          type: "error",
+          title: "Ошибка",
+          text: error
+        });
+      }
+    }
+  },
   mounted() {},
   computed: {
     ...mapGetters({
-      allUsersState: "ALLUSERS"
+      allUsersState: "ALLUSERS",
+       error: "ERROR",
+      success: "SUCCESS"
     })
   },
   methods: {
     ...mapActions({
       getAllUsers: "GET_ALL_USERS",
-      setPayStatus: "SET_PAY_SUB"
+      setPayStatus: "SET_PAY_SUB",
+      deleteUser: "DELETE_USER_GROUP"
     }),
     updateTable() {
       this.loading = true;

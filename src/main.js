@@ -3,7 +3,7 @@ import App from "./App.vue";
 import router from "./router";
 import store from "./store";
 import vuetify from "./plugins/vuetify";
-import "./plugins/date.format";
+
 import "roboto-fontface/css/roboto/roboto-fontface.css";
 
 import firebase from "firebase/app";
@@ -13,10 +13,14 @@ import "firebase/firestore";
 
 import VueTheMask from "vue-the-mask";
 import Notifications from "vue-notification";
+import validation from "./plugins/validation";
+
+import "./plugins/date.format";
 
 Vue.config.productionTip = false;
 Vue.use(Notifications);
 Vue.use(VueTheMask);
+Vue.use(validation);
 
 Vue.config.productionTip = false;
 

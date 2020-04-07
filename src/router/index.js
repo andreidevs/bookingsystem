@@ -16,10 +16,16 @@ const routes = [
     component: () => import("../views/admin/AddGroup.vue")
   },
   {
-    path: "/admin/reviewusers",
-    name: "AdminReviewUser",
+    path: "/admin/users",
+    name: "AdminUsers",
     meta: { AuthRequired: true, layout: "admin" },
     component: () => import("../views/admin/ReviewUsers.vue")
+  },
+  {
+    path: "/admin/groups",
+    name: "AdminGroups",
+    meta: { AuthRequired: true, layout: "admin" },
+    component: () => import("../views/admin/ReviewGroup.vue")
   },
   {
     path: "/admin",

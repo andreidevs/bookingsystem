@@ -116,7 +116,7 @@
             outlined
             v-model="nameStep3"
             clearable
-            :rules="requiredRules"
+            :rules="$validation.required"
             label="ФИО"
           >
           </v-text-field>
@@ -126,7 +126,7 @@
             v-mask="'+7(###)###-##-##'"
             outlined
             clearable
-            :rules="requiredRules"
+            :rules="$validation.phone"
             label="Телефон"
           >
           </v-text-field>
@@ -153,7 +153,7 @@
           <v-btn color="secondary" style="" @click="step = 2"
             ><v-icon class="ml-1">mdi-arrow-left</v-icon>Назад</v-btn
           >
-          <v-btn color="success" @click="stepTree"
+          <v-btn :loading="loading" color="success" @click="stepTree"
             >Записаться <v-icon>mdi-pencil</v-icon></v-btn
           >
         </v-card-actions>
@@ -171,7 +171,6 @@ export default {
       loading: false,
       validForm3: true,
       nameStep3: "",
-      requiredRules: [v => !!v || "Обязательно для заполнения"],
       emailStep3: "",
       phoneStep3: "",
       emailRules: [],
@@ -214,6 +213,7 @@ export default {
       step: 1,
       nameGroup: "",
       uidGroup: null,
+      nameCoach: "",
       headers: [
         {
           text: "Дни недели",
@@ -342,6 +342,7 @@ export default {
     stepTwo(item) {
       this.nameGroup = item.name;
       this.uidGroup = item.id;
+      this.nameCoach = item.coach;
       // console.log("uid", item.id)
       this.step = 3;
     },
@@ -354,6 +355,7 @@ export default {
         this.emailRules = [];
       }
       if (this.$refs.formStep3.validate()) {
+        this.loading = true;
         if (this.radioGroup === "1500") {
           let payload = {
             name: this.nameStep3,
@@ -361,6 +363,7 @@ export default {
             email: this.emailStep3,
             nameGroup: this.nameGroup,
             subscription: this.radioGroup,
+            coach: this.nameCoach,
             paid: false
           };
           this.writeSingleLesson(payload);
@@ -375,11 +378,16 @@ export default {
             nameGroup: this.nameGroup,
             uidGroup: this.uidGroup,
             subscription: this.radioGroup,
+            coach: this.nameCoach,
             paid: false,
             datePay: ""
           };
           this.writeUserGroup(payload);
         }
+        setTimeout(() => {
+          this.loading = false;
+          this.step = 1;
+        }, 2000);
       }
     }
   }
