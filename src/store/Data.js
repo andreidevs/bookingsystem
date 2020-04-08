@@ -4,13 +4,15 @@ export default {
     coachList: [],
     typeWorkoutList: [],
     allGroups: [],
-    allUsers: []
+    allUsers: [],
+    usersByGroup: []
   },
   getters: {
     COACH: s => s.coachList,
     TYPEWORKOUT: s => s.typeWorkoutList,
     ALLGROUPS: s => s.allGroups,
-    ALLUSERS: s => s.allUsers
+    ALLUSERS: s => s.allUsers,
+    USERSBYGROUP: s => s.usersByGroup
   },
   mutations: {
     SET_COACH_LIST(state, payload) {
@@ -24,6 +26,9 @@ export default {
     },
     SET_ALL_USERS(state, payload) {
       state.allUsers = payload;
+    },
+    SET_USERS_BY_GROUP(state, payload) {
+      state.usersByGroup = payload;
     }
   },
   actions: {
@@ -190,6 +195,20 @@ export default {
         });
       commit("SET_ALL_USERS", users);
     },
+    GET_USERS_BY_GROUP({ commit }, payload) {
+      let users = [];
+      vue.$db
+        .collection("users")
+        .get()
+        .then(function(querySnapshot) {
+          querySnapshot.forEach(function(doc) {
+            if (doc.data().uidGroup === payload) {
+              users.push(doc.data());
+            }
+          });
+        });
+      commit("SET_USERS_BY_GROUP", users);
+    },
     WRITE_USER_GROUP({ commit }, payload) {
       commit("CLEAR_SUCCESS");
       commit("CLEAR_ERROR");
@@ -284,6 +303,30 @@ export default {
             .catch(function(error) {
               commit("SET_ERROR", error);
             });
+        })
+        .catch(function(error) {
+          commit("SET_ERROR", error);
+        });
+    },
+    DELETE_GROUP({ commit }, payload) {
+      commit("CLEAR_SUCCESS");
+      commit("CLEAR_ERROR");
+      vue.$db
+        .collection("groups")
+        .doc(payload.id)
+        .delete()
+        .then(function() {
+          if (payload.users) {
+            payload.users.forEach(item => {
+              vue.$db
+                .collection("users")
+                .doc(item)
+                .delete()
+                .catch(function(error) {
+                  commit("SET_ERROR", error);
+                });
+            });
+          }
         })
         .catch(function(error) {
           commit("SET_ERROR", error);

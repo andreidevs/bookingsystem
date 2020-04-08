@@ -11,7 +11,7 @@
             v-for="item in chip"
             :key="item.title"
             class="ma-2"
-            :color="item.active ? item.color : ''"
+            :color="item.active ? 'success' : ''"
             :text-color="item.active ? 'white' : 'black'"
             @click="addWeekday(item)"
           >
@@ -51,12 +51,12 @@
     </v-row>
     <v-card-actions class="ml-6 mt-n6 mb-2">
       <v-btn
-        color="black"
+        color="success"
         @click="createGroup"
         depressed
         outlined
         class="pl-8 pr-8"
-        >Создать</v-btn
+        >Добавить</v-btn
       >
     </v-card-actions>
     <v-btn

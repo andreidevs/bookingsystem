@@ -22,8 +22,6 @@ Vue.use(Notifications);
 Vue.use(VueTheMask);
 Vue.use(validation);
 
-Vue.config.productionTip = false;
-
 firebase.initializeApp(firebaseConfig);
 
 Vue.$db = firebase.firestore();

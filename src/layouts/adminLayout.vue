@@ -6,7 +6,7 @@
           <v-icon color="success">mdi-account-multiple</v-icon>
         </v-list-item-action>
         <v-list-item-content>
-          <v-list-item-title>Список пользователей</v-list-item-title>
+          <v-list-item-title>Список клиентов</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
 
@@ -16,6 +16,15 @@
         </v-list-item-action>
         <v-list-item-content>
           <v-list-item-title>Список групп</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+
+      <v-list-item link href="/admin/addgroup">
+        <v-list-item-action>
+          <v-icon color="success">mdi-folder-plus</v-icon>
+        </v-list-item-action>
+        <v-list-item-content>
+          <v-list-item-title>Добавить группу</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
 

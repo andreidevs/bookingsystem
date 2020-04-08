@@ -1,60 +1,77 @@
 <template>
   <v-container>
     <v-row>
-      <v-col cols="4">
-        <v-text-field
-          v-model="selectName"
-          label="Имя клиента"
+      <v-col cols="2">
+        <v-select
+          v-model="day"
+          :items="daysItems"
+          label="Дни недели"
           outlined
           dense
-          @input="changeFilter(selectName)"
-        ></v-text-field>
+          @input="changeFilter(day)"
+        ></v-select>
       </v-col>
-      <v-col cols="4">
-        <v-text-field
-          v-model="selectPhone"
-          label="Номер телефона"
+      <v-col cols="2">
+        <v-select
+          v-model="time"
+          :items="timeItems"
+          label="Время"
           outlined
           dense
-          @input="changeFilter(selectPhone)"
-          v-mask="'+7(###)###-##-##'"
-        >
-        </v-text-field>
+          @input="changeFilter(time)"
+        ></v-select>
+      </v-col>
+      <v-col cols="2">
+        <v-select
+          v-model="coach"
+          :items="coachItems"
+          label="Тренер"
+          outlined
+          dense
+          @input="changeFilter(coach)"
+        ></v-select>
+      </v-col>
+      <v-col>
+        <v-btn rounded color="info" @click="clearFilter">Очистить фильтр</v-btn>
+      </v-col>
+      <v-col cols="3" class="mt-n3">
+        <v-switch v-model="dense" label="Маленькая таблица"></v-switch>
       </v-col>
     </v-row>
     <v-data-table
-      dense
+      :dense="dense"
       :headers="tableHeaders"
-      :items="sampleUsers"
+      :items="sampleGroups"
       :page.sync="page"
       hide-default-footer
       item-key="name"
       :loading="loading"
       loading-text="Загрузка... Пожалуйста подождите"
-      sort-by="nameGroup"
+      sort-by="time"
       @page-count="pageCount = $event"
       :search="searchFilter"
     >
-      <template v-slot:item.actions="{ item }">
+      <template v-slot:item.action="{ item }">
         <v-btn
-          :disabled="item.paid"
           class="mr-4"
           outlined
           small
-          @click="(selectedItem = item), (dialogPay = true)"
-          color="info"
+          @click="showUsers(item)"
+          color="success"
           min-width="120"
         >
-          {{ item.paid === false ? "Оплатить" : "Оплачен" }}
-          <v-icon small v-if="!item.paid" class="ml-1">
-            mdi-cash-usd
-          </v-icon></v-btn
+          Список учеников
+        </v-btn>
+      </template>
+      <template v-slot:item.removes="{ item }">
+        <v-icon @click="(selectedItem = item), (dialogRemoveGroup = true)"
+          >mdi-close</v-icon
         >
       </template>
       <template v-slot:no-data>
         <span
-          >К сожалению мы не нашли подходящие тренеровки вернитесь назад и
-          измените параметры</span
+          >Невозможно получить данные либо таблица пуста, попробуйте обновить
+          страницу</span
         >
       </template>
     </v-data-table>
@@ -65,13 +82,101 @@
       color="success"
     ></v-pagination>
     <v-row justify="center">
-      <v-dialog v-model="dialogPay" persistent max-width="290">
+      <v-dialog v-model="dialogRemoveGroup" persistent max-width="400">
+        <v-card>
+          <v-card-title class="headline">Подтвердить удаление </v-card-title>
+          <v-card-text
+            >Вы действительно хотите навсегда удалить группу
+            <strong> {{ selectedItem.name }}</strong> <br />
+            <strong style="color:red">ВНИМАНИЕ</strong> <br />
+            <span style="color:red"
+              >Это приведет к удаление всех клиентов занимающихся в этой
+              группе</span
+            >
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn
+              color="green darken-1"
+              text
+              @click="dialogRemoveGroup = false"
+              >Отмена</v-btn
+            >
+            <v-btn
+              color="green darken-1"
+              text
+              @click="
+                dialogRemoveGroup = false;
+                deleteGroup(selectedItem);
+                updateTable();
+              "
+              >Подтвердить</v-btn
+            >
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </v-row>
+    <v-row justify="center">
+      <v-dialog
+        v-model="dialogShowUsers"
+        fullscreen
+        hide-overlay
+        transition="dialog-bottom-transition"
+      >
+        <v-card>
+          <v-toolbar dark color="primary">
+            <v-btn icon dark @click="dialogShowUsers = false">
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
+            <v-toolbar-title>{{ dialogUsersName }}</v-toolbar-title>
+            <v-spacer></v-spacer>
+          </v-toolbar>
+          <v-data-table
+            :headers="tableHeadersUsers"
+            :items="sampleUsers"
+            :page.sync="pageS"
+            hide-default-footer
+            item-key="name"
+            :loading="loading"
+            loading-text="Загрузка... Пожалуйста подождите"
+            sort-by="time"
+            @page-count="pageCountS = $event"
+          >
+            <template v-slot:item.actions="{ item }">
+              <v-btn
+                :disabled="item.paid"
+                class="mr-4"
+                outlined
+                small
+                @click="(selectedItem = item), (dialogPay = true)"
+                color="success"
+                min-width="120"
+              >
+                {{ item.paid === false ? "Оплатить" : "Оплачен" }}
+                <v-icon small v-if="!item.paid" class="ml-1">
+                  mdi-cash-usd
+                </v-icon></v-btn
+              >
+            </template>
+            <template v-slot:no-data>
+              <span
+                >Невозможно получить данные либо таблица пуста, попробуйте
+                обновить страницу</span
+              >
+            </template>
+          </v-data-table>
+        </v-card>
+      </v-dialog>
+    </v-row>
+    <v-row justify="center">
+      <v-dialog v-model="dialogPay" persistent max-width="400">
         <v-card>
           <v-card-title class="headline">Подтвердить оплату </v-card-title>
           <v-card-text
-            >Стоимость абонемента {{ selectedItem.subscription }}тг Клиент
-            {{ selectedItem.name }}</v-card-text
-          >
+            >Стоимость абонемента
+            <strong>{{ selectedItem.subscription }}тг</strong> Клиент
+            <strong> {{ selectedItem.name }}</strong>
+          </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn color="green darken-1" text @click="dialogPay = false"
@@ -83,7 +188,7 @@
               @click="
                 dialogPay = false;
                 setPayStatus(selectedItem);
-                updateTable();
+                dialogShowUsers = false;
               "
               >Подтвердить</v-btn
             >
@@ -107,11 +212,8 @@ export default {
   data() {
     return {
       page: 1,
-      tableHeaders: [
-        {
-          text: "Группа",
-          value: "nameGroup"
-        },
+      pageS: 1,
+      tableHeadersUsers: [
         {
           text: "Имя",
           value: "name"
@@ -129,50 +231,158 @@ export default {
           value: "datePay"
         },
         {
-          text: "Статус оплаты",
+          text: "Статус",
           value: "actions"
         }
       ],
+      tableHeaders: [
+        {
+          text: "Дни",
+          value: "weekDays"
+        },
+        {
+          text: "Время",
+          value: "time"
+        },
+        {
+          text: "Тренер",
+          value: "coach"
+        },
+        {
+          text: "Вид тренеровки",
+          value: "typeWorkout"
+        },
+        {
+          text: "Свободные места",
+          value: "count"
+        },
+        {
+          text: "",
+          value: "action"
+        },
+        {
+          text: "",
+          value: "removes"
+        }
+      ],
       loading: false,
+      dense: false,
       pageCount: 1,
-      selectPhone: "",
-      selectName: "",
+      pageCountS: 1,
+      dialogPay: false,
+      dialogRemoveGroup: false,
+      dialogShowUsers: false,
+      sampleGroups: [],
       sampleUsers: [],
       searchFilter: "",
+      dialogUsersName: "",
       selectedItem: {},
-      dialogPay: false
+      day: "",
+      time: "",
+      coach: "",
+      daysItems: ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"],
+      timeItems: [
+        "07",
+        "08",
+        "09",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15",
+        "16",
+        "17",
+        "18",
+        "19",
+        "20",
+        "21"
+      ],
+      coachItems: []
     };
   },
   created() {
     this.updateTable();
+    this.getCoachList();
+    this.coachItems = this.coachList;
   },
-  watch: {},
+  watch: {
+    success(is) {
+      if (is != null) {
+        this.$notify({
+          group: "app",
+          type: "info",
+          title: "Успешно"
+        });
+      }
+    },
+    error(error) {
+      if (error != null) {
+        this.$notify({
+          group: "app",
+          type: "error",
+          title: "Ошибка",
+          text: error
+        });
+      }
+    }
+  },
   mounted() {},
   computed: {
     ...mapGetters({
-      allUsersState: "ALLUSERS"
+      allGroupsState: "ALLGROUPS",
+      usersByGroup: "USERSBYGROUP",
+      coachList: "COACH",
+      error: "ERROR",
+      success: "SUCCESS"
     })
   },
   methods: {
     ...mapActions({
-      getAllUsers: "GET_ALL_USERS",
+      getAllGroups: "GET_ALL_GROUPS",
+      deleteGroup: "DELETE_GROUP",
+      getCoachList: "GET_COACH_LIST",
+      getUser: "GET_USERS_BY_GROUP",
       setPayStatus: "SET_PAY_SUB"
     }),
     updateTable() {
       this.loading = true;
-      this.sampleUsers = [];
-      this.getAllUsers();
-      this.sampleUsers = this.allUsersState;
+      this.sampleGroups = [];
+      this.getAllGroups();
+      this.sampleGroups = this.allGroupsState;
       setTimeout(() => {
         this.loading = false;
       }, 1000);
     },
+    updateTableS() {
+      this.loading = true;
+      this.sampleUsers = [];
+      this.getUser(this.selectedItem.id);
+      this.sampleUsers = this.usersByGroup;
+      setTimeout(() => {
+        this.loading = false;
+      }, 1000);
+    },
+    showUsers(item) {
+      this.selectedItem = item;
+      this.dialogUsersName = item.name;
+      this.dialogShowUsers = true;
+      this.updateTableS();
+    },
+    clearFilter() {
+      this.day = "";
+      this.time = "";
+      this.coach = "";
+      this.searchFilter = "";
+    },
     changeFilter(item) {
       this.searchFilter = "";
-      if (item === this.selectName) {
-        this.searchFilter = this.selectName;
+      if (item === this.day) {
+        this.searchFilter = this.day;
+      } else if (item === this.time) {
+        this.searchFilter = this.time;
       } else {
-        this.searchFilter = this.selectPhone;
+        this.searchFilter = this.coach;
       }
     }
   }

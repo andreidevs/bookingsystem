@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-row>
-      <v-col cols="4">
+      <v-col cols="3">
         <v-text-field
           v-model="selectName"
           label="Имя клиента"
@@ -10,7 +10,7 @@
           @input="changeFilter(selectName)"
         ></v-text-field>
       </v-col>
-      <v-col cols="4">
+      <v-col cols="3">
         <v-text-field
           v-model="selectPhone"
           label="Номер телефона"
@@ -21,7 +21,10 @@
         >
         </v-text-field>
       </v-col>
-      <v-col cols="4" class="mt-n3">
+      <v-col>
+        <v-btn rounded color="info" @click="clearFilter">Очистить фильтр</v-btn>
+      </v-col>
+      <v-col cols="3" class="mt-n3">
         <v-switch v-model="dense" label="Маленькая таблица"></v-switch>
       </v-col>
     </v-row>
@@ -61,8 +64,8 @@
       </template>
       <template v-slot:no-data>
         <span
-          >К сожалению мы не нашли подходящие тренеровки вернитесь назад и
-          измените параметры</span
+          >Невозможно получить данные либо таблица пуста, попробуйте обновить
+          страницу</span
         >
       </template>
     </v-data-table>
@@ -232,6 +235,12 @@ export default {
       setTimeout(() => {
         this.loading = false;
       }, 1000);
+    },
+    clearFilter() {
+      this.selectPhone = "";
+      this.selectName = "";
+
+      this.searchFilter = "";
     },
     changeFilter(item) {
       this.searchFilter = "";

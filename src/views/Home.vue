@@ -8,7 +8,7 @@
     </div>
     <v-card
       class="ml-auto cardMain"
-      max-width="500"
+      max-width="520"
       outlined
       :loading="loading"
     >
@@ -216,7 +216,7 @@ export default {
       nameCoach: "",
       headers: [
         {
-          text: "Дни недели",
+          text: "Дни",
           value: "weekDays"
         },
         {
@@ -226,6 +226,10 @@ export default {
         {
           text: "Тренер",
           value: "coach"
+        },
+        {
+          text: "Вид ",
+          value: "typeWorkout"
         },
         {
           text: "",
