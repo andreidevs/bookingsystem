@@ -2,7 +2,7 @@
   <v-card loading="loadingCard" class="mx-auto" max-width="500" outlined>
     <v-row>
       <v-col cols="12" class="ml-4">
-        <v-card-title class="mb-2">Создание группы</v-card-title>
+        <v-card-title class="mb-2">Добавление группы</v-card-title>
         <v-card-subtitle class="body-1 mb-n3"
           ><v-icon>mdi-calendar-today</v-icon> Дни недели</v-card-subtitle
         >
@@ -214,10 +214,24 @@ export default {
       });
       massData.name = `${days} ${massData.time} ${massData.coach}`;
       massData.typeWorkout = this.selectTypeWorkout;
-      this.createGrooup(massData);
-      // this.chip.forEach(item => {
-      //   item.active = false;
-      // });
+      if (
+        massData.weekDays.length == 0 ||
+        massData.time == "" ||
+        massData.coach == "" ||
+        massData.typeWorkout == ""
+      ) {
+        this.$notify({
+          group: "app",
+          type: "error",
+          title: "Ошибка",
+          text: "Проверьте заполнены ли все поля"
+        });
+      } else {
+        this.createGrooup(massData);
+        // this.chip.forEach(item => {
+        //   item.active = false;
+        // });
+      }
       this.loadingCard = false;
     }
   }

@@ -6,7 +6,15 @@
           <v-icon color="success">mdi-account-multiple</v-icon>
         </v-list-item-action>
         <v-list-item-content>
-          <v-list-item-title>Список клиентов</v-list-item-title>
+          <v-list-item-title>Клиенты групп</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+      <v-list-item link href="/admin/users/single">
+        <v-list-item-action>
+          <v-icon color="success">mdi-account-multiple</v-icon>
+        </v-list-item-action>
+        <v-list-item-content>
+          <v-list-item-title>Клиенты инидивы</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
 
@@ -46,6 +54,24 @@
         </v-list-item-content>
       </v-list-item>
 
+      <v-list-item link href="/admin/signup">
+        <v-list-item-action>
+          <v-icon color="success">mdi-account-key</v-icon>
+        </v-list-item-action>
+        <v-list-item-content>
+          <v-list-item-title>Регистрация администратора</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+
+      <v-list-item link href="/admin/reports">
+        <v-list-item-action>
+          <v-icon color="success">mdi-file-document</v-icon>
+        </v-list-item-action>
+        <v-list-item-content>
+          <v-list-item-title>Отчеты</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+
       <v-list-item link @click="logOut">
         <v-list-item-action>
           <v-icon color="success">mdi-exit-to-app</v-icon>
@@ -58,7 +84,10 @@
 
     <v-app-bar app color="success" dark>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
-      <v-toolbar-title>Панель администратора</v-toolbar-title>
+      <v-toolbar-title
+        >Панель администратора -
+        {{ $route.meta.title.split("-")[1] }}</v-toolbar-title
+      >
     </v-app-bar>
 
     <v-dialog v-model="dialogAddCoach" persistent max-width="600px">
@@ -139,7 +168,8 @@ export default {
     coach: {
       name: ""
     },
-    typeWorkout: ""
+    typeWorkout: "",
+    title: ""
   }),
   methods: {
     ...mapActions({
@@ -155,15 +185,29 @@ export default {
       if (this.coach.name != "") {
         this.setCoach(this.coach);
         this.coach.name = "";
+        this.dialogAddCoach = false;
+      } else {
+        this.$notify({
+          group: "app",
+          type: "error",
+          title: "Ошибка",
+          text: "Проверьте правильность ввода"
+        });
       }
-      this.dialogAddCoach = false;
     },
     addTypeWorkout() {
       if (this.typeWorkout != "") {
         this.setTypeWorkout(this.typeWorkout);
         this.typeWorkout = "";
+        this.dialogAddTypeWorkout = false;
+      } else {
+        this.$notify({
+          group: "app",
+          type: "error",
+          title: "Ошибка",
+          text: "Проверьте правильность ввода"
+        });
       }
-      this.dialogAddTypeWorkout = false;
     }
   }
 };
