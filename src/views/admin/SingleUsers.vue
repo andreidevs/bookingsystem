@@ -37,7 +37,6 @@
       item-key="name"
       :loading="loading"
       loading-text="Загрузка... Пожалуйста подождите"
-      sort-by="nameGroup"
       @page-count="pageCount = $event"
       :search="searchFilter"
     >
@@ -152,16 +151,20 @@ export default {
           value: "name"
         },
         {
-          text: "Группа",
-          value: "nameGroup"
+          text: "Email",
+          value: "email"
         },
         {
           text: "Телефон",
           value: "phone"
         },
         {
-          text: "Абонемент",
+          text: "Оплата",
           value: "subscription"
+        },
+        {
+          text: "Тренер",
+          value: "coach"
         },
         {
           text: "Дата оплаты",
@@ -214,22 +217,24 @@ export default {
   mounted() {},
   computed: {
     ...mapGetters({
-      allUsersState: "ALLUSERS",
+      allSingleState: "ALLSINGLE",
       error: "ERROR",
       success: "SUCCESS"
     })
   },
   methods: {
     ...mapActions({
-      getAllUsers: "GET_ALL_USERS",
-      setPayStatus: "SET_PAY_SUB",
-      deleteUser: "DELETE_USER_GROUP"
+      getAllSingle: "GET_ALL_SINGLE",
+      setPayStatus: "SEND_PAY_SINGLE",
+      deleteUser: "DELETE_USER_SINGLE"
     }),
     updateTable() {
       this.loading = true;
       this.sampleUsers = [];
-      this.getAllUsers();
-      this.sampleUsers = this.allUsersState;
+      this.getAllSingle();
+      const mass = this.allSingleState;
+      console.log(mass);
+      this.sampleUsers = mass.reverse();
       setTimeout(() => {
         this.loading = false;
       }, 1000);

@@ -11,6 +11,12 @@ const routes = [
     component: () => import("../views/Home.vue")
   },
   {
+    path: "/indiv",
+    name: "Indiv",
+    meta: { title: "Edem Dance - Записаться на индивидуальное занятие" },
+    component: () => import("../views/Indiv.vue")
+  },
+  {
     path: "/admin/addgroup",
     name: "AdminAddGroup",
     meta: {
@@ -46,7 +52,7 @@ const routes = [
     meta: {
       AuthRequired: true,
       layout: "admin",
-      title: "Edem Dance - Список учеников инидив"
+      title: "Edem Dance - Список индивидуальных учеников"
     },
     component: () => import("../views/admin/SingleUsers.vue")
   },

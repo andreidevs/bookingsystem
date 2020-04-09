@@ -162,7 +162,7 @@ export default {
           value: "phone"
         },
         {
-          text: "Абонемент",
+          text: "Оплата",
           value: "subscription"
         },
         {
@@ -224,7 +224,7 @@ export default {
   methods: {
     ...mapActions({
       getAllUsers: "GET_ALL_USERS",
-      setPayStatus: "SET_PAY_SUB",
+      setPayStatus: "SEND_PAY_SUB",
       deleteUser: "DELETE_USER_GROUP"
     }),
     updateTable() {

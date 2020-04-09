@@ -1,18 +1,22 @@
 import vue from "vue";
+const axios = require("axios");
+
 export default {
   state: {
     coachList: [],
     typeWorkoutList: [],
     allGroups: [],
     allUsers: [],
-    usersByGroup: []
+    usersByGroup: [],
+    usersSingle: []
   },
   getters: {
     COACH: s => s.coachList,
     TYPEWORKOUT: s => s.typeWorkoutList,
     ALLGROUPS: s => s.allGroups,
     ALLUSERS: s => s.allUsers,
-    USERSBYGROUP: s => s.usersByGroup
+    USERSBYGROUP: s => s.usersByGroup,
+    ALLSINGLE: s => s.usersSingle
   },
   mutations: {
     SET_COACH_LIST(state, payload) {
@@ -27,11 +31,31 @@ export default {
     SET_ALL_USERS(state, payload) {
       state.allUsers = payload;
     },
+    SET_ALL_SINGLE(state, payload) {
+      state.usersSingle = payload;
+    },
     SET_USERS_BY_GROUP(state, payload) {
       state.usersByGroup = payload;
     }
   },
+
   actions: {
+    SEND_FORM_TELEGRAM({ commit }, payload) {
+      commit("CLEAR_SUCCESS");
+      commit("CLEAR_ERROR");
+
+      axios
+        .get(
+          `https://api.telegram.org/bot1103706945:AAFblSSGaI0-GlSE6NslEyzPsWHunBW8rHQ/sendMessage?chat_id=-451337290&parse_mode=html&text=
+       <b>${payload.text}</b> %0A<b>Имя:</b> ${payload.name}%0A<b>Телефон:</b>${payload.phone}`
+        )
+        .then(function(response) {
+          console.log(response);
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+    },
     CHECK_PAY_DATE({ dispatch }) {
       vue.$db
         .collection("thisdate")
@@ -96,7 +120,7 @@ export default {
           commit("SET_ERROR", error);
         });
     },
-    SET_PAY_SUB({ commit, dispatch }, payload) {
+    SEND_PAY_SUB({ commit, dispatch }, payload) {
       commit("CLEAR_SUCCESS");
       commit("CLEAR_ERROR");
       vue.$db
@@ -110,9 +134,41 @@ export default {
         .then(function() {
           commit("SET_SUCCESS");
           dispatch("SEND_NEW_REPORT", {
+            id: Math.random()
+              .toString(36)
+              .substr(2, 12),
             nameUser: payload.name,
             coach: payload.coach,
+            type: "group",
             nameGroup: payload.nameGroup,
+            date: new Date().format("dd.mm.yyyy"),
+            price: payload.subscription
+          });
+        })
+        .catch(function(error) {
+          commit("SET_ERROR", error);
+        });
+    },
+    SEND_PAY_SINGLE({ commit, dispatch }, payload) {
+      commit("CLEAR_SUCCESS");
+      commit("CLEAR_ERROR");
+      vue.$db
+        .collection("singleLesson")
+        .doc(payload.id)
+        .update({
+          paid: true,
+          datePayNoformat: new Date(),
+          datePay: new Date().format("dd.mm.yyyy")
+        })
+        .then(function() {
+          commit("SET_SUCCESS");
+          dispatch("SEND_NEW_REPORT", {
+            id: Math.random()
+              .toString(36)
+              .substr(2, 12),
+            nameUser: payload.name,
+            coach: payload.coach,
+            type: "single",
             date: new Date().format("dd.mm.yyyy"),
             price: payload.subscription
           });
@@ -124,7 +180,8 @@ export default {
     SEND_NEW_REPORT({ commit }, payload) {
       vue.$db
         .collection("paymentReports")
-        .add({
+        .doc(payload.id)
+        .set({
           ...payload
         })
         .catch(function(error) {
@@ -195,6 +252,18 @@ export default {
         });
       commit("SET_ALL_USERS", users);
     },
+    GET_ALL_SINGLE({ commit }) {
+      let users = [];
+      vue.$db
+        .collection("singleLesson")
+        .get()
+        .then(function(querySnapshot) {
+          querySnapshot.forEach(function(doc) {
+            users.push(doc.data());
+          });
+        });
+      commit("SET_ALL_SINGLE", users);
+    },
     GET_USERS_BY_GROUP({ commit }, payload) {
       let users = [];
       vue.$db
@@ -253,7 +322,8 @@ export default {
       commit("CLEAR_ERROR");
       vue.$db
         .collection("singleLesson")
-        .add({
+        .doc(payload.id)
+        .set({
           ...payload
         })
         .then(function() {
@@ -303,6 +373,20 @@ export default {
             .catch(function(error) {
               commit("SET_ERROR", error);
             });
+        })
+        .catch(function(error) {
+          commit("SET_ERROR", error);
+        });
+    },
+    DELETE_USER_SINGLE({ commit }, payload) {
+      commit("CLEAR_SUCCESS");
+      commit("CLEAR_ERROR");
+      vue.$db
+        .collection("singleLesson")
+        .doc(payload.id)
+        .delete()
+        .then(function() {
+          commit("SET_SUCCESS");
         })
         .catch(function(error) {
           commit("SET_ERROR", error);

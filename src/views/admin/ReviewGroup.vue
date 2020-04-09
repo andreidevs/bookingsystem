@@ -223,7 +223,7 @@ export default {
           value: "phone"
         },
         {
-          text: "Абонемент",
+          text: "Оплата",
           value: "subscription"
         },
         {
@@ -343,7 +343,7 @@ export default {
       deleteGroup: "DELETE_GROUP",
       getCoachList: "GET_COACH_LIST",
       getUser: "GET_USERS_BY_GROUP",
-      setPayStatus: "SET_PAY_SUB"
+      setPayStatus: "SEND_PAY_SUB"
     }),
     updateTable() {
       this.loading = true;

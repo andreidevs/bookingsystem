@@ -6,12 +6,7 @@
         Записаться на тренеровку
       </h1>
     </div>
-    <v-card
-      class="ml-auto cardMain"
-      max-width="520"
-      outlined
-      :loading="loading"
-    >
+    <v-card class="ml-auto cardMain" max-width="520" shaped :loading="loading">
       <div v-if="step === 1" class="pa-5">
         <v-card-subtitle class="body-1 "
           ><v-icon>mdi-calendar-today</v-icon>Выберите дни недели для
@@ -110,7 +105,7 @@
         <v-alert border="bottom" color="success" dark>
           Группа {{ this.nameGroup }}
         </v-alert>
-        <v-form ref="formStep3" v-model="validForm3">
+        <v-form ref="formStep3">
           <v-text-field
             dense
             outlined
@@ -169,7 +164,6 @@ export default {
   data() {
     return {
       loading: false,
-      validForm3: true,
       nameStep3: "",
       emailStep3: "",
       phoneStep3: "",
@@ -362,6 +356,10 @@ export default {
         this.loading = true;
         if (this.radioGroup === "1500") {
           let payload = {
+            id: Math.random()
+              .toString(36)
+              .substr(2, 12),
+            dateReg: new Date().format("dd.mm.yyyy"),
             name: this.nameStep3,
             phone: this.phoneStep3,
             email: this.emailStep3,
@@ -375,7 +373,7 @@ export default {
           let payload = {
             id: Math.random()
               .toString(36)
-              .substr(2, 9),
+              .substr(2, 12),
             name: this.nameStep3,
             phone: this.phoneStep3,
             email: this.emailStep3,
