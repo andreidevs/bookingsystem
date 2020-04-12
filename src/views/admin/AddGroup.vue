@@ -116,31 +116,8 @@ export default {
     timeMinute: "00",
     time: null
   }),
-  watch: {
-    success(is) {
-      if (is != null) {
-        this.$notify({
-          group: "app",
-          type: "info",
-          title: "Успешно"
-        });
-      }
-    },
-    error(error) {
-      if (error != null) {
-        this.$notify({
-          group: "app",
-          type: "error",
-          title: "Ошибка",
-          text: error
-        });
-      }
-    }
-  },
   computed: {
     ...mapGetters({
-      error: "ERROR",
-      success: "SUCCESS",
       coachLists: "COACH",
       typeWorkoutLists: "TYPEWORKOUT"
     })

@@ -7,38 +7,8 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from "vuex";
+import { mapActions } from "vuex";
 export default {
-  data() {
-    return {};
-  },
-  watch: {
-    success(is) {
-      if (is != null) {
-        this.$notify({
-          group: "app",
-          type: "info",
-          title: "Успешно"
-        });
-      }
-    },
-    error(error) {
-      if (error != null) {
-        this.$notify({
-          group: "app",
-          type: "error",
-          title: "Ошибка",
-          text: error
-        });
-      }
-    }
-  },
-  computed: {
-    ...mapGetters({
-      error: "ERROR",
-      success: "SUCCESS"
-    })
-  },
   methods: {
     ...mapActions({
       deleteUserGroup: "DELETE_USER_GROUP_BY_ID",

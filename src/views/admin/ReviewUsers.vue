@@ -205,33 +205,9 @@ export default {
   created() {
     this.updateTable();
   },
-  watch: {
-    success(is) {
-      if (is != null) {
-        this.$notify({
-          group: "app",
-          type: "info",
-          title: "Успешно"
-        });
-      }
-    },
-    error(error) {
-      if (error != null) {
-        this.$notify({
-          group: "app",
-          type: "error",
-          title: "Ошибка",
-          text: error
-        });
-      }
-    }
-  },
-  mounted() {},
   computed: {
     ...mapGetters({
-      allUsersState: "ALLUSERS",
-      error: "ERROR",
-      success: "SUCCESS"
+      allUsersState: "ALLUSERS"
     })
   },
   methods: {

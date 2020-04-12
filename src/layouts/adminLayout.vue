@@ -61,15 +61,6 @@
             </v-list-item-content>
           </v-list-item>
 
-          <v-list-item link @click="dialogAddCoach = true">
-            <v-list-item-action>
-              <v-icon color="success">mdi-account-plus</v-icon>
-            </v-list-item-action>
-            <v-list-item-content>
-              <v-list-item-title>Добавить тренера</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-
           <v-list-item link @click="dialogAddTypeWorkout = true">
             <v-list-item-action>
               <v-icon color="success">mdi-alpha-t-box</v-icon>
@@ -185,7 +176,7 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapActions, mapGetters, mapMutations } from "vuex";
 export default {
   name: "adminLayout",
   data: () => ({
@@ -198,7 +189,40 @@ export default {
     typeWorkout: "",
     title: ""
   }),
+  computed: {
+    ...mapGetters({
+      error: "ERROR",
+      success: "SUCCESS"
+    })
+  },
+  watch: {
+    success(is) {
+      if (is != null) {
+        this.$notify({
+          group: "app",
+          type: "info",
+          title: "Успешно"
+        });
+        this.clearSuccess();
+      }
+    },
+    error(error) {
+      if (error != null) {
+        this.$notify({
+          group: "app",
+          type: "error",
+          title: "Ошибка",
+          text: error
+        });
+        this.clearError();
+      }
+    }
+  },
   methods: {
+    ...mapMutations({
+      clearError: "CLEAR_ERROR",
+      clearSuccess: "CLEAR_SUCCESS"
+    }),
     ...mapActions({
       logout: "LOGOUT",
       setCoach: "SET_COACH",

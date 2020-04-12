@@ -158,7 +158,7 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from "vuex";
+import { mapGetters, mapActions, mapMutations } from "vuex";
 export default {
   components: {},
   data() {
@@ -241,6 +241,7 @@ export default {
           type: "info",
           title: "Успешно"
         });
+        this.clearSuccess();
       }
     },
     error(error) {
@@ -251,6 +252,7 @@ export default {
           title: "Ошибка",
           text: error
         });
+        this.clearError();
       }
     }
   },
@@ -265,6 +267,10 @@ export default {
     this.getGroups();
   },
   methods: {
+    ...mapMutations({
+      clearError: "CLEAR_ERROR",
+      clearSuccess: "CLEAR_SUCCESS"
+    }),
     ...mapActions({
       getGroups: "GET_ALL_GROUPS",
       writeUserGroup: "WRITE_USER_GROUP",

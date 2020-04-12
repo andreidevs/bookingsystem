@@ -209,33 +209,11 @@ export default {
   created() {
     this.updateTable();
   },
-  watch: {
-    success(is) {
-      if (is != null) {
-        this.$notify({
-          group: "app",
-          type: "info",
-          title: "Успешно"
-        });
-      }
-    },
-    error(error) {
-      if (error != null) {
-        this.$notify({
-          group: "app",
-          type: "error",
-          title: "Ошибка",
-          text: error
-        });
-      }
-    }
-  },
+  watch: {},
   mounted() {},
   computed: {
     ...mapGetters({
-      allSingleState: "ALLSINGLE",
-      error: "ERROR",
-      success: "SUCCESS"
+      allSingleState: "ALLSINGLE"
     })
   },
   methods: {
@@ -249,7 +227,6 @@ export default {
       this.sampleUsers = [];
       this.getAllSingle();
       const mass = this.allSingleState;
-      console.log(mass);
       this.sampleUsers = mass.reverse();
       setTimeout(() => {
         this.loading = false;

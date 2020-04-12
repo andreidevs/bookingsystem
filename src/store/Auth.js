@@ -1,4 +1,5 @@
 import firebase from "firebase/app";
+import vue from "vue";
 export default {
   state: {
     user: {
@@ -42,6 +43,33 @@ export default {
         .signInWithEmailAndPassword(payload.email, payload.password)
         .then(() => {
           commit("SET_SUCCESS");
+        })
+        .catch(error => {
+          commit("SET_ERROR", error.message);
+        });
+    },
+    SIGNUP_ADMIN({ commit }, payload) {
+      commit("CLEAR_SUCCESS");
+      commit("CLEAR_ERROR");
+      firebase
+        .auth()
+        .createUserWithEmailAndPassword(payload.email, payload.password)
+        .then(() => {
+          vue.$db
+            .collection("coach")
+            .doc(payload.id)
+            .set({
+              id: payload.id,
+              name: payload.name,
+              email: payload.email,
+              admin: payload.admin
+            })
+            .then(function() {
+              commit("SET_SUCCESS");
+            })
+            .catch(function(error) {
+              commit("SET_ERROR", error);
+            });
         })
         .catch(error => {
           commit("SET_ERROR", error.message);

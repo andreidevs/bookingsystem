@@ -83,6 +83,16 @@ const routes = [
     component: () => import("../views/admin/DeleteUser.vue")
   },
   {
+    path: "/admin/signup",
+    name: "AdminSignUp",
+    meta: {
+      AuthRequired: true,
+      layout: "admin",
+      title: "Edem Dance - Регистрация тренера"
+    },
+    component: () => import("../views/admin/SignUpAdmin.vue")
+  },
+  {
     path: "/signin",
     name: "SignIn",
     meta: { title: "Edem Dance - Вход в админ панель" },

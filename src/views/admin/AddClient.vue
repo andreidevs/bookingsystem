@@ -221,33 +221,10 @@ export default {
       sampleGroups: []
     };
   },
-  watch: {
-    success(is) {
-      if (is != null) {
-        this.$notify({
-          group: "app",
-          type: "info",
-          title: "Успешно"
-        });
-      }
-    },
-    error(error) {
-      if (error != null) {
-        this.$notify({
-          group: "app",
-          type: "error",
-          title: "Ошибка",
-          text: error
-        });
-      }
-    }
-  },
   computed: {
     ...mapGetters({
       allGroups: "ALLGROUPS",
-      coachList: "COACH",
-      error: "ERROR",
-      success: "SUCCESS"
+      coachList: "COACH"
     })
   },
   created() {

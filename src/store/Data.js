@@ -41,9 +41,6 @@ export default {
 
   actions: {
     SEND_FORM_TELEGRAM({ commit }, payload) {
-      commit("CLEAR_SUCCESS");
-      commit("CLEAR_ERROR");
-      console.log("res", payload.link);
       const res =
         payload.link !== undefined
           ? `https://api.telegram.org/bot1103706945:AAFblSSGaI0-GlSE6NslEyzPsWHunBW8rHQ/sendMessage?chat_id=-451337290&parse_mode=html&text=
@@ -92,24 +89,8 @@ export default {
         });
       });
     },
-    SET_COACH({ commit }, payload) {
-      commit("CLEAR_SUCCESS");
-      commit("CLEAR_ERROR");
-      vue.$db
-        .collection("coach")
-        .add({
-          name: payload.name
-        })
-        .then(function() {
-          commit("SET_SUCCESS");
-        })
-        .catch(function(error) {
-          commit("SET_ERROR", error);
-        });
-    },
+
     SET_TYPEWORKOUT({ commit }, payload) {
-      commit("CLEAR_SUCCESS");
-      commit("CLEAR_ERROR");
       vue.$db
         .collection("typeWorkout")
         .add({
@@ -123,8 +104,6 @@ export default {
         });
     },
     SEND_PAY_SUB({ commit, dispatch }, payload) {
-      commit("CLEAR_SUCCESS");
-      commit("CLEAR_ERROR");
       vue.$db
         .collection("users")
         .doc(payload.id)
@@ -152,8 +131,6 @@ export default {
         });
     },
     SEND_PAY_SINGLE({ commit, dispatch }, payload) {
-      commit("CLEAR_SUCCESS");
-      commit("CLEAR_ERROR");
       vue.$db
         .collection("singleLesson")
         .doc(payload.id)
@@ -215,8 +192,6 @@ export default {
       commit("SET_COACH_LIST", coachList);
     },
     CREATE_GROUP({ commit }, payload) {
-      commit("CLEAR_SUCCESS");
-      commit("CLEAR_ERROR");
       vue.$db
         .collection("groups")
         .doc(payload.id)
@@ -281,8 +256,6 @@ export default {
       commit("SET_USERS_BY_GROUP", users);
     },
     WRITE_USER_GROUP({ commit, dispatch }, payload) {
-      commit("CLEAR_SUCCESS");
-      commit("CLEAR_ERROR");
       vue.$db
         .collection("users")
         .doc(payload.id)
@@ -326,8 +299,6 @@ export default {
         });
     },
     WRITE_USER_SINGLE({ commit, dispatch }, payload) {
-      commit("CLEAR_SUCCESS");
-      commit("CLEAR_ERROR");
       vue.$db
         .collection("singleLesson")
         .doc(payload.id)
@@ -352,8 +323,6 @@ export default {
         });
     },
     DELETE_USER_GROUP({ commit }, payload) {
-      commit("CLEAR_SUCCESS");
-      commit("CLEAR_ERROR");
       vue.$db
         .collection("users")
         .doc(payload.id)
@@ -397,8 +366,6 @@ export default {
         });
     },
     DELETE_USER_GROUP_BY_ID({ commit, dispatch }, payload) {
-      commit("CLEAR_SUCCESS");
-      commit("CLEAR_ERROR");
       let user = [];
       vue.$db
         .collection("users")
@@ -414,8 +381,6 @@ export default {
         });
     },
     DELETE_USER_SINGLE({ commit }, payload) {
-      commit("CLEAR_SUCCESS");
-      commit("CLEAR_ERROR");
       vue.$db
         .collection("singleLesson")
         .doc(payload.id)
@@ -428,8 +393,6 @@ export default {
         });
     },
     DELETE_GROUP({ commit }, payload) {
-      commit("CLEAR_SUCCESS");
-      commit("CLEAR_ERROR");
       vue.$db
         .collection("groups")
         .doc(payload.id)
