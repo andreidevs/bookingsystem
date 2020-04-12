@@ -7,7 +7,7 @@
       </h1>
     </div>
     <v-card class="ml-auto cardMain" max-width="520" shaped :loading="loading">
-      <div v-if="step === 1" class="pa-5">
+      <div v-show="step === 1" class="pa-5">
         <v-card-subtitle class="body-1 "
           ><v-icon>mdi-calendar-today</v-icon>Выберите дни недели для
           посещения</v-card-subtitle
@@ -55,7 +55,7 @@
           >
         </v-card-actions>
       </div>
-      <div v-if="step === 2">
+      <div v-show="step === 2">
         <v-data-table
           :headers="headers"
           :items="sampleGroups"
@@ -101,7 +101,7 @@
           >
         </v-card-actions>
       </div>
-      <div v-if="step === 3" class="pa-5">
+      <div v-show="step === 3" class="pa-5">
         <v-alert border="bottom" color="success" dark>
           Группа {{ this.nameGroup }}
         </v-alert>
@@ -172,7 +172,8 @@ export default {
       radioItems: [
         { text: "Разовое занятие - 1500тг", value: "1500" },
         { text: "8 занятий - 8000тг", value: "8000" },
-        { text: "12 занятий - 12000тг", value: "12000" }
+        { text: "12 занятий - 12000тг", value: "12000" },
+        { text: "Экзот - 6000тг", value: "6000" }
       ],
       page: 1,
       pageCount: 0,
@@ -287,7 +288,7 @@ export default {
       });
       setTimeout(() => {
         this.loading = false;
-      }, 2000);
+      }, 1000);
       this.step = 2;
     },
     stepOne() {
@@ -356,9 +357,7 @@ export default {
         this.loading = true;
         if (this.radioGroup === "1500") {
           let payload = {
-            id: Math.random()
-              .toString(36)
-              .substr(2, 12),
+            id: this.$g.generate(20),
             dateReg: new Date().format("dd.mm.yyyy"),
             name: this.nameStep3,
             phone: this.phoneStep3,
@@ -371,9 +370,7 @@ export default {
           this.writeSingleLesson(payload);
         } else {
           let payload = {
-            id: Math.random()
-              .toString(36)
-              .substr(2, 12),
+            id: this.$g.generate(20),
             name: this.nameStep3,
             phone: this.phoneStep3,
             email: this.emailStep3,

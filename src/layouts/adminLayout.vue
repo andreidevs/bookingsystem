@@ -1,85 +1,112 @@
 <template>
   <v-container>
     <v-navigation-drawer v-model="drawer" app>
-      <v-list-item link href="/admin/users">
-        <v-list-item-action>
-          <v-icon color="success">mdi-account-multiple</v-icon>
-        </v-list-item-action>
-        <v-list-item-content>
-          <v-list-item-title>Клиенты групп</v-list-item-title>
-        </v-list-item-content>
-      </v-list-item>
-      <v-list-item link href="/admin/users/single">
-        <v-list-item-action>
-          <v-icon color="success">mdi-account-multiple</v-icon>
-        </v-list-item-action>
-        <v-list-item-content>
-          <v-list-item-title>Клиенты инидивы</v-list-item-title>
-        </v-list-item-content>
-      </v-list-item>
+      <v-list shaped>
+        <v-list-item link to="/admin/daily">
+          <v-list-item-action>
+            <v-icon color="success">mdi-table-edit</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Ежедневный отчет</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
 
-      <v-list-item link href="/admin/groups">
-        <v-list-item-action>
-          <v-icon color="success">mdi-folder-account</v-icon>
-        </v-list-item-action>
-        <v-list-item-content>
-          <v-list-item-title>Список групп</v-list-item-title>
-        </v-list-item-content>
-      </v-list-item>
+        <v-list-item exact link to="/admin/users">
+          <v-list-item-action>
+            <v-icon color="success">mdi-account-multiple</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Ученики</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
 
-      <v-list-item link href="/admin/addgroup">
-        <v-list-item-action>
-          <v-icon color="success">mdi-folder-plus</v-icon>
-        </v-list-item-action>
-        <v-list-item-content>
-          <v-list-item-title>Добавить группу</v-list-item-title>
-        </v-list-item-content>
-      </v-list-item>
+        <v-list-item link to="/admin/users/single">
+          <v-list-item-action>
+            <v-icon color="success">mdi-account-multiple</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Разовые клиенты </v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
 
-      <v-list-item link @click="dialogAddCoach = true">
-        <v-list-item-action>
-          <v-icon color="success">mdi-account-plus</v-icon>
-        </v-list-item-action>
-        <v-list-item-content>
-          <v-list-item-title>Добавить тренера</v-list-item-title>
-        </v-list-item-content>
-      </v-list-item>
+        <v-list-item link to="/admin/groups">
+          <v-list-item-action>
+            <v-icon color="success">mdi-folder-account</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Список групп</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
 
-      <v-list-item link @click="dialogAddTypeWorkout = true">
-        <v-list-item-action>
-          <v-icon color="success">mdi-alpha-t-box</v-icon>
-        </v-list-item-action>
-        <v-list-item-content>
-          <v-list-item-title>Добавить тип тренеровки</v-list-item-title>
-        </v-list-item-content>
-      </v-list-item>
+        <v-list-group color="success" prepend-icon="mdi-playlist-plus">
+          <template v-slot:activator>
+            <v-list-item-title>Добавление</v-list-item-title>
+          </template>
 
-      <v-list-item link href="/admin/signup">
-        <v-list-item-action>
-          <v-icon color="success">mdi-account-key</v-icon>
-        </v-list-item-action>
-        <v-list-item-content>
-          <v-list-item-title>Регистрация администратора</v-list-item-title>
-        </v-list-item-content>
-      </v-list-item>
+          <v-list-item link to="/admin/addclient">
+            <v-list-item-action>
+              <v-icon color="success">mdi-plus-circle-outline</v-icon>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title>Добавить клиента</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
 
-      <v-list-item link href="/admin/reports">
-        <v-list-item-action>
-          <v-icon color="success">mdi-file-document</v-icon>
-        </v-list-item-action>
-        <v-list-item-content>
-          <v-list-item-title>Отчеты</v-list-item-title>
-        </v-list-item-content>
-      </v-list-item>
+          <v-list-item link to="/admin/addgroup">
+            <v-list-item-action>
+              <v-icon color="success">mdi-folder-plus</v-icon>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title>Добавить группу</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
 
-      <v-list-item link @click="logOut">
-        <v-list-item-action>
-          <v-icon color="success">mdi-exit-to-app</v-icon>
-        </v-list-item-action>
-        <v-list-item-content>
-          <v-list-item-title>Выйти</v-list-item-title>
-        </v-list-item-content>
-      </v-list-item>
+          <v-list-item link @click="dialogAddCoach = true">
+            <v-list-item-action>
+              <v-icon color="success">mdi-account-plus</v-icon>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title>Добавить тренера</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+
+          <v-list-item link @click="dialogAddTypeWorkout = true">
+            <v-list-item-action>
+              <v-icon color="success">mdi-alpha-t-box</v-icon>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title>Добавить тип тренеровки</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list-group>
+
+        <v-list-item link to="/admin/signup">
+          <v-list-item-action>
+            <v-icon color="success">mdi-account-key</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Регистрация администратора</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+
+        <v-list-item link to="/admin/reports">
+          <v-list-item-action>
+            <v-icon color="success">mdi-file-document</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Отчеты</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+
+        <v-list-item link @click="logOut">
+          <v-list-item-action>
+            <v-icon color="success">mdi-exit-to-app</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Выйти</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
     </v-navigation-drawer>
 
     <v-app-bar app color="success" dark>

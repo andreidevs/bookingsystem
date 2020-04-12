@@ -192,9 +192,7 @@ export default {
     createGroup() {
       this.loadingCard = true;
       let massData = {
-        id: Math.random()
-          .toString(36)
-          .substr(2, 9),
+        id: this.$g.generate(20),
         weekDays: [],
         time: "",
         coach: "",

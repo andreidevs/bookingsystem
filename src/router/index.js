@@ -27,12 +27,22 @@ const routes = [
     component: () => import("../views/admin/AddGroup.vue")
   },
   {
+    path: "/admin/addclient",
+    name: "AdminAddClient",
+    meta: {
+      AuthRequired: true,
+      layout: "admin",
+      title: "Edem Dance - Добавить клиента"
+    },
+    component: () => import("../views/admin/AddClient.vue")
+  },
+  {
     path: "/admin/users",
     name: "AdminUsers",
     meta: {
       AuthRequired: true,
       layout: "admin",
-      title: "Edem Dance - Список учеников групп"
+      title: "Edem Dance - Список учеников "
     },
     component: () => import("../views/admin/ReviewUsers.vue")
   },
@@ -61,6 +71,16 @@ const routes = [
     name: "AdminMain",
     meta: { AuthRequired: true, layout: "admin", title: "Edem Dance" },
     component: () => import("../views/admin/index.vue")
+  },
+  {
+    path: "/admin/deleteuser/:type/:id",
+    name: "AdminDeleteUser",
+    meta: {
+      AuthRequired: true,
+      layout: "admin",
+      title: "Edem Dance - Удаление ученика"
+    },
+    component: () => import("../views/admin/DeleteUser.vue")
   },
   {
     path: "/signin",

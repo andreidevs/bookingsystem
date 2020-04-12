@@ -2,7 +2,9 @@
   <v-app>
     <router-view v-if="layout == 'undefined-layout'" />
     <component v-else :is="layout">
-      <router-view />
+      <keep-alive>
+        <router-view />
+      </keep-alive>
     </component>
     <notifications group="app" />
   </v-app>

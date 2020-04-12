@@ -1,0 +1,19 @@
+@media(max-width: 800px){
+    .sm-none{
+    display: none;
+    }
+  
+}
+
+@media(max-width: 800px){
+    .update-button{
+        margin-left: 65% !important;
+        margin-top: -90px !important;
+        margin-bottom: 0 !important;
+
+    }
+}
+.update-button{
+    margin-left: 88%;
+    margin-bottom: -70px;
+}

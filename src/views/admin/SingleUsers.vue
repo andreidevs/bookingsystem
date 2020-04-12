@@ -1,30 +1,32 @@
 <template>
   <v-container>
     <v-row>
-      <v-col cols="3">
+      <v-col cols="6" lg="3" sm="6">
         <v-text-field
           v-model="selectName"
           label="Имя клиента"
           outlined
+          clearable
           dense
           @input="changeFilter(selectName)"
         ></v-text-field>
       </v-col>
-      <v-col cols="3">
+      <v-col cols="6" lg="3" sm="6">
         <v-text-field
           v-model="selectPhone"
           label="Номер телефона"
           outlined
+          clearable
           dense
           @input="changeFilter(selectPhone)"
           v-mask="'+7(###)###-##-##'"
         >
         </v-text-field>
       </v-col>
-      <v-col>
+      <v-col cols="3">
         <v-btn rounded color="info" @click="clearFilter">Очистить фильтр</v-btn>
       </v-col>
-      <v-col cols="3" class="mt-n3">
+      <v-col cols="6" class="mt-n3 sm-none" lg="3" sm="6">
         <v-switch v-model="dense" label="Маленькая таблица"></v-switch>
       </v-col>
     </v-row>
@@ -40,6 +42,19 @@
       @page-count="pageCount = $event"
       :search="searchFilter"
     >
+      <template v-slot:top>
+        <v-btn
+          class="update-button"
+          color="success"
+          text
+          dark
+          small
+          @click="updateTable()"
+        >
+          Обновить
+          <v-icon>mdi-reload</v-icon>
+        </v-btn>
+      </template>
       <template v-slot:item.actions="{ item }">
         <v-btn
           :disabled="item.paid"
@@ -128,6 +143,7 @@
         </v-card>
       </v-dialog>
     </v-row>
+
     <v-btn
       style="position:fixed!important; bottom:10px; left:10px; z-index:1000;"
       @click="$router.go(-1)"

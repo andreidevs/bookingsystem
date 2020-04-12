@@ -35,7 +35,11 @@
     <div class="text-center">
       <v-dialog v-model="dialog" width="500">
         <v-card shaped>
-          <v-card-title class="headline lighten-2" color="primary" primary-title>
+          <v-card-title
+            class="headline lighten-2"
+            color="primary"
+            primary-title
+          >
             Успешно
           </v-card-title>
 

@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-row>
-      <v-col cols="2">
+      <v-col cols="4" lg="2" sm="3">
         <v-select
           v-model="day"
           :items="daysItems"
@@ -11,7 +11,7 @@
           @input="changeFilter(day)"
         ></v-select>
       </v-col>
-      <v-col cols="2">
+      <v-col cols="4" lg="2" sm="3">
         <v-select
           v-model="time"
           :items="timeItems"
@@ -21,7 +21,7 @@
           @input="changeFilter(time)"
         ></v-select>
       </v-col>
-      <v-col cols="2">
+      <v-col cols="6" lg="2" sm="6">
         <v-select
           v-model="coach"
           :items="coachItems"
@@ -31,10 +31,10 @@
           @input="changeFilter(coach)"
         ></v-select>
       </v-col>
-      <v-col>
+      <v-col cols="3">
         <v-btn rounded color="info" @click="clearFilter">Очистить фильтр</v-btn>
       </v-col>
-      <v-col cols="3" class="mt-n3">
+      <v-col cols="6" lg="3" sm="6" class="mt-n3 sm-none">
         <v-switch v-model="dense" label="Маленькая таблица"></v-switch>
       </v-col>
     </v-row>
@@ -51,6 +51,19 @@
       @page-count="pageCount = $event"
       :search="searchFilter"
     >
+      <template v-slot:top>
+        <v-btn
+          class="update-button"
+          color="success"
+          text
+          dark
+          small
+          @click="updateTable()"
+        >
+          Обновить
+          <v-icon>mdi-reload</v-icon>
+        </v-btn>
+      </template>
       <template v-slot:item.action="{ item }">
         <v-btn
           class="mr-4"
@@ -108,7 +121,7 @@
               @click="
                 dialogRemoveGroup = false;
                 deleteGroup(selectedItem);
-                updateTable();
+                deleteGroupLocal();
               "
               >Подтвердить</v-btn
             >
@@ -188,7 +201,7 @@
               @click="
                 dialogPay = false;
                 setPayStatus(selectedItem);
-                dialogShowUsers = false;
+                updatePaidItem();
               "
               >Подтвердить</v-btn
             >
@@ -374,6 +387,17 @@ export default {
       this.time = "";
       this.coach = "";
       this.searchFilter = "";
+    },
+    updatePaidItem() {
+      const idx = this.sampleUsers.findIndex(
+        c => c.id === this.selectedItem.id
+      );
+      this.sampleUsers[idx] = this.selectedItem.paid = true;
+    },
+    deleteGroupLocal() {
+      this.sampleGroups = this.sampleGroups.filter(
+        c => c.id !== this.selectedItem.id
+      );
     },
     changeFilter(item) {
       this.searchFilter = "";

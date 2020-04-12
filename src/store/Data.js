@@ -43,17 +43,20 @@ export default {
     SEND_FORM_TELEGRAM({ commit }, payload) {
       commit("CLEAR_SUCCESS");
       commit("CLEAR_ERROR");
-
+      console.log("res", payload.link);
+      const res =
+        payload.link !== undefined
+          ? `https://api.telegram.org/bot1103706945:AAFblSSGaI0-GlSE6NslEyzPsWHunBW8rHQ/sendMessage?chat_id=-451337290&parse_mode=html&text=
+      <b>${payload.text}</b> %0A<b>Имя:</b> ${payload.name}%0A<b>Телефон:</b>${payload.phone}%0A<b>Ссылка на удаление:</b>${payload.link}`
+          : `https://api.telegram.org/bot1103706945:AAFblSSGaI0-GlSE6NslEyzPsWHunBW8rHQ/sendMessage?chat_id=-451337290&parse_mode=html&text=
+       <b>${payload.text}</b> %0A<b>Имя:</b> ${payload.name}%0A<b>Телефон:</b>${payload.phone}`;
       axios
-        .get(
-          `https://api.telegram.org/bot1103706945:AAFblSSGaI0-GlSE6NslEyzPsWHunBW8rHQ/sendMessage?chat_id=-451337290&parse_mode=html&text=
-       <b>${payload.text}</b> %0A<b>Имя:</b> ${payload.name}%0A<b>Телефон:</b>${payload.phone}`
-        )
+        .get(res)
         .then(function(response) {
           console.log(response);
         })
         .catch(function(error) {
-          console.log(error);
+          commit("SET_ERROR", error);
         });
     },
     CHECK_PAY_DATE({ dispatch }) {
@@ -63,7 +66,6 @@ export default {
         .get()
         .then(function(doc) {
           if (doc.data().date !== new Date().format("dd.mm.yyyy")) {
-            console.log("da");
             dispatch("UPDATE_PAY_TRIGER");
             vue.$db
               .collection("thisdate")
@@ -278,7 +280,7 @@ export default {
         });
       commit("SET_USERS_BY_GROUP", users);
     },
-    WRITE_USER_GROUP({ commit }, payload) {
+    WRITE_USER_GROUP({ commit, dispatch }, payload) {
       commit("CLEAR_SUCCESS");
       commit("CLEAR_ERROR");
       vue.$db
@@ -307,6 +309,12 @@ export default {
               users: users
             })
             .then(function() {
+              dispatch("SEND_FORM_TELEGRAM", {
+                name: payload.name,
+                phone: payload.phone,
+                text: `Запись в группу ${payload.nameGroup} Оплата ${payload.subscription}`,
+                link: `http://localhost:8080/admin/deleteuser/group/${payload.id}`
+              });
               commit("SET_SUCCESS");
             })
             .catch(function(error) {
@@ -317,7 +325,7 @@ export default {
           commit("SET_ERROR", error);
         });
     },
-    WRITE_USER_SINGLE({ commit }, payload) {
+    WRITE_USER_SINGLE({ commit, dispatch }, payload) {
       commit("CLEAR_SUCCESS");
       commit("CLEAR_ERROR");
       vue.$db
@@ -327,6 +335,12 @@ export default {
           ...payload
         })
         .then(function() {
+          dispatch("SEND_FORM_TELEGRAM", {
+            name: payload.name,
+            phone: payload.phone,
+            text: `Разовое занятие`,
+            link: `http://localhost:8080/admin/deleteuser/single/${payload.id}`
+          });
           commit("SET_SUCCESS");
         })
         .catch(function(error) {
@@ -378,6 +392,23 @@ export default {
           commit("SET_ERROR", error);
         });
     },
+    DELETE_USER_GROUP_BY_ID({ commit, dispatch }, payload) {
+      commit("CLEAR_SUCCESS");
+      commit("CLEAR_ERROR");
+      let user = [];
+      vue.$db
+        .collection("users")
+        .doc(payload)
+        .get()
+        .then(function(doc) {
+          user = doc.data();
+          console.log(doc.data());
+          dispatch("DELETE_USER_GROUP", user);
+        })
+        .catch(function(error) {
+          commit("SET_ERROR", error);
+        });
+    },
     DELETE_USER_SINGLE({ commit }, payload) {
       commit("CLEAR_SUCCESS");
       commit("CLEAR_ERROR");
@@ -406,6 +437,9 @@ export default {
                 .collection("users")
                 .doc(item)
                 .delete()
+                .then(function() {
+                  commit("SET_SUCCESS");
+                })
                 .catch(function(error) {
                   commit("SET_ERROR", error);
                 });
