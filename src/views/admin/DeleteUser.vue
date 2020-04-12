@@ -1,8 +1,7 @@
 <template>
   <v-container>
     <div class="text-center d-flex flex-column ">
-      <span class="mb-12">Удалить ученика </span>
-      <v-btn color="success" @click="delet">text</v-btn>
+      <v-btn color="success" @click="delet">Удалить</v-btn>
     </div>
   </v-container>
 </template>

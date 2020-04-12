@@ -17,7 +17,12 @@
       <v-btn color="success" @click="step0()">Далее</v-btn>
     </div>
     <div v-show="step === 1">
-      <v-text-field dense outlined label="Поиск" v-model="searchTable1">
+      <v-text-field
+        dense
+        label="Поиск"
+        style="padding-top: 2% !important; padding-left: 2%; padding-right: 2%;"
+        v-model="searchTable1"
+      >
       </v-text-field>
       <v-data-table
         :headers="headersGroup"
@@ -31,7 +36,7 @@
       >
         <template v-slot:item.actions="{ item }">
           <v-btn class="mr-4" @click="step1(item)" outlined small color="info"
-            >Записаться
+            >Выбрать
             <v-icon small>
               mdi-pencil
             </v-icon></v-btn
@@ -108,12 +113,54 @@
           ><v-icon class="ml-1">mdi-arrow-left</v-icon>Назад</v-btn
         >
         <v-btn :loading="loading" color="success" @click="step11"
-          >Выбрать <v-icon>mdi-pencil</v-icon></v-btn
+          >Добавить <v-icon>mdi-pencil</v-icon></v-btn
         >
       </v-card-actions>
     </div>
     <div v-show="step === 2">
-      <v-text-field label="ФИО" outlined :v-model="name"></v-text-field>
+      <v-form ref="formIndiv">
+        <v-text-field
+          label="ФИО"
+          dense
+          :rules="$validation.required"
+          outlined
+          :v-model="name"
+        ></v-text-field>
+        <v-text-field
+          dense
+          v-model="phone"
+          v-mask="'+7(###)###-##-##'"
+          outlined
+          clearable
+          :rules="$validation.phone"
+          label="Телефон"
+        >
+        </v-text-field>
+        <v-select
+          v-model="nameCoach"
+          :rules="$validation.required"
+          dense
+          outlined
+          :items="coachList"
+        ></v-select>
+        <v-radio-group v-model="radioGroupIndiv" class="mt-n4">
+          <v-radio
+            color="success"
+            v-for="item in radioItemsIndiv"
+            :key="item.text"
+            :label="item.text"
+            :value="item.value"
+          ></v-radio>
+        </v-radio-group>
+      </v-form>
+      <v-card-actions class="d-flex justify-space-between">
+        <v-btn color="secondary" style="" @click="step = 0"
+          ><v-icon class="ml-1">mdi-arrow-left</v-icon>Назад</v-btn
+        >
+        <v-btn :loading="loading" color="success" @click="step2()"
+          >Добавить <v-icon>mdi-pencil</v-icon></v-btn
+        >
+      </v-card-actions>
     </div>
   </v-card>
 </template>
@@ -138,6 +185,8 @@ export default {
       pageCount: 1,
       searchTable1: "",
       radioGroup: "1500",
+      radioGroupIndiv: "3000",
+      radioItemsIndiv: [{ text: "3000", value: "3000" }],
       radioItems: [
         { text: "Разовое занятие - 1500тг", value: "1500" },
         { text: "8 занятий - 8000тг", value: "8000" },
@@ -196,6 +245,7 @@ export default {
   computed: {
     ...mapGetters({
       allGroups: "ALLGROUPS",
+      coachList: "COACH",
       error: "ERROR",
       success: "SUCCESS"
     })
@@ -206,6 +256,7 @@ export default {
   methods: {
     ...mapActions({
       getGroups: "GET_ALL_GROUPS",
+      getCoachList: "GET_COACH_LIST",
       writeUserGroup: "WRITE_USER_GROUP",
       writeSingleLesson: "WRITE_USER_SINGLE"
     }),
@@ -228,6 +279,7 @@ export default {
 
         case 2:
           this.step = 2;
+          this.getCoachList();
           break;
       }
     },
@@ -249,9 +301,7 @@ export default {
         this.loading = true;
         if (this.radioGroup === "1500") {
           let payload = {
-            id: Math.random()
-              .toString(36)
-              .substr(2, 12),
+            id: this.$g.generate(20),
             dateReg: new Date().format("dd.mm.yyyy"),
             name: this.name,
             phone: this.phone,
@@ -259,14 +309,13 @@ export default {
             nameGroup: this.nameGroup,
             subscription: this.radioGroup,
             coach: this.nameCoach,
-            paid: false
+            paid: false,
+            type: "single"
           };
           this.writeSingleLesson(payload);
         } else {
           let payload = {
-            id: Math.random()
-              .toString(36)
-              .substr(2, 12),
+            id: this.$g.generate(20),
             name: this.name,
             phone: this.phone,
             email: this.email,
@@ -282,6 +331,26 @@ export default {
         setTimeout(() => {
           this.loading = false;
           this.step = 1;
+        }, 2000);
+      }
+    },
+    step2() {
+      if (this.$refs.formIndiv.validate()) {
+        this.loading = true;
+        let payload = {
+          id: this.$g.generate(20),
+          dateReg: new Date().format("dd.mm.yyyy"),
+          name: this.name,
+          phone: this.phone,
+          subscription: this.radioGroup,
+          coach: this.nameCoach,
+          paid: false,
+          type: "indiv"
+        };
+        this.writeSingleLesson(payload);
+        setTimeout(() => {
+          this.loading = false;
+          this.step = 0;
         }, 2000);
       }
     }

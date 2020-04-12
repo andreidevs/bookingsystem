@@ -172,8 +172,7 @@ export default {
       radioItems: [
         { text: "Разовое занятие - 1500тг", value: "1500" },
         { text: "8 занятий - 8000тг", value: "8000" },
-        { text: "12 занятий - 12000тг", value: "12000" },
-        { text: "Экзот - 6000тг", value: "6000" }
+        { text: "12 занятий - 12000тг", value: "12000" }
       ],
       page: 1,
       pageCount: 0,
@@ -365,7 +364,8 @@ export default {
             nameGroup: this.nameGroup,
             subscription: this.radioGroup,
             coach: this.nameCoach,
-            paid: false
+            paid: false,
+            type: "single"
           };
           this.writeSingleLesson(payload);
         } else {

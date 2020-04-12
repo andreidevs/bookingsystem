@@ -335,10 +335,14 @@ export default {
           ...payload
         })
         .then(function() {
+          const text =
+            payload.type === "single"
+              ? "Разовое занятие"
+              : "Индивидуальное занятие";
           dispatch("SEND_FORM_TELEGRAM", {
             name: payload.name,
             phone: payload.phone,
-            text: `Разовое занятие`,
+            text,
             link: `http://localhost:8080/admin/deleteuser/single/${payload.id}`
           });
           commit("SET_SUCCESS");

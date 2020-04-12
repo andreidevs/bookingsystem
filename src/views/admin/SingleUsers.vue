@@ -108,7 +108,7 @@
               @click="
                 dialogPay = false;
                 setPayStatus(selectedItem);
-                updateTable();
+                updatePaidItem();
               "
               >Подтвердить</v-btn
             >
@@ -135,7 +135,7 @@
               @click="
                 dialogRemoveUser = false;
                 deleteUser(selectedItem);
-                updateTable();
+                deleteUserLocal();
               "
               >Подтвердить</v-btn
             >
@@ -260,6 +260,17 @@ export default {
       this.selectName = "";
 
       this.searchFilter = "";
+    },
+    updatePaidItem() {
+      const idx = this.sampleUsers.findIndex(
+        c => c.id === this.selectedItem.id
+      );
+      this.sampleUsers[idx] = this.selectedItem.paid = true;
+    },
+    deleteUserLocal() {
+      this.sampleUsers = this.sampleUsers.filter(
+        c => c.id !== this.selectedItem.id
+      );
     },
     changeFilter(item) {
       this.searchFilter = "";
