@@ -98,6 +98,11 @@
           label="Email"
         >
         </v-text-field>
+        <v-checkbox
+          v-model="statusPaid"
+          label="Оплачен"
+          class="mt-n4"
+        ></v-checkbox>
         <v-radio-group v-model="radioGroup" class="mt-n4">
           <v-radio
             color="success"
@@ -117,7 +122,7 @@
         >
       </v-card-actions>
     </div>
-    <div v-show="step === 2">
+    <div v-show="step === 2" class="pa-5">
       <v-form ref="formIndiv">
         <v-text-field
           label="ФИО"
@@ -140,10 +145,16 @@
           v-model="nameCoach"
           :rules="$validation.required"
           dense
+          label="Тренер"
           outlined
           :items="coachList"
         ></v-select>
-        <v-radio-group v-model="radioGroupIndiv" class="mt-n4">
+        <v-checkbox
+          v-model="statusPaid"
+          label="Оплачен"
+          class="mt-n2"
+        ></v-checkbox>
+        <v-radio-group v-model="radioGroupIndiv" class="mt-n3">
           <v-radio
             color="success"
             v-for="item in radioItemsIndiv"
@@ -181,12 +192,13 @@ export default {
       email: "",
       phone: "",
       emailRules: [],
+      statusPaid: false,
       page: 1,
       pageCount: 1,
       searchTable1: "",
       radioGroup: "1500",
       radioGroupIndiv: "3000",
-      radioItemsIndiv: [{ text: "3000", value: "3000" }],
+      radioItemsIndiv: [{ text: "Цена - 3000", value: "3000" }],
       radioItems: [
         { text: "Разовое занятие - 1500тг", value: "1500" },
         { text: "8 занятий - 8000тг", value: "8000" },
@@ -286,8 +298,10 @@ export default {
             nameGroup: this.nameGroup,
             subscription: this.radioGroup,
             coach: this.nameCoach,
-            paid: false,
-            type: "single"
+            paid: this.statusPaid ? true : false,
+            type: "single",
+            datePay: this.statusPaid ? new Date().format("dd.mm.yyyy") : "",
+            datePayNoformat: this.statusPaid ? new Date() : ""
           };
           this.writeSingleLesson(payload);
         } else {
@@ -300,8 +314,9 @@ export default {
             uidGroup: this.uidGroup,
             subscription: this.radioGroup,
             coach: this.nameCoach,
-            paid: false,
-            datePay: ""
+            paid: this.statusPaid ? true : false,
+            datePay: this.statusPaid ? new Date().format("dd.mm.yyyy") : "",
+            datePayNoformat: this.statusPaid ? new Date() : ""
           };
           this.writeUserGroup(payload);
         }
@@ -321,8 +336,10 @@ export default {
           phone: this.phone,
           subscription: this.radioGroup,
           coach: this.nameCoach,
-          paid: false,
-          type: "indiv"
+          paid: this.statusPaid ? true : false,
+          type: "indiv",
+          datePay: this.statusPaid ? new Date().format("dd.mm.yyyy") : "",
+          datePayNoformat: this.statusPaid ? new Date() : ""
         };
         this.writeSingleLesson(payload);
         setTimeout(() => {

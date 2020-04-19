@@ -65,6 +65,7 @@ export default {
 
   data: () => ({
     showPassword: false,
+    show1: false,
     name: "",
     email: "",
     admin: false,

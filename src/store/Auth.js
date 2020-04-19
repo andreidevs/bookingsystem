@@ -4,16 +4,22 @@ export default {
   state: {
     user: {
       isAuth: false,
-      uid: null
+      uid: null,
+      name: "",
+      admin: false
     },
     unsbscribeAuth: null
   },
   getters: {
-    USER_AUTH: s => s.user.isAuth
+    USER_AUTH: s => s.user.isAuth,
+    USER: s => s.user
   },
   mutations: {
     SET_USER(state, payload) {
-      (state.user.isAuth = true), (state.user.uid = payload);
+      (state.user.isAuth = true),
+        (state.user.uid = payload.uid),
+        (state.user.name = payload.displayName),
+        (state.user.admin = payload.photoURL === "true" ? true : false);
     },
     CLEAR_USER(state) {
       (state.user.isAuth = false), (state.user.uid = null);
@@ -54,12 +60,12 @@ export default {
       firebase
         .auth()
         .createUserWithEmailAndPassword(payload.email, payload.password)
-        .then(() => {
+        .then(doc => {
           vue.$db
             .collection("coach")
-            .doc(payload.id)
+            .doc(doc.user.uid)
             .set({
-              id: payload.id,
+              id: doc.user.uid,
               name: payload.name,
               email: payload.email,
               admin: payload.admin
@@ -72,7 +78,7 @@ export default {
             });
         })
         .catch(error => {
-          commit("SET_ERROR", error.message);
+          commit("SET_ERROR", error);
         });
     },
     LOGOUT({ commit }) {
@@ -89,8 +95,32 @@ export default {
         });
     },
     STATE_CHANGE({ commit }, payload) {
+      // console.log("payload", payload)
       if (payload) {
-        commit("SET_USER", payload.uid);
+        if (!payload.displayName) {
+          vue.$db
+            .collection("coach")
+            .doc(payload.uid)
+            .get()
+            .then(function(doc) {
+              let user = firebase.auth().currentUser;
+              user
+                .updateProfile({
+                  displayName: doc.data().name,
+                  photoURL: doc.data().admin.toString()
+                })
+                .catch(function(error) {
+                  commit("SET_ERROR", error);
+                });
+              payload = {
+                ...payload,
+                displayName: doc.data().name,
+                photoURL: doc.data().admin
+              };
+            });
+        }
+
+        commit("SET_USER", payload);
       } else {
         commit("CLEAR_USER");
       }

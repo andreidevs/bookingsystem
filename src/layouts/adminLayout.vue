@@ -52,7 +52,7 @@
             </v-list-item-content>
           </v-list-item>
 
-          <v-list-item link to="/admin/addgroup">
+          <v-list-item v-if="user.admin" link to="/admin/addgroup">
             <v-list-item-action>
               <v-icon color="success">mdi-folder-plus</v-icon>
             </v-list-item-action>
@@ -61,17 +61,17 @@
             </v-list-item-content>
           </v-list-item>
 
-          <v-list-item link @click="dialogAddTypeWorkout = true">
+          <!-- <v-list-item link @click="dialogAddTypeWorkout = true">
             <v-list-item-action>
               <v-icon color="success">mdi-alpha-t-box</v-icon>
             </v-list-item-action>
             <v-list-item-content>
               <v-list-item-title>Добавить тип тренеровки</v-list-item-title>
             </v-list-item-content>
-          </v-list-item>
+          </v-list-item> -->
         </v-list-group>
 
-        <v-list-item link to="/admin/signup">
+        <v-list-item v-if="user.admin" link to="/admin/signup">
           <v-list-item-action>
             <v-icon color="success">mdi-account-key</v-icon>
           </v-list-item-action>
@@ -80,7 +80,7 @@
           </v-list-item-content>
         </v-list-item>
 
-        <v-list-item link to="/admin/reports">
+        <v-list-item v-if="user.admin" link to="/admin/reports">
           <v-list-item-action>
             <v-icon color="success">mdi-file-document</v-icon>
           </v-list-item-action>
@@ -192,7 +192,8 @@ export default {
   computed: {
     ...mapGetters({
       error: "ERROR",
-      success: "SUCCESS"
+      success: "SUCCESS",
+      user: "USER"
     })
   },
   watch: {

@@ -1,6 +1,7 @@
 import vue from "vue";
 const axios = require("axios");
-
+const telegramAPI =
+  "https://api.telegram.org/bot1103706945:AAFblSSGaI0-GlSE6NslEyzPsWHunBW8rHQ/sendMessage?chat_id=-451337290&parse_mode=html&text";
 export default {
   state: {
     coachList: [],
@@ -43,15 +44,13 @@ export default {
     SEND_FORM_TELEGRAM({ commit }, payload) {
       const res =
         payload.link !== undefined
-          ? `https://api.telegram.org/bot1103706945:AAFblSSGaI0-GlSE6NslEyzPsWHunBW8rHQ/sendMessage?chat_id=-451337290&parse_mode=html&text=
+          ? `${telegramAPI}=
       <b>${payload.text}</b> %0A<b>Имя:</b> ${payload.name}%0A<b>Телефон:</b>${payload.phone}%0A<b>Ссылка на удаление:</b>${payload.link}`
-          : `https://api.telegram.org/bot1103706945:AAFblSSGaI0-GlSE6NslEyzPsWHunBW8rHQ/sendMessage?chat_id=-451337290&parse_mode=html&text=
+          : `${telegramAPI}=
        <b>${payload.text}</b> %0A<b>Имя:</b> ${payload.name}%0A<b>Телефон:</b>${payload.phone}`;
       axios
         .get(res)
-        .then(function(response) {
-          console.log(response);
-        })
+        .then(function() {})
         .catch(function(error) {
           commit("SET_ERROR", error);
         });
@@ -103,7 +102,7 @@ export default {
           commit("SET_ERROR", error);
         });
     },
-    SEND_PAY_SUB({ commit, dispatch }, payload) {
+    SEND_PAY_SUB({ commit }, payload) {
       vue.$db
         .collection("users")
         .doc(payload.id)
@@ -114,17 +113,15 @@ export default {
         })
         .then(function() {
           commit("SET_SUCCESS");
-          dispatch("SEND_NEW_REPORT", {
-            id: Math.random()
-              .toString(36)
-              .substr(2, 12),
-            nameUser: payload.name,
-            coach: payload.coach,
-            type: "group",
-            nameGroup: payload.nameGroup,
-            date: new Date().format("dd.mm.yyyy"),
-            price: payload.subscription
-          });
+          // dispatch("SEND_NEW_REPORT", {
+          //   id: this.$g.generate(20),
+          //   nameUser: payload.name,
+          //   coach: payload.coach,
+          //   type: "group",
+          //   nameGroup: payload.nameGroup,
+          //   date: new Date().format("dd.mm.yyyy"),
+          //   price: payload.subscription
+          // });
         })
         .catch(function(error) {
           commit("SET_ERROR", error);
@@ -205,43 +202,59 @@ export default {
           commit("SET_ERROR", error);
         });
     },
-    GET_ALL_GROUPS({ commit }) {
+    GET_ALL_GROUPS({ commit, getters }) {
       let groups = [];
       vue.$db
         .collection("groups")
         .get()
         .then(function(querySnapshot) {
           querySnapshot.forEach(function(doc) {
-            groups.push(doc.data());
+            // console.log(getters.USER)
+            if (!getters.USER.admin && getters.USER.isAuth) {
+              if (getters.USER.name === doc.data().coach)
+                groups.push(doc.data());
+            } else {
+              groups.push(doc.data());
+            }
           });
         });
       commit("SET_ALL_GROUPS", groups);
     },
-    GET_ALL_USERS({ commit }) {
+    GET_ALL_USERS({ commit, getters }) {
       let users = [];
       vue.$db
         .collection("users")
         .get()
         .then(function(querySnapshot) {
           querySnapshot.forEach(function(doc) {
-            users.push(doc.data());
+            if (!getters.USER.admin && getters.USER.isAuth) {
+              if (getters.USER.name === doc.data().coach)
+                users.push(doc.data());
+            } else {
+              users.push(doc.data());
+            }
           });
         });
       commit("SET_ALL_USERS", users);
     },
-    GET_ALL_SINGLE({ commit }) {
+    GET_ALL_SINGLE({ commit, getters }) {
       let users = [];
       vue.$db
         .collection("singleLesson")
         .get()
         .then(function(querySnapshot) {
           querySnapshot.forEach(function(doc) {
-            users.push(doc.data());
+            if (!getters.USER.admin && getters.USER.isAuth) {
+              if (getters.USER.name === doc.data().coach)
+                users.push(doc.data());
+            } else {
+              users.push(doc.data());
+            }
           });
         });
       commit("SET_ALL_SINGLE", users);
     },
-    GET_USERS_BY_GROUP({ commit }, payload) {
+    GET_USERS_BY_GROUP({ commit, getters }, payload) {
       let users = [];
       vue.$db
         .collection("users")
@@ -249,7 +262,12 @@ export default {
         .then(function(querySnapshot) {
           querySnapshot.forEach(function(doc) {
             if (doc.data().uidGroup === payload) {
-              users.push(doc.data());
+              if (!getters.USER.admin && getters.USER.isAuth) {
+                if (getters.USER.name === doc.data().coach)
+                  users.push(doc.data());
+              } else {
+                users.push(doc.data());
+              }
             }
           });
         });
@@ -286,7 +304,7 @@ export default {
                 name: payload.name,
                 phone: payload.phone,
                 text: `Запись в группу ${payload.nameGroup} Оплата ${payload.subscription}`,
-                link: `http://localhost:8080/admin/deleteuser/group/${payload.id}`
+                link: `https://edemdance.web.app/admin/deleteuser/group/${payload.id}`
               });
               commit("SET_SUCCESS");
             })
@@ -314,7 +332,7 @@ export default {
             name: payload.name,
             phone: payload.phone,
             text,
-            link: `http://localhost:8080/admin/deleteuser/single/${payload.id}`
+            link: `https://edemdance.web.app/admin/deleteuser/single/${payload.id}`
           });
           commit("SET_SUCCESS");
         })

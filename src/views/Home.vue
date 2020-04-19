@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container height="100vh">
     <div class="d-flex align-center justify-center" style="margin-right: 25%">
       <img style="width: 200px" src="../assets/logo Original.png" />
       <h1 class="text-center font-weight-light ml-4">
@@ -154,6 +154,30 @@
         </v-card-actions>
       </div>
     </v-card>
+    <v-speed-dial
+      v-model="fab"
+      bottom
+      right
+      direction="top"
+      :open-on-hover="hover"
+      transition="slide-y-reverse-transition"
+    >
+      <template v-slot:activator>
+        <v-btn v-model="fab" color="darken-2" dark fab>
+          <v-icon v-if="fab">mdi-close</v-icon>
+          <v-icon v-else>mdi-phone-in-talk</v-icon>
+        </v-btn>
+      </template>
+      <v-btn fab dark small color="red" @click="onCall()">
+        <v-icon>mdi-phone-forward</v-icon>
+      </v-btn>
+      <v-btn fab dark small color="green" @click="onW()">
+        <v-icon>mdi-whatsapp</v-icon>
+      </v-btn>
+      <v-btn fab dark small color="blue" @click="onTelegram()">
+        <v-icon>mdi-telegram</v-icon>
+      </v-btn>
+    </v-speed-dial>
   </v-container>
 </template>
 
@@ -164,6 +188,9 @@ export default {
   data() {
     return {
       loading: false,
+      fab: false,
+
+      hover: false,
       nameStep3: "",
       emailStep3: "",
       phoneStep3: "",
@@ -276,6 +303,15 @@ export default {
       writeUserGroup: "WRITE_USER_GROUP",
       writeSingleLesson: "WRITE_USER_SINGLE"
     }),
+    onW() {
+      window.open("https://wa.me/77009172707");
+    },
+    onCall() {
+      window.location.href = "tel:+77009172707";
+    },
+    onTelegram() {
+      window.open("https://t.me/BugaevaSofya");
+    },
     addWeekday(chip) {
       this.chip.forEach(item => {
         if (item.title == chip.title) {
@@ -409,5 +445,12 @@ export default {
     margin-right: 0;
     margin-top: 0;
   }
+}
+.v-speed-dial {
+  position: absolute;
+}
+
+.v-btn--floating {
+  position: relative;
 }
 </style>

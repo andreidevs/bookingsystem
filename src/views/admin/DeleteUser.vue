@@ -17,8 +17,10 @@ export default {
     delet() {
       if (this.$router.currentRoute.params["type"] === "single") {
         this.deleteUserSingle({ id: this.$router.currentRoute.params["id"] });
+        this.$router.push("/admin");
       } else {
         this.deleteUserGroup(this.$router.currentRoute.params["id"]);
+        this.$router.push("/admin");
       }
     }
   }
