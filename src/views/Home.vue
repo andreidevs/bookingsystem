@@ -154,6 +154,42 @@
         </v-card-actions>
       </div>
     </v-card>
+    <div class="text-center">
+      <v-dialog v-model="dialogOk" width="500">
+        <v-card shaped>
+          <v-card-title
+            class="headline lighten-2"
+            color="primary"
+            primary-title
+          >
+            Успешно
+          </v-card-title>
+
+          <v-card-text>
+            Спасибо. Ваша заявка принята ожидайте звонка менеджера. <br />
+            Напишите нам для уточнения информации
+            <v-btn class="mr-2" fab dark small color="red" @click="onCall()">
+              <v-icon>mdi-phone-forward</v-icon>
+            </v-btn>
+            <v-btn class="mr-2" fab dark small color="green" @click="onW()">
+              <v-icon>mdi-whatsapp</v-icon>
+            </v-btn>
+            <v-btn fab dark small color="blue" @click="onTelegram()">
+              <v-icon>mdi-telegram</v-icon>
+            </v-btn>
+          </v-card-text>
+
+          <v-divider></v-divider>
+
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="primary" rounded @click="dialogOk = false">
+              Ок
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </div>
     <v-speed-dial
       v-model="fab"
       bottom
@@ -189,7 +225,7 @@ export default {
     return {
       loading: false,
       fab: false,
-
+      dialogOk: false,
       hover: false,
       nameStep3: "",
       emailStep3: "",
@@ -410,6 +446,7 @@ export default {
             type: "single"
           };
           this.writeSingleLesson(payload);
+          this.dialogOk = true;
         } else {
           let payload = {
             id: this.$g.generate(20),
@@ -424,6 +461,7 @@ export default {
             datePay: ""
           };
           this.writeUserGroup(payload);
+          this.dialogOk = true;
         }
         setTimeout(() => {
           this.loading = false;
