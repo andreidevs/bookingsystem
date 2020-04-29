@@ -42,7 +42,7 @@
         :page.sync="page"
         :dense="dense"
         hide-default-footer
-        item-key="name"
+        item-key="id"
         :loading="loading"
         loading-text="Загрузка... Пожалуйста подождите"
         @page-count="pageCount = $event"
@@ -178,12 +178,12 @@ export default {
           value: "name"
         },
         {
-          text: "Email",
-          value: "email"
-        },
-        {
           text: "Телефон",
           value: "phone"
+        },
+        {
+          text: "Тип",
+          value: "types"
         },
         {
           text: "Оплата",
@@ -237,11 +237,16 @@ export default {
       this.loading = true;
       this.sampleUsers = [];
       this.getAllSingle();
-      const mass = this.allSingleState;
-      this.sampleUsers = mass.reverse();
       setTimeout(() => {
+        this.sampleUsers = this.allSingleState.map(
+          c =>
+            (c = {
+              ...c,
+              types: c.type === "indiv" ? "Индив" : "Разовое"
+            })
+        );
         this.loading = false;
-      }, 1000);
+      }, 1500);
     },
     clearFilter() {
       this.selectPhone = "";

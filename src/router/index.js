@@ -57,6 +57,16 @@ const routes = [
     component: () => import("../views/admin/Daily.vue")
   },
   {
+    path: "/admin/reports",
+    name: "AdminReports",
+    meta: {
+      AuthRequired: true,
+      layout: "admin",
+      title: "Edem Dance - Отчеты"
+    },
+    component: () => import("../views/admin/Reports.vue")
+  },
+  {
     path: "/admin/groups",
     name: "AdminGroups",
     meta: {

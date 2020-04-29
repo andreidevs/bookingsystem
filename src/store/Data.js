@@ -1,4 +1,5 @@
 import vue from "vue";
+
 const axios = require("axios");
 const telegramAPI =
   "https://api.telegram.org/bot1103706945:AAFblSSGaI0-GlSE6NslEyzPsWHunBW8rHQ/sendMessage?chat_id=-451337290&parse_mode=html&text";
@@ -61,6 +62,7 @@ export default {
         .doc("0")
         .get()
         .then(function(doc) {
+          dispatch("UPDATE_PAY_TRIGER");
           if (doc.data().date !== new Date().format("dd.mm.yyyy")) {
             dispatch("UPDATE_PAY_TRIGER");
             vue.$db
@@ -76,10 +78,13 @@ export default {
       let ref = vue.$db.collection("users");
       ref.get().then(function(querySnapshot) {
         querySnapshot.forEach(function(item) {
-          if (item.data().payDateNoformat) {
-            let date = item.data().payDateNoformat;
-            date.setMonth(date.getMonth() + 1);
-            if (date.valueOf() < new Date().valueOf()) {
+          if (item.data().datePayNoformat) {
+            let timeDiff = Math.abs(
+              new Date().getTime() - item.data().datePayNoformat.seconds * 1000
+            );
+            let diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
+            if (diffDays >= 30) {
               ref.doc(item.data().id).update({
                 paid: false
               });

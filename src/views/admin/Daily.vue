@@ -131,10 +131,7 @@
                         >
                         <v-card-actions>
                           <v-spacer></v-spacer>
-                          <v-btn
-                            color="green darken-1"
-                            text
-                            @click="dialogPay = false"
+                          <v-btn color="success" text @click="dialogPay = false"
                             >Нет</v-btn
                           >
                           <v-btn color="green darken-1" text @click="pay"
@@ -189,6 +186,30 @@
           </v-card>
         </v-dialog>
       </v-row>
+      <v-row justify="center">
+        <v-dialog v-model="dialogPerform" max-width="290">
+          <v-card>
+            <v-card-title class="headline"></v-card-title>
+
+            <v-card-text>
+              Количество тренеровок сегодня: {{ countTr }} <br />
+              Заработанно: {{ earned }}
+            </v-card-text>
+
+            <v-card-actions>
+              <v-spacer></v-spacer>
+
+              <v-btn
+                color="success"
+                text
+                @click="(dialogPerform = false), $router.push('/admin')"
+              >
+                Ок
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </v-row>
       <v-btn
         class="sm-none"
         style="position:fixed!important; bottom:10px; left:10px; z-index:1000;"
@@ -206,6 +227,8 @@ import { mapGetters, mapActions } from "vuex";
 export default {
   data() {
     return {
+      earned: 0,
+      countTr: 0,
       page: 1,
       step: 1,
       pageSingle: 1,
@@ -269,12 +292,12 @@ export default {
       sampleTable: [],
       selectName: "",
       selectPhone: "",
-      selectedItem: {}
+      selectedItem: {},
+      dialogPerform: false
     };
   },
   created() {
     this.updateTable();
-    // console.log("dare", new Date().format("mm.yyyy"))
   },
   computed: {
     ...mapGetters({
@@ -311,9 +334,9 @@ export default {
       this.step = 1;
       this.getAllSingle();
       setTimeout(() => {
-        this.sampleUsers = this.allSingleState.map(
-          c => (c = { ...c, status: c.paid ? "Оплачен" : "Не оплачен" })
-        );
+        this.sampleUsers = this.allSingleState
+          .filter(c => c.type === "indiv")
+          .map(c => (c = { ...c, status: c.paid ? "Оплачен" : "Не оплачен" }));
         this.dialog = true;
         this.loadingB = false;
       }, 1000);
@@ -344,7 +367,7 @@ export default {
         datePay: new Date().format("dd.mm.yyyy"),
         datePayNoformat: new Date(),
         subscription: "1500",
-        typeW: this.typeWork === "indiv" ? "Индив" : "Разовое"
+        typeW: "Индив"
       };
       this.sampleTable.push(item);
 
@@ -354,7 +377,7 @@ export default {
     addItemInTable(item) {
       this.selectedItem = item;
       if (item.paid) {
-        item = { ...item, typeW: item.type === "indiv" ? "Индив" : "Разовое" };
+        item = { ...item, typeW: "Индив" };
         this.sampleTable.push(item);
         this.dialog = false;
       } else {
@@ -372,10 +395,16 @@ export default {
             date: new Date()
           }
         };
+
         this.sendReport(report);
+        this.countTr = this.selected.length;
+        this.selected.forEach(c => {
+          console.log("aa", c);
+          this.earned += c.typeW === "Группа" ? 2000 : 1500;
+        });
+        this.dialogPerform = true;
         setTimeout(() => {
           this.loading = false;
-          this.$router.push("/admin");
         }, 1000);
       } else {
         this.$notify({

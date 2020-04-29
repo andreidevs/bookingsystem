@@ -15,6 +15,7 @@ import VueTheMask from "vue-the-mask";
 import Notifications from "vue-notification";
 import validation from "./plugins/validation";
 import "./plugins/date.format";
+
 import "./assets/main.css";
 Vue.config.productionTip = false;
 Vue.use(Notifications);
