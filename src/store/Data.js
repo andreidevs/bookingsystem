@@ -10,7 +10,8 @@ export default {
     allGroups: [],
     allUsers: [],
     usersByGroup: [],
-    usersSingle: []
+    usersSingle: [],
+    usersIndiv: []
   },
   getters: {
     COACH: s => s.coachList,
@@ -18,7 +19,8 @@ export default {
     ALLGROUPS: s => s.allGroups,
     ALLUSERS: s => s.allUsers,
     USERSBYGROUP: s => s.usersByGroup,
-    ALLSINGLE: s => s.usersSingle
+    ALLSINGLE: s => s.usersSingle,
+    ALLINDIV: s => s.usersIndiv
   },
   mutations: {
     SET_COACH_LIST(state, payload) {
@@ -35,6 +37,9 @@ export default {
     },
     SET_ALL_SINGLE(state, payload) {
       state.usersSingle = payload;
+    },
+    SET_ALL_INDIV(state, payload) {
+      state.usersIndiv = payload;
     },
     SET_USERS_BY_GROUP(state, payload) {
       state.usersByGroup = payload;
@@ -62,7 +67,6 @@ export default {
         .doc("0")
         .get()
         .then(function(doc) {
-          dispatch("UPDATE_PAY_TRIGER");
           if (doc.data().date !== new Date().format("dd.mm.yyyy")) {
             dispatch("UPDATE_PAY_TRIGER");
             vue.$db
@@ -75,6 +79,14 @@ export default {
         });
     },
     UPDATE_PAY_TRIGER() {
+      let refs = vue.$db.collection("usersIndiv");
+      refs.get().then(function(querySnapshot) {
+        querySnapshot.forEach(function(item) {
+          refs.doc(item.data().id).update({
+            paid: false
+          });
+        });
+      });
       let ref = vue.$db.collection("users");
       ref.get().then(function(querySnapshot) {
         querySnapshot.forEach(function(item) {
@@ -107,9 +119,9 @@ export default {
           commit("SET_ERROR", error);
         });
     },
-    SEND_PAY_SUB({ commit }, payload) {
+    SEND_PAY_SUB({ commit, dispatch }, payload) {
       vue.$db
-        .collection("users")
+        .collection("usersGroup")
         .doc(payload.id)
         .update({
           paid: true,
@@ -118,39 +130,12 @@ export default {
         })
         .then(function() {
           commit("SET_SUCCESS");
-          // dispatch("SEND_NEW_REPORT", {
-          //   id: this.$g.generate(20),
-          //   nameUser: payload.name,
-          //   coach: payload.coach,
-          //   type: "group",
-          //   nameGroup: payload.nameGroup,
-          //   date: new Date().format("dd.mm.yyyy"),
-          //   price: payload.subscription
-          // });
-        })
-        .catch(function(error) {
-          commit("SET_ERROR", error);
-        });
-    },
-    SEND_PAY_SINGLE({ commit, dispatch }, payload) {
-      vue.$db
-        .collection("singleLesson")
-        .doc(payload.id)
-        .update({
-          paid: true,
-          datePayNoformat: new Date(),
-          datePay: new Date().format("dd.mm.yyyy")
-        })
-        .then(function() {
-          commit("SET_SUCCESS");
-          dispatch("SEND_NEW_REPORT", {
-            id: Math.random()
-              .toString(36)
-              .substr(2, 12),
-            nameUser: payload.name,
+          dispatch("SEND_PAY_REPORT", {
+            name: payload.name,
             coach: payload.coach,
-            type: "single",
-            date: new Date().format("dd.mm.yyyy"),
+            type: "group",
+            nameGroup: payload.nameGroup,
+            date: new Date(),
             price: payload.subscription
           });
         })
@@ -158,12 +143,49 @@ export default {
           commit("SET_ERROR", error);
         });
     },
-    SEND_NEW_REPORT({ commit }, payload) {
+    SEND_PAY_INDIV({ commit, dispatch }, payload) {
       vue.$db
-        .collection("paymentReports")
+        .collection("usersIndiv")
         .doc(payload.id)
-        .set({
-          ...payload
+        .update({
+          paid: true,
+          datePayNoformat: new Date(),
+          datePay: new Date().format("dd.mm.yyyy")
+        })
+        .then(function() {
+          commit("SET_SUCCESS");
+          dispatch("SEND_PAY_REPORT", {
+            name: payload.name,
+            coach: payload.coach,
+            type: "indiv",
+            date: new Date(),
+            price: payload.subscription
+          });
+        })
+        .catch(function(error) {
+          commit("SET_ERROR", error);
+        });
+    },
+    SEND_PAY_SINGLE({ commit, dispatch }, payload) {
+      vue.$db
+        .collection("usersSingle")
+        .doc(payload.id)
+        .delete()
+        .then(function() {
+          dispatch("SEND_PAY_REPORT", {
+            name: payload.name,
+            coach: payload.coach,
+            type: "single",
+            date: new Date(),
+            nameGroup: payload.nameGroup,
+            price: payload.subscription
+          });
+          vue.$db
+            .collection("historySingle")
+            .add({ ...payload, datePay: new Date() })
+            .then(function() {
+              commit("SET_SUCCESS");
+            });
         })
         .catch(function(error) {
           commit("SET_ERROR", error);
@@ -228,7 +250,7 @@ export default {
     GET_ALL_USERS({ commit, getters }) {
       let users = [];
       vue.$db
-        .collection("users")
+        .collection("usersGroup")
         .get()
         .then(function(querySnapshot) {
           querySnapshot.forEach(function(doc) {
@@ -245,7 +267,7 @@ export default {
     GET_ALL_SINGLE({ commit, getters }) {
       let users = [];
       vue.$db
-        .collection("singleLesson")
+        .collection("usersSingle")
         .get()
         .then(function(querySnapshot) {
           querySnapshot.forEach(function(doc) {
@@ -259,10 +281,27 @@ export default {
         });
       commit("SET_ALL_SINGLE", users);
     },
+    GET_ALL_INDIV({ commit, getters }) {
+      let users = [];
+      vue.$db
+        .collection("usersIndiv")
+        .get()
+        .then(function(querySnapshot) {
+          querySnapshot.forEach(function(doc) {
+            if (!getters.USER.admin && getters.USER.isAuth) {
+              if (getters.USER.name === doc.data().coach)
+                users.push(doc.data());
+            } else {
+              users.push(doc.data());
+            }
+          });
+        });
+      commit("SET_ALL_INDIV", users);
+    },
     GET_USERS_BY_GROUP({ commit, getters }, payload) {
       let users = [];
       vue.$db
-        .collection("users")
+        .collection("usersGroup")
         .get()
         .then(function(querySnapshot) {
           querySnapshot.forEach(function(doc) {
@@ -280,7 +319,7 @@ export default {
     },
     WRITE_USER_GROUP({ commit, dispatch }, payload) {
       vue.$db
-        .collection("users")
+        .collection("usersGroup")
         .doc(payload.id)
         .set({
           ...payload
@@ -323,16 +362,13 @@ export default {
     },
     WRITE_USER_SINGLE({ commit, dispatch }, payload) {
       vue.$db
-        .collection("singleLesson")
+        .collection("usersSingle")
         .doc(payload.id)
         .set({
           ...payload
         })
         .then(function() {
-          const text =
-            payload.type === "single"
-              ? "Разовое занятие"
-              : "Индивидуальное занятие";
+          const text = "Разовое занятие" + " " + payload.nameGroup;
           dispatch("SEND_FORM_TELEGRAM", {
             name: payload.name,
             phone: payload.phone,
@@ -345,9 +381,30 @@ export default {
           commit("SET_ERROR", error);
         });
     },
+    WRITE_USER_INDIV({ commit }, payload) {
+      vue.$db
+        .collection("usersIndiv")
+        .doc(payload.id)
+        .set({
+          ...payload
+        })
+        .then(function() {
+          // const text = "Индивидуальное занятие";
+          // dispatch("SEND_FORM_TELEGRAM", {
+          //   name: payload.name,
+          //   phone: payload.phone,
+          //   text,
+          //   link: `https://edemdance.web.app/admin/deleteuser/indiv/${payload.id}`
+          // });
+          commit("SET_SUCCESS");
+        })
+        .catch(function(error) {
+          commit("SET_ERROR", error);
+        });
+    },
     DELETE_USER_GROUP({ commit }, payload) {
       vue.$db
-        .collection("users")
+        .collection("usersGroup")
         .doc(payload.id)
         .delete()
         .then(function() {
@@ -391,7 +448,7 @@ export default {
     DELETE_USER_GROUP_BY_ID({ commit, dispatch }, payload) {
       let user = [];
       vue.$db
-        .collection("users")
+        .collection("usersGroup")
         .doc(payload)
         .get()
         .then(function(doc) {
@@ -403,9 +460,21 @@ export default {
           commit("SET_ERROR", error);
         });
     },
+    DELETE_USER_INDIV({ commit }, payload) {
+      vue.$db
+        .collection("usersIndiv")
+        .doc(payload.id)
+        .delete()
+        .then(function() {
+          commit("SET_SUCCESS");
+        })
+        .catch(function(error) {
+          commit("SET_ERROR", error);
+        });
+    },
     DELETE_USER_SINGLE({ commit }, payload) {
       vue.$db
-        .collection("singleLesson")
+        .collection("usersSingle")
         .doc(payload.id)
         .delete()
         .then(function() {
@@ -424,7 +493,7 @@ export default {
           if (payload.users) {
             payload.users.forEach(item => {
               vue.$db
-                .collection("users")
+                .collection("usersGroup")
                 .doc(item)
                 .delete()
                 .then(function() {

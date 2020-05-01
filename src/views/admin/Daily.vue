@@ -144,15 +144,6 @@
                 </div>
                 <div v-show="step === 2">
                   <v-container>
-                    <v-select
-                      dense
-                      outlined
-                      v-model="typeWork"
-                      :items="itemsWork"
-                      label="Тип занятия"
-                      item-text="text"
-                      item-value="value"
-                    ></v-select>
                     <v-text-field
                       label="ФИО"
                       dense
@@ -261,11 +252,7 @@ export default {
       ],
       loading: false,
       loadingB: false,
-      typeWork: "",
-      itemsWork: [
-        { text: "Индив", value: "indiv" },
-        { text: "Разовое", value: "single" }
-      ],
+
       pageCount: 1,
       sampleUsers: [],
       searchFilter: "",
@@ -302,15 +289,15 @@ export default {
   computed: {
     ...mapGetters({
       allGroupsState: "ALLGROUPS",
-      allSingleState: "ALLSINGLE",
+      allIndivState: "ALLINDIV",
       coachName: "USER"
     })
   },
   methods: {
     ...mapActions({
       getAllGroups: "GET_ALL_GROUPS",
-      getAllSingle: "GET_ALL_SINGLE",
-      setPayStatus: "SEND_PAY_SINGLE",
+      getAllIndiv: "GET_ALL_INDIV",
+      setPayStatus: "SEND_PAY_INDIV",
       sendReport: "SEND_DAILY"
     }),
     updateTable() {
@@ -324,7 +311,16 @@ export default {
               c.coach == this.coachName.name &&
               c.weekDays.includes(this.days[new Date().getDay()])
           )
-          .map(c => (c = { ...c, typeW: "Группа" }));
+          .map(c => (c = { ...c, typeW: "Группа" }))
+          .concat(
+            this.allIndivState
+              .filter(
+                c =>
+                  c.coach == this.coachName.name &&
+                  c.weekDays.includes(this.days[new Date().getDay()])
+              )
+              .map(c => (c = { ...c, typeW: "Индив" }))
+          );
         this.loading = false;
       }, 2000);
     },
@@ -332,11 +328,11 @@ export default {
       this.loadingB = true;
       this.clearFilter();
       this.step = 1;
-      this.getAllSingle();
+      this.getAllIndiv();
       setTimeout(() => {
-        this.sampleUsers = this.allSingleState
-          .filter(c => c.type === "indiv")
-          .map(c => (c = { ...c, status: c.paid ? "Оплачен" : "Не оплачен" }));
+        this.sampleUsers = this.allIndivState.map(
+          c => (c = { ...c, status: c.paid ? "Оплачен" : "Не оплачен" })
+        );
         this.dialog = true;
         this.loadingB = false;
       }, 1000);
@@ -361,19 +357,17 @@ export default {
       const item = {
         name: this.selectName,
         phone: this.selectPhone,
-        type: this.typeWork,
         coach: this.coachName.name,
         paid: true,
         datePay: new Date().format("dd.mm.yyyy"),
         datePayNoformat: new Date(),
-        subscription: "1500",
+        subscription: "3000",
         typeW: "Индив"
       };
       this.sampleTable.push(item);
 
       this.dialog = false;
     },
-
     addItemInTable(item) {
       this.selectedItem = item;
       if (item.paid) {
@@ -390,16 +384,16 @@ export default {
         const nd = "day-" + new Date().getDate();
         const report = {
           [nd]: {
-            single: this.selected.filter(c => c.type),
-            group: this.selected.filter(c => !c.type),
+            indiv: this.selected.filter(c => c.title),
+            group: this.selected.filter(c => !c.title),
             date: new Date()
           }
         };
 
         this.sendReport(report);
         this.countTr = this.selected.length;
+        this.earned = 0;
         this.selected.forEach(c => {
-          console.log("aa", c);
           this.earned += c.typeW === "Группа" ? 2000 : 1500;
         });
         this.dialogPerform = true;

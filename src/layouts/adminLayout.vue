@@ -29,6 +29,15 @@
           </v-list-item-content>
         </v-list-item>
 
+        <v-list-item link to="/admin/users/indiv">
+          <v-list-item-action>
+            <v-icon color="success">mdi-account-multiple</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Индивиуальные</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+
         <v-list-item link to="/admin/groups">
           <v-list-item-action>
             <v-icon color="success">mdi-folder-account</v-icon>
@@ -76,7 +85,7 @@
             <v-icon color="success">mdi-account-key</v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title>Регистрация администратора</v-list-item-title>
+            <v-list-item-title>Регистрация тренера</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
 

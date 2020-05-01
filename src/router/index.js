@@ -82,9 +82,19 @@ const routes = [
     meta: {
       AuthRequired: true,
       layout: "admin",
-      title: "Edem Dance - Список индивидуальных учеников"
+      title: "Edem Dance - Список разовых занятий"
     },
     component: () => import("../views/admin/SingleUsers.vue")
+  },
+  {
+    path: "/admin/users/indiv",
+    name: "AdminIndivUsers",
+    meta: {
+      AuthRequired: true,
+      layout: "admin",
+      title: "Edem Dance - Список индивидуальных учеников"
+    },
+    component: () => import("../views/admin/ReviewIndiv.vue")
   },
   {
     path: "/admin",

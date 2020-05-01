@@ -151,11 +151,9 @@ export default {
       this.dialogAddCoach = false;
     },
     addWeekday(chip) {
-      this.chip.forEach(item => {
-        if (item.title == chip.title) {
-          item.active = !item.active;
-        }
-      });
+      this.chip.map(c =>
+        c.title == chip.title ? (c.active = !c.active) : c.active
+      );
     },
     addTypeWorkout() {
       if (this.typeWorkout != "") {
@@ -169,7 +167,7 @@ export default {
     createGroup() {
       this.loadingCard = true;
       let massData = {
-        id: this.$g.generate(20),
+        id: this.$g.generate(24),
         weekDays: [],
         time: "",
         coach: "",
@@ -178,9 +176,7 @@ export default {
         count: 10,
         users: []
       };
-      this.chip.forEach(item => {
-        if (item.active) massData.weekDays.push(item.title);
-      });
+      massData.weekDays = this.chip.filter(c => c.active).map(c => c.title);
       massData.time = this.timeHour + ":" + this.timeMinute;
       massData.coach = this.selectCoach;
       let days = "";

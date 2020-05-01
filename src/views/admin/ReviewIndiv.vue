@@ -174,8 +174,8 @@ export default {
       dense: false,
       tableHeaders: [
         {
-          text: "Имя",
-          value: "name"
+          text: "Название",
+          value: "title"
         },
         {
           text: "Телефон",
@@ -186,8 +186,8 @@ export default {
           value: "subscription"
         },
         {
-          text: "Тренер",
-          value: "coach"
+          text: "Дата оплаты",
+          value: "datePay"
         },
         {
           text: "Статус оплаты",
@@ -216,21 +216,21 @@ export default {
   mounted() {},
   computed: {
     ...mapGetters({
-      allSingleState: "ALLSINGLE"
+      allIndivState: "ALLINDIV"
     })
   },
   methods: {
     ...mapActions({
-      getAllSingle: "GET_ALL_SINGLE",
-      setPayStatus: "SEND_PAY_SINGLE",
-      deleteUser: "DELETE_USER_SINGLE"
+      getAllIndiv: "GET_ALL_INDIV",
+      setPayStatus: "SEND_PAY_INDIV",
+      deleteUser: "DELETE_USER_INDIV"
     }),
     updateTable() {
       this.loading = true;
       this.sampleUsers = [];
-      this.getAllSingle();
+      this.getAllIndiv();
       setTimeout(() => {
-        this.sampleUsers = this.allSingleState;
+        this.sampleUsers = this.allIndivState;
         this.loading = false;
       }, 1500);
     },

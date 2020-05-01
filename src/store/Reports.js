@@ -28,6 +28,16 @@ export default {
               commit("SET_ERROR", error);
             });
         });
+    },
+    SEND_PAY_REPORT({ commit }, payload) {
+      vue.$db
+        .collection("reportPay")
+        .add({
+          ...payload
+        })
+        .catch(function(error) {
+          commit("SET_ERROR", error);
+        });
     }
   }
 };

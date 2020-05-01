@@ -127,9 +127,10 @@
         <v-text-field
           label="ФИО"
           dense
+          clearable
           :rules="$validation.required"
           outlined
-          :v-model="name"
+          v-model="name"
         ></v-text-field>
         <v-text-field
           dense
@@ -149,6 +150,34 @@
           outlined
           :items="coachList"
         ></v-select>
+        <v-card-subtitle class="body-1 mb-n3"
+          ><v-icon>mdi-calendar-today</v-icon> Дни недели</v-card-subtitle
+        >
+        <v-chip-group multiple>
+          <v-chip
+            v-for="item in chip"
+            :key="item.title"
+            class="ma-2"
+            :color="item.active ? 'success' : ''"
+            :text-color="item.active ? 'white' : 'black'"
+            @click="addWeekday(item)"
+          >
+            {{ item.title }}
+          </v-chip>
+        </v-chip-group>
+        <v-card-subtitle class="body-1 mb-n4">
+          <v-icon>mdi-clock</v-icon> Время тренеровки</v-card-subtitle
+        >
+        <v-row class="ml-2 mt-2">
+          <v-col cols="6">
+            <v-select v-model="timeHour" :items="timehours" label="Часы">
+            </v-select>
+          </v-col>
+          <v-col cols="6">
+            <v-select v-model="timeMinute" :items="timeminuts" label="Минуты">
+            </v-select>
+          </v-col>
+        </v-row>
         <v-checkbox
           v-model="statusPaid"
           label="Оплачен"
@@ -195,6 +224,35 @@ export default {
       statusPaid: false,
       page: 1,
       pageCount: 1,
+      chip: [
+        { title: "Пн", active: false, color: "red" },
+        { title: "Вт", active: false, color: "purple" },
+        { title: "Ср", active: false, color: "teal accent-3" },
+        { title: "Чт", active: false, color: "light-green accent-3" },
+        { title: "Пт", active: false, color: "pink darken-1" },
+        { title: "Сб", active: false, color: "blue" },
+        { title: "Вс", active: false, color: "yellow darken-1" }
+      ],
+      timehours: [
+        "07",
+        "08",
+        "09",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15",
+        "16",
+        "17",
+        "18",
+        "19",
+        "20",
+        "21"
+      ],
+      timeminuts: ["00", "30"],
+      timeHour: "07",
+      timeMinute: "00",
       searchTable1: "",
       radioGroup: "1500",
       radioGroupIndiv: "3000",
@@ -247,7 +305,11 @@ export default {
       getGroups: "GET_ALL_GROUPS",
       getCoachList: "GET_COACH_LIST",
       writeUserGroup: "WRITE_USER_GROUP",
-      writeSingleLesson: "WRITE_USER_SINGLE"
+      writeSingleLesson: "WRITE_USER_SINGLE",
+      writeIndivUser: "WRITE_USER_INDIV",
+      sendPaySingle: "SEND_PAY_SINGLE",
+      sendPayGroup: "SEND_PAY_SUB",
+      sendPayIndiv: "SEND_PAY_INDIV"
     }),
     step0() {
       switch (this.selectType) {
@@ -290,23 +352,25 @@ export default {
         this.loading = true;
         if (this.radioGroup === "1500") {
           let payload = {
-            id: this.$g.generate(20),
-            dateReg: new Date().format("dd.mm.yyyy"),
+            id: this.$g.generate(24),
             name: this.name,
             phone: this.phone,
             email: this.email,
             nameGroup: this.nameGroup,
             subscription: this.radioGroup,
             coach: this.nameCoach,
-            paid: this.statusPaid ? true : false,
+            paid: false,
             type: "single",
             datePay: this.statusPaid ? new Date().format("dd.mm.yyyy") : "",
             datePayNoformat: this.statusPaid ? new Date() : ""
           };
           this.writeSingleLesson(payload);
+          setTimeout(() => {
+            this.sendPaySingle(payload);
+          }, 1000);
         } else {
           let payload = {
-            id: this.$g.generate(20),
+            id: this.$g.generate(24),
             name: this.name,
             phone: this.phone,
             email: this.email,
@@ -319,6 +383,9 @@ export default {
             datePayNoformat: this.statusPaid ? new Date() : ""
           };
           this.writeUserGroup(payload);
+          setTimeout(() => {
+            this.sendPayGroup(payload);
+          }, 1000);
         }
         setTimeout(() => {
           this.loading = false;
@@ -326,22 +393,38 @@ export default {
         }, 2000);
       }
     },
+    addWeekday(chip) {
+      this.chip.map(c =>
+        c.title == chip.title ? (c.active = !c.active) : c.active
+      );
+    },
     step2() {
       if (this.$refs.formIndiv.validate()) {
         this.loading = true;
         let payload = {
-          id: this.$g.generate(20),
-          dateReg: new Date().format("dd.mm.yyyy"),
+          id: this.$g.generate(24),
+          title: "",
           name: this.name,
           phone: this.phone,
-          subscription: this.radioGroup,
+          subscription: "3000",
           coach: this.nameCoach,
           paid: this.statusPaid ? true : false,
-          type: "indiv",
           datePay: this.statusPaid ? new Date().format("dd.mm.yyyy") : "",
-          datePayNoformat: this.statusPaid ? new Date() : ""
+          datePayNoformat: this.statusPaid ? new Date() : "",
+          weekDays: [],
+          time: this.timeHour + ":" + this.timeMinute
         };
-        this.writeSingleLesson(payload);
+        payload.weekDays = this.chip.filter(c => c.active).map(c => c.title);
+
+        let days = "";
+        payload.weekDays.forEach(item => {
+          days += item + ", ";
+        });
+        payload.title = `${payload.name} ${days} ${payload.time} ${payload.coach}`;
+        this.writeIndivUser(payload);
+        setTimeout(() => {
+          this.sendPayIndiv(payload);
+        }, 1000);
         setTimeout(() => {
           this.loading = false;
           this.step = 0;
