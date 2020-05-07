@@ -37,6 +37,17 @@
                 clearable
               ></v-select>
             </v-col>
+            <v-col cols="3">
+              <export-excel
+                :data="tableData"
+                :fields="excel_fields"
+                :name="nameExcel"
+              >
+                <v-btn color="success" class="mt-4" :disabled="exportButton"
+                  >Экспорт в excel</v-btn
+                >
+              </export-excel>
+            </v-col>
           </v-row>
           <v-data-table
             max-width="700"
@@ -87,7 +98,14 @@ import { mapGetters, mapActions } from "vuex";
 export default {
   data() {
     return {
-      step: 0,
+      nameExcel: "Отчет",
+      exportButton: true,
+      excel_fields: {
+        "Тип занятий": "type",
+        Тренер: "coach",
+        Количество: "count",
+        Сумма: "summ"
+      },
       loading: false,
       item: "",
       selectCoach: "",
@@ -129,7 +147,7 @@ export default {
     this.coachList = this.coachLists;
     setTimeout(() => {
       this.loading = false;
-    }, 20);
+    }, 2000);
   },
 
   computed: {
@@ -441,10 +459,17 @@ export default {
               }
             }
           });
-
-          // this.sampleTable = this.tableData;
         }
       }
+      let count = 0,
+        summ = 0;
+      this.tableData.forEach(c => {
+        count += c.count;
+        summ += c.summ;
+      });
+      this.tableData.push({ type: "Всего", count, summ });
+      this.exportButton = false;
+      this.nameExcel = "Отчет " + new Date().format("dd.mm.yyyy");
     }
   }
 };

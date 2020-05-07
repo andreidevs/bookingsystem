@@ -14,14 +14,16 @@ import "firebase/firestore";
 import VueTheMask from "vue-the-mask";
 import Notifications from "vue-notification";
 import validation from "./plugins/validation";
-import "./plugins/date.format";
+import excel from "vue-excel-export";
 
 import "./assets/main.css";
+import "./plugins/date.format";
+
 Vue.config.productionTip = false;
 Vue.use(Notifications);
 Vue.use(VueTheMask);
 Vue.use(validation);
-
+Vue.use(excel);
 const GenerateId = require("generate-id");
 Vue.prototype.$g = new GenerateId();
 
