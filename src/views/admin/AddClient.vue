@@ -354,6 +354,7 @@ export default {
           let payload = {
             id: this.$g.generate(24),
             name: this.name,
+            dateReg: new Date(),
             phone: this.phone,
             email: this.email,
             nameGroup: this.nameGroup,
@@ -372,6 +373,7 @@ export default {
           let payload = {
             id: this.$g.generate(24),
             name: this.name,
+            dateReg: new Date(),
             phone: this.phone,
             email: this.email,
             nameGroup: this.nameGroup,
@@ -403,6 +405,7 @@ export default {
         this.loading = true;
         let payload = {
           id: this.$g.generate(24),
+          dateReg: new Date(),
           title: "",
           name: this.name,
           phone: this.phone,

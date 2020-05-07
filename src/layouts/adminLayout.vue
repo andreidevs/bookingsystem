@@ -34,7 +34,7 @@
             <v-icon color="success">mdi-account-multiple</v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title>Индивиуальные</v-list-item-title>
+            <v-list-item-title>Индивидуальные</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
 

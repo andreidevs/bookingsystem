@@ -435,6 +435,7 @@ export default {
         if (this.radioGroup === "1500") {
           let payload = {
             id: this.$g.generate(20),
+            dateReg: new Date(),
             name: this.nameStep3,
             phone: this.phoneStep3,
             email: this.emailStep3,
@@ -449,6 +450,7 @@ export default {
         } else {
           let payload = {
             id: this.$g.generate(20),
+            dateReg: new Date(),
             name: this.nameStep3,
             phone: this.phoneStep3,
             email: this.emailStep3,

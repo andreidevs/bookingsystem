@@ -382,6 +382,7 @@ export default {
       if (this.selected.length) {
         this.loading = true;
         const nd = "day-" + new Date().getDate();
+        // const nd = "day-1";
         const report = {
           [nd]: {
             indiv: this.selected.filter(c => c.title),
