@@ -12,7 +12,8 @@ export default {
     usersByGroup: [],
     usersSingle: [],
     usersIndiv: [],
-    payHistory: []
+    payHistory: [],
+    singleHistory: []
   },
   getters: {
     COACH: s => s.coachList,
@@ -22,7 +23,8 @@ export default {
     USERSBYGROUP: s => s.usersByGroup,
     ALLSINGLE: s => s.usersSingle,
     ALLINDIV: s => s.usersIndiv,
-    PAYHISTORY: s => s.payHistory
+    PAYHISTORY: s => s.payHistory,
+    SINGLEHISTORY: s => s.singleHistory
   },
   mutations: {
     SET_COACH_LIST(state, payload) {
@@ -46,8 +48,11 @@ export default {
     SET_USERS_BY_GROUP(state, payload) {
       state.usersByGroup = payload;
     },
-    SET_ALL_PAYHISTORY(state, payload) {
+    SET_ALL_PAY_HISTORY(state, payload) {
       state.payHistory = payload;
+    },
+    SET_ALL_SINGLE_HISTORY(state, payload) {
+      state.singleHistory = payload;
     }
   },
 
@@ -186,7 +191,7 @@ export default {
           });
           vue.$db
             .collection("historySingle")
-            .add({ ...payload, datePay: new Date() })
+            .add({ ...payload, datePay: new Date().format("dd.mm.yyyy") })
             .then(function() {
               commit("SET_SUCCESS");
             });
@@ -321,7 +326,7 @@ export default {
         });
       commit("SET_USERS_BY_GROUP", users);
     },
-    GET_ALL_PAYHISTORY({ commit }) {
+    GET_ALL_PAY_HISTORY({ commit }) {
       let report = [];
       vue.$db
         .collection("reportPay")
@@ -331,7 +336,19 @@ export default {
             report.push(doc.data());
           });
         });
-      commit("SET_ALL_PAYHISTORY", report);
+      commit("SET_ALL_PAY_HISTORY", report);
+    },
+    GET_ALL_SINGLE_HISTORY({ commit }) {
+      let report = [];
+      vue.$db
+        .collection("historySingle")
+        .get()
+        .then(function(querySnapshot) {
+          querySnapshot.forEach(function(doc) {
+            report.push(doc.data());
+          });
+        });
+      commit("SET_ALL_SINGLE_HISTORY", report);
     },
     WRITE_USER_GROUP({ commit, dispatch }, payload) {
       vue.$db

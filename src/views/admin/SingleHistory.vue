@@ -15,17 +15,22 @@
             @input="changeFilter(selectName)"
           ></v-text-field>
         </v-col>
-        <v-col cols="6" lg="3" sm="6">
-          <v-select
-            clearable
-            label="Тип занятия"
-            v-model="type"
-            dense
+          <v-col cols="6" lg="3" sm="6">
+          <v-text-field
+            v-model="selectPhone"
+            label="Номер телефона"
             outlined
-            @change="selectType"
-            :items="typeItems"
+            clearable
+            dense
+            @input="changeFilter(selectPhone)"
+            v-mask="'+7(###)###-##-##'"
           >
-          </v-select>
+          </v-text-field>
+        </v-col>
+        <v-col cols="3">
+          <v-btn rounded color="info" @click="clearFilter"
+            >Очистить фильтр</v-btn
+          >
         </v-col>
         <v-col cols="6" class="mt-n3 sm-none" lg="3" sm="6">
           <v-switch v-model="dense" label="Маленькая таблица"></v-switch>
@@ -47,6 +52,7 @@
         <template v-slot:top>
           <v-btn
             class="update-button"
+            style="margin-left:94%"
             color="success"
             text
             dark
@@ -94,16 +100,16 @@ export default {
           value: "name"
         },
         {
-          text: "Тип занятия",
-          value: "type"
+          text: "Телефон",
+          value: "phone"
         },
         {
-          text: "Оплата",
-          value: "price"
+          text: "Название группы",
+          value: "nameGroup"
         },
         {
-          text: "Дата",
-          value: "date"
+          text: "Дата оплаты",
+          value: "datePay"
         },
         {
           text: "Тренер",
@@ -111,8 +117,6 @@ export default {
         }
       ],
       loading: false,
-      type: "",
-      typeItems: ["Все", "Группа", "Разовое", "Индив"],
       pageCount: 1,
       selectPhone: "",
       selectName: "",
@@ -125,43 +129,19 @@ export default {
   },
   computed: {
     ...mapGetters({
-      allHistory: "PAYHISTORY"
+      allHistory: "SINGLEHISTORY"
     })
   },
   methods: {
     ...mapActions({
-      getHistory: "GET_ALL_PAY_HISTORY"
+      getHistory: "GET_ALL_SINGLE_HISTORY"
     }),
-    selectType() {
-      if (this.type === "Все" || this.type === undefined) {
-        this.sampleTable = this.tableData;
-      } else {
-        this.sampleTable = this.tableData.filter(c => c.type === this.type);
-      }
-    },
     updateTable() {
       this.loading = true;
       this.sampleTable = [];
       this.getHistory();
       setTimeout(() => {
-        this.allHistory.forEach(c => {
-          let data = {
-            name: c.name,
-            date: new Date(c.date.seconds * 1000).format("dd.mm.yyyy"),
-            price: c.price,
-            coach: c.coach,
-            type: ""
-          };
-          if (c.type === "indiv") {
-            data.type = "Индив";
-          } else if (c.type === "group") {
-            data.type = "Группа";
-          } else {
-            data.type = "Разовое";
-          }
-          this.sampleTable.push(data);
-        });
-        this.tableData = this.sampleTable;
+       this.sampleTable = this.allHistory;
         this.loading = false;
       }, 1500);
     },
