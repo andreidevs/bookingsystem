@@ -372,8 +372,16 @@ export default {
       this.selectedItem = item;
       if (item.paid) {
         item = { ...item, typeW: "Индив" };
-        this.sampleTable.push(item);
-        this.dialog = false;
+        if (this.sampleTable.some(c => item.id === c.id)) {
+          this.$notify({
+            group: "app",
+            type: "info",
+            title: "Вы уже добавели данную тренировку!"
+          });
+        } else {
+          this.sampleTable.push(item);
+          this.dialog = false;
+        }
       } else {
         this.dialogPay = true;
       }

@@ -30,11 +30,11 @@
           <v-row>
             <v-col cols="4">
               <v-select
-                v-model="selectCoach"
+                v-model="coach"
                 :items="coachList"
                 label="Тренер"
                 prepend-icon="mdi-account"
-                clearable
+                @change="selectCoach"
               ></v-select>
             </v-col>
             <v-col cols="3">
@@ -59,7 +59,6 @@
             :loading="loading"
             loading-text="Загрузка... Пожалуйста подождите"
             @page-count="pageCount = $event"
-            :search="selectCoach"
           >
             <!-- <template v-slot:top>
               <v-btn
@@ -107,8 +106,8 @@ export default {
         Сумма: "summ"
       },
       loading: false,
+      coach: "Все",
       item: "",
-      selectCoach: "",
       itemsMenu: [
         { text: "За день", icon: "mdi-calendar" },
         { text: "За месяц", icon: "mdi-calendar-check" },
@@ -136,8 +135,7 @@ export default {
         }
       ],
       page: 1,
-      pageCount: 1,
-      searchFilter: ""
+      pageCount: 1
     };
   },
   created() {
@@ -145,6 +143,7 @@ export default {
     this.getReports();
     this.getCoachList();
     this.coachList = this.coachLists;
+    this.coachList.push("Все");
     setTimeout(() => {
       this.loading = false;
     }, 2000);
@@ -161,6 +160,33 @@ export default {
       getReports: "GET_REPORTS",
       getCoachList: "GET_COACH_LIST"
     }),
+    selectCoach() {
+      // console.log("sample", this.sampleTable)
+      if (this.coach != "Все") {
+        this.tableData = [];
+        this.sampleTable.forEach(c => {
+          if (c.coach === this.coach || c.type === "Всего") {
+            this.tableData.push(c);
+          }
+        });
+      } else {
+        this.tableData = this.sampleTable;
+      }
+      this.inTotal();
+    },
+    inTotal() {
+      let count = 0,
+        summ = 0;
+      this.tableData.forEach(c => {
+        if (c.type != "Всего") {
+          count += c.count;
+          summ += c.summ;
+        }
+      });
+
+      this.tableData = this.tableData.filter(g => g.type !== "Всего");
+      this.tableData.push({ type: "Всего", count, summ });
+    },
     showReport(item) {
       this.tableData = [];
       switch (item) {
@@ -188,7 +214,7 @@ export default {
                     summ: c[thisday].group.length * 2000
                   });
                 }
-                if (c[thisday].indiv.length > 0) {
+                if (c[thisday].indiv.length > -1) {
                   this.tableData.push({
                     coach: c.coach,
                     count: c[thisday].indiv.length,
@@ -252,22 +278,18 @@ export default {
             let count = 5;
             ////////////////////////////////Месяцы
             for (let i = month; i > 0; i--) {
-              // console.log('date', i, year);
               massdate.push({ month: i, year: year });
               if (count != 0) {
                 count--;
               } else {
                 break;
               }
-              // console.log('count', count)
             }
             if (count > 0) {
               year--;
 
               for (let i = 11; i >= 0; i--) {
-                // console.log('date', i, year);
                 massdate.push({ month: i, year: year });
-                // console.log('count', count)
                 if (count != 0) {
                   count--;
                 } else {
@@ -293,7 +315,7 @@ export default {
                 r.push(c);
               }
             });
-            // console.log(r);
+
             r.forEach(c => {
               let groupL = 0,
                 indivL = 0;
@@ -361,22 +383,18 @@ export default {
           let count = 11;
           ////////////////////////////////Месяцы
           for (let i = month; i > 0; i--) {
-            // console.log('date', i, year);
             massdate.push({ month: i, year: year });
             if (count != 0) {
               count--;
             } else {
               break;
             }
-            // console.log('count', count)
           }
           if (count > 0) {
             year--;
 
             for (let i = 11; i >= 0; i--) {
-              // console.log('date', i, year);
               massdate.push({ month: i, year: year });
-              // console.log('count', count)
               if (count != 0) {
                 count--;
               } else {
@@ -404,7 +422,6 @@ export default {
               r.push(c);
             }
           });
-          // console.log(r);
           r.forEach(c => {
             let groupL = 0,
               indivL = 0;
@@ -461,14 +478,16 @@ export default {
           });
         }
       }
-      let count = 0,
-        summ = 0;
-      this.tableData.forEach(c => {
-        count += c.count;
-        summ += c.summ;
-      });
-      this.tableData.push({ type: "Всего", count, summ });
-      this.exportButton = false;
+
+      this.sampleTable = this.tableData;
+      this.inTotal();
+      this.selectCoach();
+      if (this.tableData.length > 1) {
+        this.exportButton = false;
+      } else {
+        this.exportButton = true;
+      }
+
       this.nameExcel = "Отчет " + new Date().format("dd.mm.yyyy");
     }
   }
