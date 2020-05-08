@@ -98,6 +98,15 @@
           </v-list-item-content>
         </v-list-item>
 
+        <v-list-item v-if="user.admin" link to="/admin/historypay">
+          <v-list-item-action>
+            <v-icon color="success">mdi-credit-card</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>История оплаты</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+
         <v-list-item link @click="logOut">
           <v-list-item-action>
             <v-icon color="success">mdi-exit-to-app</v-icon>

@@ -23,6 +23,7 @@
         <template v-slot:top>
           <v-btn
             class="update-button"
+            style="margin-left: 92%"
             color="success"
             text
             dark

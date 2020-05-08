@@ -2,7 +2,7 @@
   <v-app>
     <router-view v-if="layout == 'undefined-layout'" />
     <component v-else :is="layout">
-      <keep-alive>
+      <keep-alive exclude="AdminReports">
         <router-view />
       </keep-alive>
     </component>

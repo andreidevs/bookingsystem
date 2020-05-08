@@ -363,11 +363,14 @@ export default {
             paid: false,
             type: "single",
             datePay: this.statusPaid ? new Date().format("dd.mm.yyyy") : "",
-            datePayNoformat: this.statusPaid ? new Date() : ""
+            datePayNoformat: this.statusPaid ? new Date() : "",
+            sendT: true
           };
-          this.writeSingleLesson(payload);
+          this.writeSingleLesson(payload, true);
           setTimeout(() => {
-            this.sendPaySingle(payload);
+            if (this.statusPaid) {
+              this.sendPaySingle(payload);
+            }
           }, 1000);
         } else {
           let payload = {
@@ -382,11 +385,14 @@ export default {
             coach: this.nameCoach,
             paid: this.statusPaid ? true : false,
             datePay: this.statusPaid ? new Date().format("dd.mm.yyyy") : "",
-            datePayNoformat: this.statusPaid ? new Date() : ""
+            datePayNoformat: this.statusPaid ? new Date() : "",
+            sendT: true
           };
-          this.writeUserGroup(payload);
+          this.writeUserGroup(payload, true);
           setTimeout(() => {
-            this.sendPayGroup(payload);
+            if (this.statusPaid) {
+              this.sendPayGroup(payload);
+            }
           }, 1000);
         }
         setTimeout(() => {
@@ -426,7 +432,9 @@ export default {
         payload.title = `${payload.name} ${days} ${payload.time} ${payload.coach}`;
         this.writeIndivUser(payload);
         setTimeout(() => {
-          this.sendPayIndiv(payload);
+          if (this.statusPaid) {
+            this.sendPayIndiv(payload);
+          }
         }, 1000);
         setTimeout(() => {
           this.loading = false;

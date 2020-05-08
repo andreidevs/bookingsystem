@@ -55,24 +55,12 @@
             :items="tableData"
             :page.sync="page"
             hide-default-footer
+            disable-sort
             item-key="id"
             :loading="loading"
             loading-text="Загрузка... Пожалуйста подождите"
             @page-count="pageCount = $event"
           >
-            <!-- <template v-slot:top>
-              <v-btn
-                class="update-button"
-                color="success"
-                text
-                dark
-                small
-                @click="updateTable()"
-              >
-                Обновить
-                <v-icon>mdi-reload</v-icon>
-              </v-btn>
-            </template> -->
             <template v-slot:no-data>
               <span
                 >Невозможно получить данные либо таблица пуста, попробуйте

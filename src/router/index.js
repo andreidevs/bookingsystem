@@ -67,6 +67,16 @@ const routes = [
     component: () => import("../views/admin/Reports.vue")
   },
   {
+    path: "/admin/historypay",
+    name: "AdminHistoryPay",
+    meta: {
+      AuthRequired: true,
+      layout: "admin",
+      title: "Edem Dance - История оплаты"
+    },
+    component: () => import("../views/admin/PayHistory.vue")
+  },
+  {
     path: "/admin/groups",
     name: "AdminGroups",
     meta: {

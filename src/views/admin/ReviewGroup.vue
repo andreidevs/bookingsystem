@@ -375,7 +375,9 @@ export default {
       const idx = this.sampleUsers.findIndex(
         c => c.id === this.selectedItem.id
       );
-      this.sampleUsers[idx] = this.selectedItem.paid = true;
+      this.sampleUsers[idx].paid = true;
+      this.sampleUsers[idx].datePay = new Date().format("dd.mm.yyyy");
+      this.sampleUsers[idx].datePayNoformat = new Date();
     },
     deleteGroupLocal() {
       this.sampleGroups = this.sampleGroups.filter(

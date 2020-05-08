@@ -41,6 +41,7 @@
         :items="sampleUsers"
         :page.sync="page"
         :dense="dense"
+        disable-sort
         hide-default-footer
         item-key="id"
         :loading="loading"
@@ -153,7 +154,6 @@
           </v-card>
         </v-dialog>
       </v-row>
-
       <v-btn
         style="position:fixed!important; bottom:10px; left:10px; z-index:1000;"
         @click="$router.go(-1)"
@@ -244,7 +244,9 @@ export default {
       const idx = this.sampleUsers.findIndex(
         c => c.id === this.selectedItem.id
       );
-      this.sampleUsers[idx] = this.selectedItem.paid = true;
+      this.sampleUsers[idx].paid = true;
+      this.sampleUsers[idx].datePay = new Date().format("dd.mm.yyyy");
+      this.sampleUsers[idx].datePayNoformat = new Date();
     },
     deleteUserLocal() {
       this.sampleUsers = this.sampleUsers.filter(

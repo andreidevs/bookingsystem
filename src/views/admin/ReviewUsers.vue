@@ -40,6 +40,7 @@
         :page.sync="page"
         :dense="dense"
         hide-default-footer
+        disable-sort
         item-key="name"
         :loading="loading"
         loading-text="Загрузка... Пожалуйста подождите"
@@ -239,7 +240,9 @@ export default {
       const idx = this.sampleUsers.findIndex(
         c => c.id === this.selectedItem.id
       );
-      this.sampleUsers[idx] = this.selectedItem.paid = true;
+      this.sampleUsers[idx].paid = true;
+      this.sampleUsers[idx].datePay = new Date().format("dd.mm.yyyy");
+      this.sampleUsers[idx].datePayNoformat = new Date();
     },
     deleteUserLocal() {
       this.sampleUsers = this.sampleUsers.filter(

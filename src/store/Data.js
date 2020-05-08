@@ -11,7 +11,8 @@ export default {
     allUsers: [],
     usersByGroup: [],
     usersSingle: [],
-    usersIndiv: []
+    usersIndiv: [],
+    payHistory: []
   },
   getters: {
     COACH: s => s.coachList,
@@ -20,7 +21,8 @@ export default {
     ALLUSERS: s => s.allUsers,
     USERSBYGROUP: s => s.usersByGroup,
     ALLSINGLE: s => s.usersSingle,
-    ALLINDIV: s => s.usersIndiv
+    ALLINDIV: s => s.usersIndiv,
+    PAYHISTORY: s => s.payHistory
   },
   mutations: {
     SET_COACH_LIST(state, payload) {
@@ -43,6 +45,9 @@ export default {
     },
     SET_USERS_BY_GROUP(state, payload) {
       state.usersByGroup = payload;
+    },
+    SET_ALL_PAYHISTORY(state, payload) {
+      state.payHistory = payload;
     }
   },
 
@@ -134,7 +139,6 @@ export default {
             name: payload.name,
             coach: payload.coach,
             type: "group",
-            nameGroup: payload.nameGroup,
             date: new Date(),
             price: payload.subscription
           });
@@ -317,6 +321,18 @@ export default {
         });
       commit("SET_USERS_BY_GROUP", users);
     },
+    GET_ALL_PAYHISTORY({ commit }) {
+      let report = [];
+      vue.$db
+        .collection("reportPay")
+        .get()
+        .then(function(querySnapshot) {
+          querySnapshot.forEach(function(doc) {
+            report.push(doc.data());
+          });
+        });
+      commit("SET_ALL_PAYHISTORY", report);
+    },
     WRITE_USER_GROUP({ commit, dispatch }, payload) {
       vue.$db
         .collection("usersGroup")
@@ -344,12 +360,14 @@ export default {
               users: users
             })
             .then(function() {
-              dispatch("SEND_FORM_TELEGRAM", {
-                name: payload.name,
-                phone: payload.phone,
-                text: `Запись в группу ${payload.nameGroup} Оплата ${payload.subscription}`,
-                link: `https://edemdance.web.app/admin/deleteuser/group/${payload.id}`
-              });
+              if (!payload.sendT) {
+                dispatch("SEND_FORM_TELEGRAM", {
+                  name: payload.name,
+                  phone: payload.phone,
+                  text: `Запись в группу ${payload.nameGroup} Оплата ${payload.subscription}`,
+                  link: `https://edemdance.web.app/admin/deleteuser/group/${payload.id}`
+                });
+              }
               commit("SET_SUCCESS");
             })
             .catch(function(error) {
@@ -369,12 +387,14 @@ export default {
         })
         .then(function() {
           const text = "Разовое занятие" + " " + payload.nameGroup;
-          dispatch("SEND_FORM_TELEGRAM", {
-            name: payload.name,
-            phone: payload.phone,
-            text,
-            link: `https://edemdance.web.app/admin/deleteuser/single/${payload.id}`
-          });
+          if (!payload.sendT) {
+            dispatch("SEND_FORM_TELEGRAM", {
+              name: payload.name,
+              phone: payload.phone,
+              text,
+              link: `https://edemdance.web.app/admin/deleteuser/single/${payload.id}`
+            });
+          }
           commit("SET_SUCCESS");
         })
         .catch(function(error) {
