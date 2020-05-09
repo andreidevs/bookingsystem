@@ -15,7 +15,7 @@
             @input="changeFilter(selectName)"
           ></v-text-field>
         </v-col>
-          <v-col cols="6" lg="3" sm="6">
+        <v-col cols="6" lg="3" sm="6">
           <v-text-field
             v-model="selectPhone"
             label="Номер телефона"
@@ -141,7 +141,7 @@ export default {
       this.sampleTable = [];
       this.getHistory();
       setTimeout(() => {
-       this.sampleTable = this.allHistory;
+        this.sampleTable = this.allHistory;
         this.loading = false;
       }, 1500);
     },

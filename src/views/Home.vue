@@ -358,11 +358,12 @@ export default {
     showMore() {
       this.loading = true;
       this.sampleGroups = [];
-      this.allGroups.forEach(item => {
-        if (item.count > 0) {
-          this.sampleGroups.push(item);
-        }
-      });
+      this.sampleGroups = this.allGroups.filter(c => c.count > 0);
+      // this.allGroups.forEach(item => {
+      //   if (item.count > 0) {
+      //     this.sampleGroups.push(item);
+      //   }
+      // });
       setTimeout(() => {
         this.loading = false;
       }, 1000);
@@ -371,10 +372,8 @@ export default {
     stepOne() {
       this.loading = true;
       this.sampleGroups = [];
-      let weekdays = [];
-      this.chip.forEach(item => {
-        if (item.active) weekdays.push(item.title);
-      });
+      let weekdays = this.chip.filter(c => c.active).map(c => (c = c.title));
+
       if (this.timeHourNone) {
         this.allGroups.forEach(item => {
           if (weekdays.length > 0) {

@@ -57,14 +57,24 @@ const routes = [
     component: () => import("../views/admin/Daily.vue")
   },
   {
-    path: "/admin/reports",
+    path: "/admin/wages",
     name: "AdminReports",
     meta: {
       AuthRequired: true,
       layout: "admin",
-      title: "Edem Dance - Отчеты"
+      title: "Edem Dance - Расчет ЗП"
     },
-    component: () => import("../views/admin/Reports.vue")
+    component: () => import("../views/admin/Wages.vue")
+  },
+  {
+    path: "/admin/statistic",
+    name: "AdminStatistic",
+    meta: {
+      AuthRequired: true,
+      layout: "admin",
+      title: "Edem Dance - Статистика"
+    },
+    component: () => import("../views/admin/Statistic.vue")
   },
   {
     path: "/admin/historypay",

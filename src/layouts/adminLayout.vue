@@ -2,6 +2,15 @@
   <v-container>
     <v-navigation-drawer v-model="drawer" app>
       <v-list shaped>
+        <v-list-item v-if="user.admin" link to="/admin/statistic">
+          <v-list-item-action>
+            <v-icon color="success">mdi-chart-areaspline</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Статистика</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+
         <v-list-item link to="/admin/daily">
           <v-list-item-action>
             <v-icon color="success">mdi-table-edit</v-icon>
@@ -89,14 +98,14 @@
           </v-list-item-content>
         </v-list-item>
 
-        <v-list-item v-if="user.admin" link to="/admin/historypay">
+        <!-- <v-list-item v-if="user.admin" link to="/admin/historypay">
           <v-list-item-action>
             <v-icon color="success">mdi-credit-card</v-icon>
           </v-list-item-action>
           <v-list-item-content>
             <v-list-item-title>История оплаты</v-list-item-title>
           </v-list-item-content>
-        </v-list-item>
+        </v-list-item> -->
 
         <v-list-item v-if="user.admin" link to="/admin/historysingle">
           <v-list-item-action>
@@ -107,12 +116,12 @@
           </v-list-item-content>
         </v-list-item>
 
-        <v-list-item v-if="user.admin" link to="/admin/reports">
+        <v-list-item v-if="user.admin" link to="/admin/wages">
           <v-list-item-action>
-            <v-icon color="success">mdi-file-document</v-icon>
+            <v-icon color="success">mdi-currency-btc</v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title>Отчеты</v-list-item-title>
+            <v-list-item-title>Расчет ЗП</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
 

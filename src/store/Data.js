@@ -12,7 +12,6 @@ export default {
     usersByGroup: [],
     usersSingle: [],
     usersIndiv: [],
-    payHistory: [],
     singleHistory: []
   },
   getters: {
@@ -23,7 +22,6 @@ export default {
     USERSBYGROUP: s => s.usersByGroup,
     ALLSINGLE: s => s.usersSingle,
     ALLINDIV: s => s.usersIndiv,
-    PAYHISTORY: s => s.payHistory,
     SINGLEHISTORY: s => s.singleHistory
   },
   mutations: {
@@ -47,9 +45,6 @@ export default {
     },
     SET_USERS_BY_GROUP(state, payload) {
       state.usersByGroup = payload;
-    },
-    SET_ALL_PAY_HISTORY(state, payload) {
-      state.payHistory = payload;
     },
     SET_ALL_SINGLE_HISTORY(state, payload) {
       state.singleHistory = payload;
@@ -140,10 +135,13 @@ export default {
         })
         .then(function() {
           commit("SET_SUCCESS");
+          // let d = new Date();
+          // d.setMonth(d.getMonth() - 12);
           dispatch("SEND_PAY_REPORT", {
             name: payload.name,
             coach: payload.coach,
             type: "group",
+            nameGroup: payload.nameGroup,
             date: new Date(),
             price: payload.subscription
           });
@@ -153,6 +151,8 @@ export default {
         });
     },
     SEND_PAY_INDIV({ commit, dispatch }, payload) {
+      // let d = new Date();
+      // d.setMonth(d.getMonth() - 12);
       vue.$db
         .collection("usersIndiv")
         .doc(payload.id)
@@ -245,7 +245,6 @@ export default {
         .get()
         .then(function(querySnapshot) {
           querySnapshot.forEach(function(doc) {
-            // console.log(getters.USER)
             if (!getters.USER.admin && getters.USER.isAuth) {
               if (getters.USER.name === doc.data().coach)
                 groups.push(doc.data());
@@ -325,18 +324,6 @@ export default {
           });
         });
       commit("SET_USERS_BY_GROUP", users);
-    },
-    GET_ALL_PAY_HISTORY({ commit }) {
-      let report = [];
-      vue.$db
-        .collection("reportPay")
-        .get()
-        .then(function(querySnapshot) {
-          querySnapshot.forEach(function(doc) {
-            report.push(doc.data());
-          });
-        });
-      commit("SET_ALL_PAY_HISTORY", report);
     },
     GET_ALL_SINGLE_HISTORY({ commit }) {
       let report = [];
@@ -490,7 +477,6 @@ export default {
         .get()
         .then(function(doc) {
           user = doc.data();
-          console.log(doc.data());
           dispatch("DELETE_USER_GROUP", user);
         })
         .catch(function(error) {

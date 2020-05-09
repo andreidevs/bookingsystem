@@ -5,7 +5,7 @@
     </div>
     <div v-show="!loading">
       <v-row>
-        <v-col cols="12" sm="12" md="2">
+        <v-col cols="12" sm="12" md="3">
           <v-card style="margin-left: -8%" max-width="200" tile>
             <v-list shaped>
               <v-subheader class="subtitle-1">Отчеты</v-subheader>
@@ -98,9 +98,9 @@ export default {
       item: "",
       itemsMenu: [
         { text: "За день", icon: "mdi-calendar" },
-        { text: "За месяц", icon: "mdi-calendar-check" },
-        { text: "За пол года", icon: "mdi-calendar-clock" },
-        { text: "За год", icon: "mdi-calendar-blank" }
+        { text: "За месяц", icon: "mdi-calendar-check" }
+        // { text: "За пол года", icon: "mdi-calendar-clock" },
+        // { text: "За год", icon: "mdi-calendar-blank" }
       ],
       sampleTable: [],
       tableData: [],
