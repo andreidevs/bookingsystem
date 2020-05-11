@@ -183,7 +183,7 @@
           label="Оплачен"
           class="mt-n2"
         ></v-checkbox>
-        <v-radio-group v-model="radioGroupIndiv" class="mt-n3">
+        <v-radio-group v-model="priceIndivGroup" class="mt-n3">
           <v-radio
             color="success"
             v-for="item in radioItemsIndiv"
@@ -192,6 +192,15 @@
             :value="item.value"
           ></v-radio>
         </v-radio-group>
+        <v-text-field
+          v-show="priceIndivGroup !== '3000'"
+          :disabled="priceIndivGroup === '3000'"
+          v-model="priceIndiv"
+          label="Другая цена"
+          outlined
+          dense
+          v-mask="'######'"
+        ></v-text-field>
       </v-form>
       <v-card-actions class="d-flex justify-space-between">
         <v-btn color="secondary" style="" @click="step = 0"
@@ -221,6 +230,7 @@ export default {
       email: "",
       phone: "",
       emailRules: [],
+      priceIndiv: "",
       statusPaid: false,
       page: 1,
       pageCount: 1,
@@ -255,11 +265,14 @@ export default {
       timeMinute: "00",
       searchTable1: "",
       radioGroup: "1500",
-      radioGroupIndiv: "3000",
-      radioItemsIndiv: [{ text: "Цена - 3000", value: "3000" }],
+      priceIndivGroup: "3000",
+      radioItemsIndiv: [
+        { text: "Цена - 3000", value: "3000" },
+        { text: "Другая цена" }
+      ],
       radioItems: [
         { text: "Разовое занятие - 1500тг", value: "1500" },
-        { text: "8 занятий - 8000тг", value: "8000" },
+        { text: "8 занятий - 10000тг", value: "10000" },
         { text: "12 занятий - 12000тг", value: "12000" }
       ],
 
@@ -415,7 +428,8 @@ export default {
           title: "",
           name: this.name,
           phone: this.phone,
-          subscription: "3000",
+          subscription:
+            this.priceIndivGroup === "3000" ? "3000" : this.priceIndiv,
           coach: this.nameCoach,
           paid: this.statusPaid ? true : false,
           datePay: this.statusPaid ? new Date().format("dd.mm.yyyy") : "",

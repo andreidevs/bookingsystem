@@ -56,7 +56,7 @@
         >
       </v-row>
       <v-row justify="center">
-        <v-dialog v-model="dialog" persistent max-width="600px">
+        <v-dialog v-model="dialog" max-width="600px">
           <v-card>
             <v-card-title>
               <span class="headline">Добавить проведенную тренировку</span>
@@ -64,18 +64,23 @@
             <v-card-text>
               <v-container>
                 <div v-show="step === 1">
+                  <v-switch
+                    v-model="switch1"
+                    @change="changeSwitch"
+                    label="Группы/Индивы"
+                  ></v-switch>
                   <v-row>
-                    <v-col cols="4">
+                    <v-col :cols="!switch1 ? 4 : 6">
                       <v-text-field
                         v-model="selectName"
-                        label="Имя клиента"
+                        :label="!switch1 ? 'Имя клиента' : 'Название группы'"
                         outlined
                         clearable
                         dense
                         @input="changeFilter(selectName)"
                       ></v-text-field>
                     </v-col>
-                    <v-col cols="4">
+                    <v-col v-if="!switch1" cols="4">
                       <v-text-field
                         v-model="selectPhone"
                         label="Номер телефона"
@@ -87,14 +92,16 @@
                       >
                       </v-text-field>
                     </v-col>
-                    <v-col cols="3">
+                    <v-col v-if="!switch1" cols="3">
                       <v-btn rounded color="info" @click="step = 2"
-                        >Нету в списке</v-btn
+                        >Нет в списке</v-btn
                       >
                     </v-col>
                   </v-row>
                   <v-data-table
-                    :headers="tableHeadersSingle"
+                    :headers="
+                      !switch1 ? tableHeadersSingle : tableHeadersSingleGroup
+                    "
                     :items="sampleUsers"
                     :page.sync="pageSingle"
                     :items-per-page="5"
@@ -145,23 +152,43 @@
                 </div>
                 <div v-show="step === 2">
                   <v-container>
-                    <v-text-field
-                      label="ФИО"
-                      dense
-                      :rules="$validation.required"
-                      outlined
-                      v-model="selectName"
-                    ></v-text-field>
-                    <v-text-field
-                      dense
-                      v-model="selectPhone"
-                      v-mask="'+7(###)###-##-##'"
-                      outlined
-                      clearable
-                      :rules="$validation.phone"
-                      label="Телефон"
-                    >
-                    </v-text-field>
+                    <v-form ref="form_indiv">
+                      <v-text-field
+                        label="ФИО"
+                        dense
+                        :rules="$validation.required"
+                        outlined
+                        v-model="selectName"
+                      ></v-text-field>
+                      <v-text-field
+                        dense
+                        v-model="selectPhone"
+                        v-mask="'+7(###)###-##-##'"
+                        outlined
+                        clearable
+                        :rules="$validation.phone"
+                        label="Телефон"
+                      >
+                      </v-text-field>
+                      <v-radio-group v-model="priceIndivGroup" class="mt-n3">
+                        <v-radio
+                          color="success"
+                          v-for="item in radioItemsIndiv"
+                          :key="item.text"
+                          :label="item.text"
+                          :value="item.value"
+                        ></v-radio>
+                      </v-radio-group>
+                      <v-text-field
+                        v-show="priceIndivGroup !== '3000'"
+                        :disabled="priceIndivGroup === '3000'"
+                        v-model="priceIndiv"
+                        label="Другая цена"
+                        outlined
+                        dense
+                        v-mask="'######'"
+                      ></v-text-field>
+                    </v-form>
                     <v-btn outlined color="success" @click="addNewToItem"
                       >Добавить</v-btn
                     >
@@ -169,12 +196,6 @@
                 </div>
               </v-container>
             </v-card-text>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="dialog = false"
-                >Закрыть</v-btn
-              >
-            </v-card-actions>
           </v-card>
         </v-dialog>
       </v-row>
@@ -221,9 +242,16 @@ export default {
     return {
       earned: 0,
       countTr: 0,
+      switch1: true,
       page: 1,
       step: 1,
       pageSingle: 1,
+      priceIndivGroup: "3000",
+      priceIndiv: "",
+      radioItemsIndiv: [
+        { text: "Цена - 3000", value: "3000" },
+        { text: "Другая цена" }
+      ],
       dense: false,
       dialog: false,
       dialogPay: false,
@@ -277,6 +305,20 @@ export default {
           value: "action"
         }
       ],
+      tableHeadersSingleGroup: [
+        {
+          text: "Название группы",
+          value: "name"
+        },
+        {
+          text: "Тренер",
+          value: "coach"
+        },
+        {
+          text: "",
+          value: "action"
+        }
+      ],
       sampleTable: [],
       selectName: "",
       selectPhone: "",
@@ -299,7 +341,8 @@ export default {
       getAllGroups: "GET_ALL_GROUPS",
       getAllIndiv: "GET_ALL_INDIV",
       setPayStatus: "SEND_PAY_INDIV",
-      sendReport: "SEND_DAILY"
+      sendReport: "SEND_DAILY",
+      sendPayReport: "SEND_PAY_REPORT"
     }),
     updateTable() {
       this.loading = true;
@@ -330,13 +373,9 @@ export default {
       this.clearFilter();
       this.step = 1;
       this.getAllIndiv();
-      setTimeout(() => {
-        this.sampleUsers = this.allIndivState.map(
-          c => (c = { ...c, status: c.paid ? "Оплачен" : "Не оплачен" })
-        );
-        this.dialog = true;
-        this.loadingB = false;
-      }, 1000);
+      this.sampleUsers = this.allGroupsState;
+      this.dialog = true;
+      this.loadingB = false;
     },
     pay() {
       this.loading = true;
@@ -355,36 +394,62 @@ export default {
       this.sampleUsers[idx].paid = true;
     },
     addNewToItem() {
-      const item = {
-        name: this.selectName,
-        phone: this.selectPhone,
-        coach: this.coachName.name,
-        paid: true,
-        datePay: new Date().format("dd.mm.yyyy"),
-        datePayNoformat: new Date(),
-        subscription: "3000",
-        typeW: "Индив"
-      };
-      this.sampleTable.push(item);
+      if (this.$refs.form_indiv.validate()) {
+        const item = {
+          name: this.selectName,
+          phone: this.selectPhone,
+          coach: this.coachName.name,
+          paid: false,
+          datePay: new Date().format("dd.mm.yyyy"),
+          datePayNoformat: new Date(),
+          subscription:
+            this.priceIndivGroup === "3000" ? "3000" : this.priceIndiv,
+          typeW: "Индив"
+        };
+        this.sendPayReport({
+          name: item.name,
+          coach: item.coach,
+          type: "indiv",
+          date: new Date(),
+          price: item.subscription
+        });
+        this.sampleTable.push(item);
 
-      this.dialog = false;
+        this.dialog = false;
+      }
     },
     addItemInTable(item) {
       this.selectedItem = item;
-      if (item.paid) {
-        item = { ...item, typeW: "Индив" };
-        if (this.sampleTable.some(c => item.id === c.id)) {
-          this.$notify({
-            group: "app",
-            type: "info",
-            title: "Вы уже добавели данную тренировку!"
-          });
-        } else {
+
+      if (this.sampleTable.some(c => item.id === c.id)) {
+        this.$notify({
+          group: "app",
+          type: "info",
+          title: "Вы уже добавели данную тренировку!"
+        });
+      } else {
+        if (item.typeWorkout) {
+          item = { ...item, typeW: "Группа" };
           this.sampleTable.push(item);
           this.dialog = false;
+        } else {
+          if (item.paid) {
+            item = { ...item, typeW: "Индив" };
+            this.sampleTable.push(item);
+            this.dialog = false;
+          } else {
+            this.dialogPay = true;
+          }
         }
+      }
+    },
+    changeSwitch() {
+      if (this.switch1) {
+        this.sampleUsers = this.allGroupsState;
       } else {
-        this.dialogPay = true;
+        this.sampleUsers = this.allIndivState.map(
+          c => (c = { ...c, status: c.paid ? "Оплачен" : "Не оплачен" })
+        );
       }
     },
     perform() {

@@ -10,26 +10,25 @@
           <v-card class="mx-auto" max-width="450">
             <v-card-text>
               <span class="title font-weight-black"
-                >Тренеровок всего за {{ week }}: {{ countWorkInMonth }}
+                >Проданные абонементы за {{ week }}: {{ countWorkInMonth }}
               </span>
               <br />
               <span class="headline">{{ priceWorkInMonth }} KZT</span>
               <br />
               <span class="title font-weight-black"
-                >Групповых занятий за {{ week }}: {{ countGroupInMonth }}
+                >Групповых: {{ countGroupInMonth }}
               </span>
               <br />
               <span class="headline"> {{ priceGroupInMonth }} KZT </span>
               <br />
               <span class="title font-weight-black"
-                >Индивидуальных занятий за {{ week }}:
-                {{ countIndivInMonth }}</span
+                >Индивидуальных: {{ countIndivInMonth }}</span
               >
               <br />
               <span class="headline"> {{ priceIndivInMonth }} KZT </span>
               <br />
               <span class="title font-weight-black"
-                >Разовых занятий за {{ week }}: {{ countSingleInMonth }}
+                >Разовых: {{ countSingleInMonth }}
               </span>
               <br />
               <span class="headline"> {{ priceSingleInMonth }} KZT </span>

@@ -7,7 +7,7 @@ import vuetify from "./plugins/vuetify";
 import "roboto-fontface/css/roboto/roboto-fontface.css";
 
 import firebase from "firebase/app";
-import firebaseConfig from "./config/firebase";
+import firebaseConfig from "./config/firebaseTest";
 import "firebase/auth";
 import "firebase/firestore";
 

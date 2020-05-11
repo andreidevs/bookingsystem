@@ -13,6 +13,7 @@
     "core-js": "^3.6.4",
     "firebase": "^7.14.2",
     "generate-id": "^2.0.1",
+    "node-firestore-import-export": "^1.1.0",
     "roboto-fontface": "*",
     "vue": "^2.6.11",
     "vue-chartjs": "^3.5.0",

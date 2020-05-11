@@ -234,7 +234,7 @@ export default {
       radioGroup: "1500",
       radioItems: [
         { text: "Разовое занятие - 1500тг", value: "1500" },
-        { text: "8 занятий - 8000тг", value: "8000" },
+        { text: "8 занятий - 10000тг", value: "10000" },
         { text: "12 занятий - 12000тг", value: "12000" }
       ],
       page: 1,
