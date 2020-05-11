@@ -77,16 +77,6 @@ const routes = [
     component: () => import("../views/admin/Statistic.vue")
   },
   {
-    path: "/admin/historypay",
-    name: "AdminHistoryPay",
-    meta: {
-      AuthRequired: true,
-      layout: "admin",
-      title: "Edem Dance - История оплаты"
-    },
-    component: () => import("../views/admin/PayHistory.vue")
-  },
-  {
     path: "/admin/historysingle",
     name: "AdminHistorySingle",
     meta: {
@@ -115,6 +105,16 @@ const routes = [
       title: "Edem Dance - Список разовых занятий"
     },
     component: () => import("../views/admin/SingleUsers.vue")
+  },
+  {
+    path: "/admin/users/mini",
+    name: "AdminMiniUsers",
+    meta: {
+      AuthRequired: true,
+      layout: "admin",
+      title: "Edem Dance - Список учеников минигрупп"
+    },
+    component: () => import("../views/admin/ReviewMini.vue")
   },
   {
     path: "/admin/users/indiv",

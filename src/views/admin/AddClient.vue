@@ -24,6 +24,12 @@
         v-model="searchTable1"
       >
       </v-text-field>
+      <v-switch
+        class="ml-2 mt-n1 mb-n1"
+        label="Минигруппы"
+        @change="filterGroups"
+        v-model="miniGroupCheck"
+      ></v-switch>
       <v-data-table
         :headers="headersGroup"
         :items="sampleGroups"
@@ -67,7 +73,7 @@
     </div>
     <div v-show="step === 11" class="pa-5">
       <v-alert border="bottom" color="success" dark>
-        Группа {{ this.nameGroup }}
+        <span v-if="!this.miniGroup">Группа</span> {{ this.nameGroup }}
       </v-alert>
       <v-form ref="formStep3">
         <v-text-field
@@ -103,7 +109,7 @@
           label="Оплачен"
           class="mt-n4"
         ></v-checkbox>
-        <v-radio-group v-model="radioGroup" class="mt-n4">
+        <v-radio-group v-if="!miniGroup" v-model="radioGroup" class="mt-n4">
           <v-radio
             color="success"
             v-for="item in radioItems"
@@ -112,13 +118,31 @@
             :value="item.value"
           ></v-radio>
         </v-radio-group>
+        <v-radio-group v-if="miniGroup" v-model="priceMiniGroup" class="mt-n4">
+          <v-radio
+            color="success"
+            v-for="item in radioItemsMini"
+            :key="item.text"
+            :label="item.text"
+            :value="item.value"
+          ></v-radio>
+        </v-radio-group>
+        <v-text-field
+          v-show="priceMiniGroup !== '2000'"
+          :disabled="priceMiniGroup === '2000'"
+          v-model="priceMini"
+          label="Другая цена"
+          outlined
+          dense
+          v-mask="'######'"
+        ></v-text-field>
       </v-form>
       <v-card-actions class="d-flex justify-space-between">
         <v-btn color="secondary" style="" @click="step = 1"
           ><v-icon class="ml-1">mdi-arrow-left</v-icon>Назад</v-btn
         >
         <v-btn :loading="loading" color="success" @click="step11"
-          >Добавить <v-icon>mdi-pencil</v-icon></v-btn
+          >Добавить <v-icon>mdi-checkbox-marked-circle</v-icon></v-btn
         >
       </v-card-actions>
     </div>
@@ -207,7 +231,7 @@
           ><v-icon class="ml-1">mdi-arrow-left</v-icon>Назад</v-btn
         >
         <v-btn :loading="loading" color="success" @click="step2()"
-          >Добавить <v-icon>mdi-pencil</v-icon></v-btn
+          >Добавить <v-icon>mdi-checkbox-marked-circle</v-icon></v-btn
         >
       </v-card-actions>
     </div>
@@ -230,8 +254,12 @@ export default {
       email: "",
       phone: "",
       emailRules: [],
+      priceMiniGroup: "2000",
+      priceMini: "",
       priceIndiv: "",
       statusPaid: false,
+      miniGroup: false,
+      miniGroupCheck: false,
       page: 1,
       pageCount: 1,
       chip: [
@@ -270,6 +298,10 @@ export default {
         { text: "Цена - 3000", value: "3000" },
         { text: "Другая цена" }
       ],
+      radioItemsMini: [
+        { text: "Цена - 2000", value: "2000" },
+        { text: "Другая цена" }
+      ],
       radioItems: [
         { text: "Разовое занятие - 1500тг", value: "1500" },
         { text: "8 занятий - 10000тг", value: "10000" },
@@ -291,6 +323,10 @@ export default {
         {
           text: "Тренер",
           value: "coach"
+        },
+        {
+          text: "Тип",
+          value: "type"
         },
         {
           text: "Вид ",
@@ -320,22 +356,33 @@ export default {
       writeUserGroup: "WRITE_USER_GROUP",
       writeSingleLesson: "WRITE_USER_SINGLE",
       writeIndivUser: "WRITE_USER_INDIV",
+      writeMiniUser: "WRITE_USER_MINI",
       sendPaySingle: "SEND_PAY_SINGLE",
       sendPayGroup: "SEND_PAY_SUB",
-      sendPayIndiv: "SEND_PAY_INDIV"
+      sendPayIndiv: "SEND_PAY_INDIV",
+      sendPayMini: "SEND_PAY_MINI"
     }),
+    filterGroups() {
+      if (this.miniGroupCheck) {
+        this.sampleGroups = this.sampleGroups.filter(
+          c => c.type === "Минигруппа"
+        );
+      } else {
+        this.sampleGroups = this.allGroups
+          .filter(c => c.count > 0)
+          .map(c => (c = { ...c, type: c.mini ? "Минигруппа" : "Группа" }));
+      }
+    },
     step0() {
       switch (this.selectType) {
         case 1: {
           this.step = 1;
           this.loading = true;
           this.sampleGroups = [];
-          this.allGroups.forEach(item => {
-            if (item.count > 0) {
-              this.sampleGroups.push(item);
-            }
-          });
           setTimeout(() => {
+            this.sampleGroups = this.allGroups
+              .filter(c => c.count > 0)
+              .map(c => (c = { ...c, type: c.mini ? "Минигруппа" : "Группа" }));
             this.loading = false;
           }, 1000);
           break;
@@ -351,6 +398,7 @@ export default {
       this.nameGroup = item.name;
       this.uidGroup = item.id;
       this.nameCoach = item.coach;
+      this.miniGroup = item.mini ? true : false;
       this.step = 11;
     },
     step11() {
@@ -363,7 +411,28 @@ export default {
       }
       if (this.$refs.formStep3.validate()) {
         this.loading = true;
-        if (this.radioGroup === "1500") {
+        if (this.miniGroup) {
+          let payload = {
+            id: this.$g.generate(24),
+            name: this.name,
+            dateReg: new Date(),
+            phone: this.phone,
+            email: this.email,
+            nameGroup: this.nameGroup,
+            uidGroup: this.uidGroup,
+            subscription:
+              this.priceMiniGroup === "2000" ? "2000" : this.priceMini,
+            coach: this.nameCoach,
+            paid: false,
+            sendT: true
+          };
+          this.writeMiniUser(payload);
+          setTimeout(() => {
+            if (this.statusPaid) {
+              this.sendPayMini(payload);
+            }
+          }, 1000);
+        } else if (this.radioGroup === "1500") {
           let payload = {
             id: this.$g.generate(24),
             name: this.name,
@@ -379,7 +448,7 @@ export default {
             datePayNoformat: this.statusPaid ? new Date() : "",
             sendT: true
           };
-          this.writeSingleLesson(payload, true);
+          this.writeSingleLesson(payload);
           setTimeout(() => {
             if (this.statusPaid) {
               this.sendPaySingle(payload);
@@ -401,7 +470,7 @@ export default {
             datePayNoformat: this.statusPaid ? new Date() : "",
             sendT: true
           };
-          this.writeUserGroup(payload, true);
+          this.writeUserGroup(payload);
           setTimeout(() => {
             if (this.statusPaid) {
               this.sendPayGroup(payload);

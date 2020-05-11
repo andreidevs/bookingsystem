@@ -20,32 +20,47 @@
           </v-list-item-content>
         </v-list-item>
 
-        <v-list-item exact link to="/admin/users">
-          <v-list-item-action>
-            <v-icon color="success">mdi-account-multiple</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
+        <v-list-group color="success" prepend-icon="mdi-account-multiple">
+          <template v-slot:activator>
             <v-list-item-title>Ученики</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
+          </template>
 
-        <v-list-item link to="/admin/users/single">
-          <v-list-item-action>
+          <v-list-item class="ml-8" exact link to="/admin/users">
+            <!-- <v-list-item-action>
             <v-icon color="success">mdi-account-multiple</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>Разовые клиенты </v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
+          </v-list-item-action> -->
+            <v-list-item-content>
+              <v-list-item-title>Групп</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
 
-        <v-list-item link to="/admin/users/indiv">
-          <v-list-item-action>
+          <v-list-item class="ml-8" link to="/admin/users/mini">
+            <!-- <v-list-item-action>
             <v-icon color="success">mdi-account-multiple</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>Индивидуальные</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
+          </v-list-item-action> -->
+            <v-list-item-content>
+              <v-list-item-title>Минигрупп</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+
+          <v-list-item class="ml-8" link to="/admin/users/single">
+            <!-- <v-list-item-action>
+            <v-icon color="success">mdi-account-multiple</v-icon>
+          </v-list-item-action> -->
+            <v-list-item-content>
+              <v-list-item-title>Разовые</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+
+          <v-list-item class="ml-8" link to="/admin/users/indiv">
+            <!-- <v-list-item-action>
+            <v-icon color="success">mdi-account-multiple</v-icon>
+          </v-list-item-action> -->
+            <v-list-item-content>
+              <v-list-item-title>Индивидуальные</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list-group>
 
         <v-list-item link to="/admin/groups">
           <v-list-item-action>
@@ -61,32 +76,23 @@
             <v-list-item-title>Добавление</v-list-item-title>
           </template>
 
-          <v-list-item link to="/admin/addclient">
-            <v-list-item-action>
+          <v-list-item class="ml-8" link to="/admin/addclient">
+            <!-- <v-list-item-action>
               <v-icon color="success">mdi-plus-circle-outline</v-icon>
-            </v-list-item-action>
+            </v-list-item-action> -->
             <v-list-item-content>
               <v-list-item-title>Добавить клиента</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
 
-          <v-list-item v-if="user.admin" link to="/admin/addgroup">
-            <v-list-item-action>
+          <v-list-item class="ml-8" link to="/admin/addgroup">
+            <!-- <v-list-item-action>
               <v-icon color="success">mdi-folder-plus</v-icon>
-            </v-list-item-action>
+            </v-list-item-action> -->
             <v-list-item-content>
               <v-list-item-title>Добавить группу</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
-
-          <!-- <v-list-item link @click="dialogAddTypeWorkout = true">
-            <v-list-item-action>
-              <v-icon color="success">mdi-alpha-t-box</v-icon>
-            </v-list-item-action>
-            <v-list-item-content>
-              <v-list-item-title>Добавить тип тренеровки</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item> -->
         </v-list-group>
 
         <v-list-item v-if="user.admin" link to="/admin/signup">
@@ -97,15 +103,6 @@
             <v-list-item-title>Регистрация тренера</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-
-        <!-- <v-list-item v-if="user.admin" link to="/admin/historypay">
-          <v-list-item-action>
-            <v-icon color="success">mdi-credit-card</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>История оплаты</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item> -->
 
         <v-list-item v-if="user.admin" link to="/admin/historysingle">
           <v-list-item-action>

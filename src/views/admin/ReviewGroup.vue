@@ -50,6 +50,7 @@
         :items="sampleGroups"
         :page.sync="page"
         hide-default-footer
+        disable-sort
         item-key="name"
         :loading="loading"
         loading-text="Загрузка... Пожалуйста подождите"
@@ -277,6 +278,10 @@ export default {
           value: "count"
         },
         {
+          text: "Тип",
+          value: "type"
+        },
+        {
           text: "",
           value: "action"
         },
@@ -330,6 +335,7 @@ export default {
     ...mapGetters({
       allGroupsState: "ALLGROUPS",
       usersByGroup: "USERSBYGROUP",
+      usersByMini: "USERSBYMINI",
       coachList: "COACH"
     })
   },
@@ -339,21 +345,29 @@ export default {
       deleteGroup: "DELETE_GROUP",
       getCoachList: "GET_COACH_LIST",
       getUser: "GET_USERS_BY_GROUP",
+      getUserMini: "GET_USERS_BY_MINI",
       setPayStatus: "SEND_PAY_SUB"
     }),
     updateTable() {
       this.loading = true;
       this.sampleGroups = [];
       this.getAllGroups();
-      this.sampleGroups = this.allGroupsState;
+
       setTimeout(() => {
+        this.sampleGroups = this.allGroupsState.map(
+          c => (c = { ...c, type: c.mini ? "Минигруппа" : "Группа" })
+        );
         this.loading = false;
-      }, 1000);
+      }, 1500);
     },
     updateTableS() {
       this.loading = true;
       this.sampleUsers = [];
-      this.getUser(this.selectedItem.id);
+      if (this.selectedItem.mini) {
+        this.getUser(this.selectedItem.id);
+      } else {
+        this.getUserMini(this.selectedItem.id);
+      }
       this.sampleUsers = this.usersByGroup;
       setTimeout(() => {
         this.loading = false;

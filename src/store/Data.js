@@ -12,6 +12,7 @@ export default {
     usersByGroup: [],
     usersSingle: [],
     usersIndiv: [],
+    usersMini: [],
     singleHistory: []
   },
   getters: {
@@ -22,6 +23,7 @@ export default {
     USERSBYGROUP: s => s.usersByGroup,
     ALLSINGLE: s => s.usersSingle,
     ALLINDIV: s => s.usersIndiv,
+    ALLMINI: s => s.usersMini,
     SINGLEHISTORY: s => s.singleHistory
   },
   mutations: {
@@ -42,6 +44,9 @@ export default {
     },
     SET_ALL_INDIV(state, payload) {
       state.usersIndiv = payload;
+    },
+    SET_ALL_MINI(state, payload) {
+      state.usersMini = payload;
     },
     SET_USERS_BY_GROUP(state, payload) {
       state.usersByGroup = payload;
@@ -84,10 +89,18 @@ export default {
         });
     },
     UPDATE_PAY_TRIGER() {
-      let refs = vue.$db.collection("usersIndiv");
-      refs.get().then(function(querySnapshot) {
+      let refsIndiv = vue.$db.collection("usersIndiv");
+      let refsMini = vue.$db.collection("usersMini");
+      refsIndiv.get().then(function(querySnapshot) {
         querySnapshot.forEach(function(item) {
-          refs.doc(item.data().id).update({
+          refsIndiv.doc(item.data().id).update({
+            paid: false
+          });
+        });
+      });
+      refsMini.get().then(function(querySnapshot) {
+        querySnapshot.forEach(function(item) {
+          refsMini.doc(item.data().id).update({
             paid: false
           });
         });
@@ -142,6 +155,29 @@ export default {
             coach: payload.coach,
             type: "group",
             nameGroup: payload.nameGroup,
+            date: new Date(),
+            price: payload.subscription
+          });
+        })
+        .catch(function(error) {
+          commit("SET_ERROR", error);
+        });
+    },
+    SEND_PAY_MINI({ commit, dispatch }, payload) {
+      vue.$db
+        .collection("usersMini")
+        .doc(payload.id)
+        .update({
+          paid: true,
+          datePayNoformat: new Date(),
+          datePay: new Date().format("dd.mm.yyyy")
+        })
+        .then(function() {
+          commit("SET_SUCCESS");
+          dispatch("SEND_PAY_REPORT", {
+            name: payload.name,
+            coach: payload.coach,
+            type: "mini",
             date: new Date(),
             price: payload.subscription
           });
@@ -306,10 +342,46 @@ export default {
         });
       commit("SET_ALL_INDIV", users);
     },
+    GET_ALL_MINI({ commit, getters }) {
+      let users = [];
+      vue.$db
+        .collection("usersMini")
+        .get()
+        .then(function(querySnapshot) {
+          querySnapshot.forEach(function(doc) {
+            if (!getters.USER.admin && getters.USER.isAuth) {
+              if (getters.USER.name === doc.data().coach)
+                users.push(doc.data());
+            } else {
+              users.push(doc.data());
+            }
+          });
+        });
+      commit("SET_ALL_MINI", users);
+    },
     GET_USERS_BY_GROUP({ commit, getters }, payload) {
       let users = [];
       vue.$db
         .collection("usersGroup")
+        .get()
+        .then(function(querySnapshot) {
+          querySnapshot.forEach(function(doc) {
+            if (doc.data().uidGroup === payload) {
+              if (!getters.USER.admin && getters.USER.isAuth) {
+                if (getters.USER.name === doc.data().coach)
+                  users.push(doc.data());
+              } else {
+                users.push(doc.data());
+              }
+            }
+          });
+        });
+      commit("SET_USERS_BY_GROUP", users);
+    },
+    GET_USERS_BY_MINI({ commit, getters }, payload) {
+      let users = [];
+      vue.$db
+        .collection("usersMini")
         .get()
         .then(function(querySnapshot) {
           querySnapshot.forEach(function(doc) {
@@ -337,6 +409,25 @@ export default {
         });
       commit("SET_ALL_SINGLE_HISTORY", report);
     },
+    SUBSTRACT_COUNT_GROUP({ commit }, payload) {
+      let users, count;
+      const refGroup = vue.$db.collection("groups").doc(payload.uidGroup);
+
+      refGroup.get().then(function(doc) {
+        users = doc.data().users;
+        count = doc.data().count;
+        count = parseInt(count) - 1;
+        users.push(payload.id);
+        refGroup
+          .update({
+            count: count.toString(),
+            users: users
+          })
+          .catch(function(error) {
+            commit("SET_ERROR", error);
+          });
+      });
+    },
     WRITE_USER_GROUP({ commit, dispatch }, payload) {
       vue.$db
         .collection("usersGroup")
@@ -344,39 +435,17 @@ export default {
         .set({
           ...payload
         })
-        .catch(function(error) {
-          commit("SET_ERROR", error);
-        });
-
-      let users, count;
-      const refGroup = vue.$db.collection("groups").doc(payload.uidGroup);
-
-      refGroup
-        .get()
-        .then(function(doc) {
-          users = doc.data().users;
-          count = doc.data().count;
-          count = parseInt(count) - 1;
-          users.push(payload.id);
-          refGroup
-            .update({
-              count: count.toString(),
-              users: users
-            })
-            .then(function() {
-              if (!payload.sendT) {
-                dispatch("SEND_FORM_TELEGRAM", {
-                  name: payload.name,
-                  phone: payload.phone,
-                  text: `Запись в группу ${payload.nameGroup} Оплата ${payload.subscription}`,
-                  link: `https://edemdance.web.app/admin/deleteuser/group/${payload.id}`
-                });
-              }
-              commit("SET_SUCCESS");
-            })
-            .catch(function(error) {
-              commit("SET_ERROR", error);
+        .then(function() {
+          dispatch("SUBSTRACT_COUNT_GROUP", payload);
+          if (!payload.sendT) {
+            dispatch("SEND_FORM_TELEGRAM", {
+              name: payload.name,
+              phone: payload.phone,
+              text: `Запись в группу ${payload.nameGroup} Оплата ${payload.subscription}`,
+              link: `https://edemdance.web.app/admin/deleteuser/group/${payload.id}`
             });
+          }
+          commit("SET_SUCCESS");
         })
         .catch(function(error) {
           commit("SET_ERROR", error);
@@ -426,9 +495,67 @@ export default {
           commit("SET_ERROR", error);
         });
     },
+    WRITE_USER_MINI({ commit, dispatch }, payload) {
+      vue.$db
+        .collection("usersMini")
+        .doc(payload.id)
+        .set({
+          ...payload
+        })
+        .then(function() {
+          dispatch("SUBSTRACT_COUNT_GROUP", payload);
+          commit("SET_SUCCESS");
+        })
+        .catch(function(error) {
+          commit("SET_ERROR", error);
+        });
+    },
     DELETE_USER_GROUP({ commit }, payload) {
       vue.$db
         .collection("usersGroup")
+        .doc(payload.id)
+        .delete()
+        .then(function() {
+          vue.$db
+            .collection("groups")
+            .doc(payload.uidGroup)
+            .get()
+            .then(function(doc) {
+              let count = 0;
+              let users = [];
+              let newUsers = [];
+              users = doc.data().users;
+              count = doc.data().count;
+              users.forEach(item => {
+                if (item !== payload.id) {
+                  newUsers.push(item);
+                }
+              });
+              vue.$db
+                .collection("groups")
+                .doc(payload.uidGroup)
+                .update({
+                  count: parseInt(count) + 1,
+                  users: newUsers
+                })
+                .then(function() {
+                  commit("SET_SUCCESS");
+                })
+                .catch(function(error) {
+                  commit("SET_ERROR", error);
+                });
+            })
+            .catch(function(error) {
+              commit("SET_ERROR", error);
+            });
+        })
+        .catch(function(error) {
+          commit("SET_ERROR", error);
+        });
+    },
+    DELETE_USER_MINI({ commit }, payload) {
+      vue.$db
+        .collection("usersMini")
         .doc(payload.id)
         .delete()
         .then(function() {

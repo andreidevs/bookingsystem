@@ -358,7 +358,7 @@ export default {
     showMore() {
       this.loading = true;
       this.sampleGroups = [];
-      this.sampleGroups = this.allGroups.filter(c => c.count > 0);
+      this.sampleGroups = this.allGroups.filter(c => c.count > 0 && !c.mini);
       // this.allGroups.forEach(item => {
       //   if (item.count > 0) {
       //     this.sampleGroups.push(item);
@@ -379,13 +379,13 @@ export default {
           if (weekdays.length > 0) {
             weekdays.forEach(day => {
               if (!item.weekDays.indexOf(day)) {
-                if (item.count > 0) {
+                if (item.count > 0 && !item.mini) {
                   this.sampleGroups.push(item);
                 }
               }
             });
           } else {
-            if (item.count > 0) {
+            if (item.count > 0 && !item.mini) {
               this.sampleGroups.push(item);
             }
           }
@@ -396,13 +396,13 @@ export default {
             if (weekdays.length > 0) {
               weekdays.forEach(day => {
                 if (!item.weekDays.indexOf(day)) {
-                  if (item.count > 0) {
+                  if (item.count > 0 && !item.mini) {
                     this.sampleGroups.push(item);
                   }
                 }
               });
             } else {
-              if (item.count > 0) {
+              if (item.count > 0 && !item.mini) {
                 this.sampleGroups.push(item);
               }
             }

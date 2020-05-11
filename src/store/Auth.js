@@ -46,7 +46,10 @@ export default {
       commit("CLEAR_ERROR");
       firebase
         .auth()
-        .signInWithEmailAndPassword(payload.email, payload.password)
+        .signInWithEmailAndPassword(
+          payload.email.trim(),
+          payload.password.trim()
+        )
         .then(() => {
           commit("SET_SUCCESS");
         })
