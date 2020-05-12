@@ -404,7 +404,8 @@ export default {
           datePayNoformat: new Date(),
           subscription:
             this.priceIndivGroup === "3000" ? "3000" : this.priceIndiv,
-          typeW: "Индив"
+          typeW: "Индив",
+          title: this.coachName + "Индив"
         };
         this.sendPayReport({
           name: item.name,
@@ -469,7 +470,8 @@ export default {
         this.countTr = this.selected.length;
         this.earned = 0;
         this.selected.forEach(c => {
-          this.earned += c.typeW === "Группа" ? 2000 : 1500;
+          this.earned +=
+            c.typeW === "Группа" || c.typeW === "Минигруппа" ? 2000 : 1500;
         });
         this.dialogPerform = true;
         setTimeout(() => {

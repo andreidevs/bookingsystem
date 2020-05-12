@@ -17,25 +17,25 @@
           <v-card class="mx-auto" max-width="450">
             <v-card-text>
               <span class="title font-weight-black"
-                >Проданные абонементы за {{ week }}: {{ countWorkInMonth }}
+                >Общий доход за {{ week }}: {{ countWorkInMonth }}
               </span>
               <br />
               <span class="headline">{{ priceWorkInMonth }} KZT</span>
               <br />
               <span class="title font-weight-black"
-                >Групповых: {{ countGroupInMonth }}
+                >Абонементы: {{ countGroupInMonth }}
               </span>
               <br />
               <span class="headline"> {{ priceGroupInMonth }} KZT </span>
               <br />
               <span class="title font-weight-black"
-                >Индивидуальных: {{ countIndivInMonth }}</span
+                >Индивидуальные занятия: {{ countIndivInMonth }}</span
               >
               <br />
               <span class="headline"> {{ priceIndivInMonth }} KZT </span>
               <br />
               <span class="title font-weight-black"
-                >Разовых: {{ countSingleInMonth }}
+                >Разовые посещения: {{ countSingleInMonth }}
               </span>
               <br />
               <span class="headline"> {{ priceSingleInMonth }} KZT </span>
@@ -175,7 +175,7 @@ export default {
       priceGroupInMonth: 0,
       priceIndivInMonth: 0,
       priceSingleInMonth: 0,
-      itemsWeek: ["За день", "За месяц", "За пол года", "За год"],
+      itemsWeek: ["За день", "За неделю", "За месяц", "За пол года", "За год"],
       tableHeaders: [
         {
           text: "Имя",
@@ -298,7 +298,7 @@ export default {
     };
   },
   mounted() {
-    this.createChart();
+    this.createChartMonth();
   },
   created() {
     this.updateTable();
@@ -331,7 +331,7 @@ export default {
         this.sampleTable = this.tableData.filter(c => c.type === this.type);
       }
     },
-    createChart() {
+    createChartMonth() {
       this.loadingChart = true;
       setTimeout(() => {
         for (let i = 0; i < 6; i++) {
@@ -361,6 +361,52 @@ export default {
         this.loadingChart = false;
       }, 2600);
     },
+    // createChartWeek() {
+    //   this.loadingChart = true;
+    //   setTimeout(() => {
+    //     for (let i = 0; i < 3; i++) {
+    //      this.dataBar.labels.unshift(i+1);
+    //       switch(i){
+    //         case 0: {
+    //           let D = new Date();
+    //            D.setDate(D.getDate() - 7);
+
+    //         }
+    //         break;
+    //         case 1: {
+    //           let D = new Date();
+    //            D.setDate(D.getDate() - 7);
+
+    //         }
+    //         break;
+    //       }
+
+    //      let isFilter = date => {  let mDate = Math.ceil(
+    //             Math.abs(D.getTime() - date * 1000) /
+    //               (1000 * 60 * 60 * 24)
+    //           );
+    //           return mDate <= 7;
+    //           }
+    //       this.dataBar.datasets[0].data.unshift(
+    //         this.allData.filter(
+    //          isFilter
+    //         ).length
+    //       );
+    //       this.dataBar.datasets[1].data.unshift(
+    //         this.allData
+    //           .filter(
+    //            isFilter
+    //           )
+    //           .reduce((total, r) => (total += +r.price), 0)
+    //       );
+    //     }
+    //   }, 2500);
+
+    //   setTimeout(() => {
+    //     this.renderChart(this.dataBar, this.options);
+    //     this.loadingChart = false;
+    //   }, 2600);
+    // },
 
     updateFileds() {
       this.countWorkInMonth = 0;
@@ -414,6 +460,17 @@ export default {
               new Date(date * 1000).format("dd.mm.yyyy") ==
               new Date().format("dd.mm.yyyy");
             this.week = "день";
+          }
+          break;
+        case "За неделю":
+          {
+            isFilter = date => {
+              let mDate = Math.ceil(
+                Math.abs(new Date().getTime() - date * 1000) /
+                  (1000 * 60 * 60 * 24)
+              );
+              return mDate <= 7;
+            };
           }
           break;
         case "За месяц":
@@ -475,6 +532,11 @@ export default {
       });
 
       this.tableData = this.sampleTable;
+      // if(this.selectWeek==="За месяц"){
+      //   this.createChartMonth();
+      // } else {
+      //   this.createChartWeek();
+      // }
       this.updateFileds();
       this.inTotal();
       if (this.step === 2) {
