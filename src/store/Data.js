@@ -105,7 +105,7 @@ export default {
           });
         });
       });
-      let ref = vue.$db.collection("users");
+      let ref = vue.$db.collection("usersGroup");
       ref.get().then(function(querySnapshot) {
         querySnapshot.forEach(function(item) {
           if (item.data().datePayNoformat) {
@@ -114,7 +114,7 @@ export default {
             );
             let diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
 
-            if (diffDays >= 30) {
+            if (diffDays > 30) {
               ref.doc(item.data().id).update({
                 paid: false
               });

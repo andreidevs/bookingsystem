@@ -41,7 +41,7 @@
         :dense="dense"
         hide-default-footer
         disable-sort
-        item-key="name"
+        item-key="id"
         :loading="loading"
         loading-text="Загрузка... Пожалуйста подождите"
         sort-by="nameGroup"
@@ -190,6 +190,10 @@ export default {
           value: "subscription"
         },
         {
+          text: "Дата регистрации",
+          value: "dateRegg"
+        },
+        {
           text: "Дата оплаты",
           value: "datePay"
         },
@@ -231,8 +235,17 @@ export default {
       this.loading = true;
       this.sampleUsers = [];
       this.getAllUsers();
-      this.sampleUsers = this.allUsersState;
       setTimeout(() => {
+        this.sampleUsers = this.allUsersState.map(
+          c =>
+            (c = {
+              ...c,
+              dateRegg:
+                c.dateReg != undefined
+                  ? new Date(c.dateReg.seconds * 1000).format("dd.mm.yyyy")
+                  : new Date().format("dd.mm.yyyy")
+            })
+        );
         this.loading = false;
       }, 1000);
     },

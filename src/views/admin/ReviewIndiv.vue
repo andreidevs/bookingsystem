@@ -187,6 +187,10 @@ export default {
           value: "subscription"
         },
         {
+          text: "Дата регистрации",
+          value: "dateRegg"
+        },
+        {
           text: "Дата оплаты",
           value: "datePay"
         },
@@ -231,7 +235,16 @@ export default {
       this.sampleUsers = [];
       this.getAllIndiv();
       setTimeout(() => {
-        this.sampleUsers = this.allIndivState;
+        this.sampleUsers = this.allIndivState.map(
+          c =>
+            (c = {
+              ...c,
+              dateRegg:
+                c.dateReg != undefined
+                  ? new Date(c.dateReg.seconds * 1000).format("dd.mm.yyyy")
+                  : new Date().format("dd.mm.yyyy")
+            })
+        );
         this.loading = false;
       }, 1500);
     },

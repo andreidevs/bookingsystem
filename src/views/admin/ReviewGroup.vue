@@ -51,7 +51,7 @@
         :page.sync="page"
         hide-default-footer
         disable-sort
-        item-key="name"
+        item-key="id"
         :loading="loading"
         loading-text="Загрузка... Пожалуйста подождите"
         sort-by="time"
@@ -156,7 +156,7 @@
               :items="sampleUsers"
               :page.sync="pageS"
               hide-default-footer
-              item-key="name"
+              item-key="id"
               :loading="loading"
               loading-text="Загрузка... Пожалуйста подождите"
               sort-by="time"
@@ -202,14 +202,7 @@
               <v-btn color="green darken-1" text @click="dialogPay = false"
                 >Отмена</v-btn
               >
-              <v-btn
-                color="green darken-1"
-                text
-                @click="
-                  dialogPay = false;
-                  setPayStatus(selectedItem);
-                  updatePaidItem();
-                "
+              <v-btn color="green darken-1" text @click="pay"
                 >Подтвердить</v-btn
               >
             </v-card-actions>
@@ -335,7 +328,6 @@ export default {
     ...mapGetters({
       allGroupsState: "ALLGROUPS",
       usersByGroup: "USERSBYGROUP",
-      usersByMini: "USERSBYMINI",
       coachList: "COACH"
     })
   },
@@ -346,7 +338,8 @@ export default {
       getCoachList: "GET_COACH_LIST",
       getUser: "GET_USERS_BY_GROUP",
       getUserMini: "GET_USERS_BY_MINI",
-      setPayStatus: "SEND_PAY_SUB"
+      sendPayStatusGroup: "SEND_PAY_SUB",
+      sendPayStatusMini: "SEND_PAY_MINI"
     }),
     updateTable() {
       this.loading = true;
@@ -363,15 +356,15 @@ export default {
     updateTableS() {
       this.loading = true;
       this.sampleUsers = [];
-      if (this.selectedItem.mini) {
+      if (!this.selectedItem.mini || this.selectedItem.mini === undefined) {
         this.getUser(this.selectedItem.id);
       } else {
         this.getUserMini(this.selectedItem.id);
       }
-      this.sampleUsers = this.usersByGroup;
       setTimeout(() => {
+        this.sampleUsers = this.usersByGroup;
         this.loading = false;
-      }, 1000);
+      }, 1500);
     },
     showUsers(item) {
       this.selectedItem = item;
@@ -379,11 +372,22 @@ export default {
       this.dialogShowUsers = true;
       this.updateTableS();
     },
+    pay() {
+      this.dialogPay = false;
+      if (
+        this.selectedItem.nameGroup
+          .trim()
+          .split(" ")
+          .pop() === "Минигруппа"
+      ) {
+        this.sendPayStatusMini(this.selectedItem);
+      } else {
+        this.sendPayStatusGroup(this.selectedItem);
+      }
+      this.updatePaidItem();
+    },
     clearFilter() {
-      this.day = "";
-      this.time = "";
-      this.coach = "";
-      this.searchFilter = "";
+      this.searchFilter = this.coach = this.time = this.day = "";
     },
     updatePaidItem() {
       const idx = this.sampleUsers.findIndex(

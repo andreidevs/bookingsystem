@@ -190,6 +190,10 @@ export default {
           value: "coach"
         },
         {
+          text: "Дата регистрации",
+          value: "dateRegg"
+        },
+        {
           text: "Статус оплаты",
           value: "actions"
         },
@@ -230,7 +234,16 @@ export default {
       this.sampleUsers = [];
       this.getAllSingle();
       setTimeout(() => {
-        this.sampleUsers = this.allSingleState;
+        this.sampleUsers = this.allSingleState.map(
+          c =>
+            (c = {
+              ...c,
+              dateRegg:
+                c.dateReg != undefined
+                  ? new Date(c.dateReg.seconds * 1000).format("dd.mm.yyyy")
+                  : new Date().format("dd.mm.yyyy")
+            })
+        );
         this.loading = false;
       }, 1500);
     },
