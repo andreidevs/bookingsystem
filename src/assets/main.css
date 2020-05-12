@@ -30,3 +30,12 @@
     align-items: center;
     justify-content: center;
   }
+.chart_loader {
+    padding-top: 20%;
+    background-color: rgba(#fff, 0.8);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    align-self: center;
+    justify-content: center;
+  }

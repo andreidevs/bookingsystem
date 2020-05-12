@@ -5,7 +5,14 @@
     </div>
     <div v-show="!loading">
       <v-row>
-        <v-col cols="6"> </v-col>
+        <v-col cols="6">
+          <div class="chart_loader" v-show="loadingChart">
+            <v-progress-circular indeterminate color="info" :size="50" />
+          </div>
+          <div v-show="!loadingChart">
+            <canvas ref="canvas"></canvas>
+          </div>
+        </v-col>
         <v-col cols="6">
           <v-card class="mx-auto" max-width="450">
             <v-card-text>
@@ -141,7 +148,9 @@
 
 <script>
 import { mapGetters, mapActions } from "vuex";
+import { Bar } from "vue-chartjs";
 export default {
+  extends: Bar,
   data() {
     return {
       page: 1,
@@ -225,14 +234,84 @@ export default {
       selectGroup: "",
       selectName: "",
       searchFilter: "",
-      sampleTable: []
+      sampleTable: [],
+      allData: [],
+      loadingChart: false,
+      options: {
+        scales: {
+          yAxes: [
+            {
+              ticks: {
+                beginAtZero: true
+              }
+            }
+          ]
+        }
+      },
+      dataBar: {
+        labels: [],
+        datasets: [
+          {
+            label: "# Кол-во абонементов",
+            data: [],
+            backgroundColor: [
+              "rgba(153, 102, 255, 0.2)",
+              "rgba(54, 162, 235, 0.2)",
+              "rgba(255, 206, 86, 0.2)",
+              "rgba(75, 192, 192, 0.2)",
+              "rgba(153, 102, 255, 0.2)",
+              "rgba(255, 159, 64, 0.2)"
+            ],
+            borderColor: [
+              "rgba(153, 102, 255, 0.2)",
+              "rgba(54, 162, 235, 1)",
+              "rgba(255, 206, 86, 1)",
+              "rgba(75, 192, 192, 1)",
+              "rgba(153, 102, 255, 1)",
+              "rgba(255, 159, 64, 1)"
+            ],
+            borderWidth: 1
+          },
+          {
+            label: "# Заработанно",
+            data: [],
+            backgroundColor: [
+              "rgba(255, 99, 132, 0.2)",
+              "rgba(54, 162, 235, 0.2)",
+              "rgba(255, 206, 86, 0.2)",
+              "rgba(75, 192, 192, 0.2)",
+              "rgba(153, 102, 255, 0.2)",
+              "rgba(255, 159, 64, 0.2)"
+            ],
+            borderColor: [
+              "rgba(255, 99, 132, 1)",
+              "rgba(54, 162, 235, 1)",
+              "rgba(255, 206, 86, 1)",
+              "rgba(75, 192, 192, 1)",
+              "rgba(153, 102, 255, 1)",
+              "rgba(255, 159, 64, 1)"
+            ],
+            borderWidth: 1
+          }
+        ]
+      }
     };
+  },
+  mounted() {
+    this.createChart();
   },
   created() {
     this.updateTable();
     this.getCoachList();
     this.nameExcel = "Отчет " + new Date().format("dd.mm.yyyy");
     this.coachList = this.coachLists;
+    setTimeout(() => {
+      this.allReports.forEach(c => {
+        Object.values(c).forEach(g => {
+          this.allData.push(g);
+        });
+      });
+    }, 1000);
   },
   computed: {
     ...mapGetters({
@@ -252,6 +331,37 @@ export default {
         this.sampleTable = this.tableData.filter(c => c.type === this.type);
       }
     },
+    createChart() {
+      this.loadingChart = true;
+      setTimeout(() => {
+        for (let i = 0; i < 6; i++) {
+          let D = new Date();
+          D.setMonth(D.getMonth() - i);
+          this.dataBar.labels.unshift(
+            D.toLocaleString("ru", { month: "long" })
+          );
+
+          this.dataBar.datasets[0].data.unshift(
+            this.allData.filter(
+              c => new Date(c.date.seconds * 1000).getMonth() === D.getMonth()
+            ).length
+          );
+          this.dataBar.datasets[1].data.unshift(
+            this.allData
+              .filter(
+                c => new Date(c.date.seconds * 1000).getMonth() === D.getMonth()
+              )
+              .reduce((total, r) => (total += +r.price), 0)
+          );
+        }
+      }, 2500);
+
+      setTimeout(() => {
+        this.renderChart(this.dataBar, this.options);
+        this.loadingChart = false;
+      }, 2600);
+    },
+
     updateFileds() {
       this.countWorkInMonth = 0;
       this.countGroupInMonth = 0;
@@ -264,13 +374,13 @@ export default {
       this.sampleTable.forEach(c => {
         if (c.type === "Индив") {
           this.countIndivInMonth++;
-          this.priceIndivInMonth += parseInt(c.price);
+          this.priceIndivInMonth += +c.price;
         } else if (c.type === "Группа") {
           this.countGroupInMonth++;
-          this.priceGroupInMonth += parseInt(c.price);
+          this.priceGroupInMonth += +c.price;
         } else {
           this.countSingleInMonth++;
-          this.priceSingleInMonth += parseInt(c.price);
+          this.priceSingleInMonth += +c.price;
         }
       });
       this.countWorkInMonth =
@@ -376,7 +486,7 @@ export default {
       let summ = 0;
       this.sampleTable.forEach(c => {
         if (c.type != "Всего") {
-          summ += parseInt(c.price);
+          summ += +c.price;
         }
       });
 
