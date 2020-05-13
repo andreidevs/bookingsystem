@@ -5,14 +5,15 @@
     </div>
     <div v-show="!loading">
       <vue-cal
-        selected-date="2020-04-27"
+        :selected-date="selectedDate"
         :time-from="7 * 60"
         :time-to="22 * 60"
         :disable-views="['years', 'year', 'month']"
         hideTitleBar
-        :timeCellHeight="100"
+        :timeCellHeight="80"
         locale="ru"
-        :minEventWidth= "30"
+        :minEventWidth="70"
+        :minCellWidth="70"
         style="height: 80vh"
         active-view="week"
         :events="events"
@@ -35,14 +36,15 @@ export default {
     return {
       loading: false,
       events: [],
+      selectedDate: "2020-04-27",
       weekDays: [
+        { date: "2020-05-03", name: "Вс" },
         { date: "2020-04-27", name: "Пн" },
         { date: "2020-04-28", name: "Вт" },
         { date: "2020-04-29", name: "Ср" },
         { date: "2020-04-30", name: "Чт" },
         { date: "2020-05-01", name: "Пт" },
-        { date: "2020-05-02", name: "Сб" },
-        { date: "2020-05-03", name: "Вс" }
+        { date: "2020-05-02", name: "Сб" }
       ],
       allWork: []
     };
@@ -56,9 +58,10 @@ export default {
   created() {
     this.getAllGroups();
     this.getAllIndiv();
+    this.selectedDate = this.weekDays[new Date().getDay()].date;
   },
   mounted() {
-      this.loading = true;
+    this.loading = true;
     setTimeout(() => {
       this.allWork = this.allGroupsState;
       this.allWork = this.allWork.concat(this.allIndivState);
@@ -87,14 +90,12 @@ export default {
 
           e.class =
             name === "Индив" ? "indiv" : name === "Группа" ? "group" : "mini";
-            const nameIndiv = name==="Индив" ? item.name : "";
-          e.content = item.typeWorkout ? item.typeWorkout : nameIndiv + "<br>" + name ;
+          const nameIndiv = name === "Индив" ? item.name : "";
+          e.content = name + "<br>" + nameIndiv;
           this.events.push(e);
-
-          // console.log("e", e);
         });
       });
-        this.loading = false;
+      this.loading = false;
     }, 2000);
   },
   methods: {
@@ -122,7 +123,6 @@ export default {
 .vuecal__event-title {
   font-size: 0.8em;
   font-weight: bold;
-  /* margin: 4px 0 4px; */
 }
 
 .vuecal__event-time {
@@ -138,7 +138,7 @@ export default {
   font-size: 0.7em;
 }
 
-.weekday-label span:not([class]){
-    display: none;
+.weekday-label span:not([class]) {
+  display: none;
 }
 </style>
