@@ -11,6 +11,15 @@
           </v-list-item-content>
         </v-list-item>
 
+        <v-list-item link to="/admin/schedule">
+          <v-list-item-action>
+            <v-icon color="success">mdi-calendar</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Расписание</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+
         <v-list-item link to="/admin/daily">
           <v-list-item-action>
             <v-icon color="success">mdi-table-edit</v-icon>

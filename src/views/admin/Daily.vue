@@ -5,7 +5,7 @@
     </div>
     <div v-show="!loading">
       <v-alert type="success">
-        {{ new Date().format("dddd, mmmm dS, yyyy") }}
+        {{ new Date().format("dddd, mmmm, dS, yyyy") }}
       </v-alert>
       <v-data-table
         v-model="selected"
