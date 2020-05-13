@@ -52,12 +52,17 @@ export default {
   computed: {
     ...mapGetters({
       allGroupsState: "ALLGROUPS",
-      allIndivState: "ALLINDIV"
+      allIndivState: "ALLINDIV",
+      allSofiaIndiv: "INDIVSOFIA",
+      user: "USER"
     })
   },
   created() {
     this.getAllGroups();
     this.getAllIndiv();
+    if (this.user.name === "София") {
+      this.getIndivSofia();
+    }
     this.selectedDate = this.weekDays[new Date().getDay()].date;
   },
   mounted() {
@@ -65,6 +70,9 @@ export default {
     setTimeout(() => {
       this.allWork = this.allGroupsState;
       this.allWork = this.allWork.concat(this.allIndivState);
+      if (this.user.name === "София") {
+        this.allWork = this.allWork.concat(this.allSofiaIndiv);
+      }
 
       this.allWork.forEach(item => {
         const t = item.time.split(":");
@@ -101,7 +109,8 @@ export default {
   methods: {
     ...mapActions({
       getAllGroups: "GET_ALL_GROUPS",
-      getAllIndiv: "GET_ALL_INDIV"
+      getAllIndiv: "GET_ALL_INDIV",
+      getIndivSofia: "GET_SOFIA_INDIV"
     })
   }
 };

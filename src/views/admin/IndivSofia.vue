@@ -360,7 +360,7 @@ export default {
     };
   },
   created() {
-    // this.updateTable();
+    this.updateTable();
   },
   watch: {},
   mounted() {},

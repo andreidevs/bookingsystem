@@ -95,8 +95,16 @@ export default {
     },
     UPDATE_PAY_TRIGER() {
       let refsIndiv = vue.$db.collection("usersIndiv");
+      let refsIndivSofia = vue.$db.collection("indivSofia");
       let refsMini = vue.$db.collection("usersMini");
       refsIndiv.get().then(function(querySnapshot) {
+        querySnapshot.forEach(function(item) {
+          refsIndiv.doc(item.data().id).update({
+            paid: false
+          });
+        });
+      });
+      refsIndivSofia.get().then(function(querySnapshot) {
         querySnapshot.forEach(function(item) {
           refsIndiv.doc(item.data().id).update({
             paid: false
