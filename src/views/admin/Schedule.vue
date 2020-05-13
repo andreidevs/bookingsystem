@@ -14,7 +14,7 @@
         locale="ru"
         :minEventWidth="70"
         :minCellWidth="70"
-        style="height: 80vh"
+        style="height: 80vh; border-radius: 50px"
         active-view="week"
         :events="events"
       >
@@ -123,6 +123,13 @@ export default {
 .vuecal__event-title {
   font-size: 0.8em;
   font-weight: bold;
+}
+vue-cal {
+  overflow-style: none;
+}
+
+.vuecal__flex .vuecal__menu {
+  background-color: transparent;
 }
 
 .vuecal__event-time {

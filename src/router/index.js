@@ -107,6 +107,16 @@ const routes = [
     component: () => import("../views/admin/ReviewGroup.vue")
   },
   {
+    path: "/admin/indiv",
+    name: "AdminIndivSofia",
+    meta: {
+      AuthRequired: true,
+      layout: "admin",
+      title: "Edem Dance - Индивы София"
+    },
+    component: () => import("../views/admin/IndivSofia.vue")
+  },
+  {
     path: "/admin/users/single",
     name: "AdminSingleUsers",
     meta: {

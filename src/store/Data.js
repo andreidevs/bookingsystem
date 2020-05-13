@@ -12,6 +12,7 @@ export default {
     usersByGroup: [],
     usersSingle: [],
     usersIndiv: [],
+    indivSofia: [],
     usersMini: [],
     singleHistory: []
   },
@@ -24,7 +25,8 @@ export default {
     ALLSINGLE: s => s.usersSingle,
     ALLINDIV: s => s.usersIndiv,
     ALLMINI: s => s.usersMini,
-    SINGLEHISTORY: s => s.singleHistory
+    SINGLEHISTORY: s => s.singleHistory,
+    INDIVSOFIA: s => s.indivSofia
   },
   mutations: {
     SET_COACH_LIST(state, payload) {
@@ -44,6 +46,9 @@ export default {
     },
     SET_ALL_INDIV(state, payload) {
       state.usersIndiv = payload;
+    },
+    SET_SOFIA_INDIV(state, payload) {
+      state.indivSofia = payload;
     },
     SET_ALL_MINI(state, payload) {
       state.usersMini = payload;
@@ -211,6 +216,29 @@ export default {
           commit("SET_ERROR", error);
         });
     },
+    SEND_PAY_SOFIA_INDIV({ commit, dispatch }, payload) {
+      vue.$db
+        .collection("indivSofia")
+        .doc(payload.id)
+        .update({
+          paid: true,
+          datePayNoformat: new Date(),
+          datePay: new Date().format("dd.mm.yyyy")
+        })
+        .then(function() {
+          commit("SET_SUCCESS");
+          dispatch("SEND_PAY_REPORT", {
+            name: payload.name,
+            coach: payload.coach,
+            type: "indiv",
+            date: new Date(),
+            price: payload.subscription
+          });
+        })
+        .catch(function(error) {
+          commit("SET_ERROR", error);
+        });
+    },
     SEND_PAY_SINGLE({ commit, dispatch }, payload) {
       vue.$db
         .collection("usersSingle")
@@ -341,6 +369,18 @@ export default {
           });
         });
       commit("SET_ALL_INDIV", users);
+    },
+    GET_SOFIA_INDIV({ commit }) {
+      let users = [];
+      vue.$db
+        .collection("indivSofia")
+        .get()
+        .then(function(querySnapshot) {
+          querySnapshot.forEach(function(doc) {
+            users.push(doc.data());
+          });
+        });
+      commit("SET_SOFIA_INDIV", users);
     },
     GET_ALL_MINI({ commit, getters }) {
       let users = [];
@@ -495,6 +535,20 @@ export default {
           commit("SET_ERROR", error);
         });
     },
+    WRITE_USER_SOFIA_INDIV({ commit }, payload) {
+      vue.$db
+        .collection("indivSofia")
+        .doc(payload.id)
+        .set({
+          ...payload
+        })
+        .then(function() {
+          commit("SET_SUCCESS");
+        })
+        .catch(function(error) {
+          commit("SET_ERROR", error);
+        });
+    },
     WRITE_USER_MINI({ commit, dispatch }, payload) {
       vue.$db
         .collection("usersMini")
@@ -613,6 +667,18 @@ export default {
     DELETE_USER_INDIV({ commit }, payload) {
       vue.$db
         .collection("usersIndiv")
+        .doc(payload.id)
+        .delete()
+        .then(function() {
+          commit("SET_SUCCESS");
+        })
+        .catch(function(error) {
+          commit("SET_ERROR", error);
+        });
+    },
+    DELETE_USER_SOFIA_INDIV({ commit }, payload) {
+      vue.$db
+        .collection("indivSofia")
         .doc(payload.id)
         .delete()
         .then(function() {

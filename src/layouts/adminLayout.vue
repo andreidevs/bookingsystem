@@ -29,6 +29,15 @@
           </v-list-item-content>
         </v-list-item>
 
+        <v-list-item v-if="user.name === 'София'" link to="/admin/indiv">
+          <v-list-item-action>
+            <v-icon color="success">mdi-account-star</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Мои индивы</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+
         <v-list-group color="success" prepend-icon="mdi-account-multiple">
           <template v-slot:activator>
             <v-list-item-title>Ученики</v-list-item-title>
@@ -149,68 +158,6 @@
         {{ $route.meta.title.split("-")[1] }}</v-toolbar-title
       >
     </v-app-bar>
-
-    <v-dialog v-model="dialogAddCoach" persistent max-width="600px">
-      <v-card>
-        <v-card-title>
-          <span class="headline">Добавить тренера</span>
-        </v-card-title>
-        <v-card-text>
-          <v-container>
-            <v-row>
-              <v-col cols="12" sm="6" md="12">
-                <v-text-field
-                  label="ФИО"
-                  v-model="coach.name"
-                  required
-                ></v-text-field>
-              </v-col>
-            </v-row>
-          </v-container>
-          <small>*обязательны для заполнения</small>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" text @click="dialogAddCoach = false"
-            >Назад</v-btn
-          >
-          <v-btn color="blue darken-1" text @click="addCoach">Добавить</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-    <v-dialog v-model="dialogAddTypeWorkout" persistent max-width="600px">
-      <v-card>
-        <v-card-title>
-          <span class="headline">Добавить тип тренеровки</span>
-        </v-card-title>
-        <v-card-text>
-          <v-container>
-            <v-row>
-              <v-col cols="12" sm="6" md="12">
-                <v-text-field
-                  label="Нзавание"
-                  v-model="typeWorkout"
-                  required
-                ></v-text-field>
-              </v-col>
-            </v-row>
-          </v-container>
-          <small>*обязательны для заполнения</small>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn
-            color="blue darken-1"
-            text
-            @click="dialogAddTypeWorkout = false"
-            >Назад</v-btn
-          >
-          <v-btn color="blue darken-1" text @click="addTypeWorkout"
-            >Добавить</v-btn
-          >
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
     <v-content>
       <slot />
     </v-content>
@@ -223,8 +170,6 @@ export default {
   name: "adminLayout",
   data: () => ({
     drawer: false,
-    dialogAddCoach: false,
-    dialogAddTypeWorkout: false,
     coach: {
       name: ""
     },
@@ -267,41 +212,11 @@ export default {
       clearSuccess: "CLEAR_SUCCESS"
     }),
     ...mapActions({
-      logout: "LOGOUT",
-      setCoach: "SET_COACH",
-      setTypeWorkout: "SET_TYPEWORKOUT"
+      logout: "LOGOUT"
     }),
     logOut() {
       this.logout();
       this.$router.push("/signin");
-    },
-    addCoach() {
-      if (this.coach.name != "") {
-        this.setCoach(this.coach);
-        this.coach.name = "";
-        this.dialogAddCoach = false;
-      } else {
-        this.$notify({
-          group: "app",
-          type: "error",
-          title: "Ошибка",
-          text: "Проверьте правильность ввода"
-        });
-      }
-    },
-    addTypeWorkout() {
-      if (this.typeWorkout != "") {
-        this.setTypeWorkout(this.typeWorkout);
-        this.typeWorkout = "";
-        this.dialogAddTypeWorkout = false;
-      } else {
-        this.$notify({
-          group: "app",
-          type: "error",
-          title: "Ошибка",
-          text: "Проверьте правильность ввода"
-        });
-      }
     }
   }
 };
