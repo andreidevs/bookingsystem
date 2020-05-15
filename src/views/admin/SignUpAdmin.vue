@@ -83,9 +83,9 @@ export default {
         this.signUp({
           id: this.$g.generate(20),
           admin: this.admin,
-          name: this.name,
-          email: this.email,
-          password: this.password
+          name: this.name.trim(),
+          email: this.email.trim(),
+          password: this.password.trim()
         });
         this.loading = false;
         this.$router.push("/admin");

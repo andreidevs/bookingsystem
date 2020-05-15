@@ -136,7 +136,21 @@ export default {
         });
       });
     },
-
+    // CHECK_FOR_TYPE({commit}, type, payload){
+    //   vue.$db
+    //   .collection(type)
+    //   .where("capital", "==", true)
+    // .get()
+    // .then(function(querySnapshot) {
+    //     querySnapshot.forEach(function(doc) {
+    //         // doc.data() is never undefined for query doc snapshots
+    //         console.log(doc.id, " => ", doc.data());
+    //     });
+    // })
+    // .catch(function(error) {
+    //     console.log("Error getting documents: ", error);
+    // });
+    // },
     SET_TYPEWORKOUT({ commit }, payload) {
       vue.$db
         .collection("typeWorkout")
@@ -150,6 +164,7 @@ export default {
           commit("SET_ERROR", error);
         });
     },
+
     SEND_PAY_SUB({ commit, dispatch }, payload) {
       vue.$db
         .collection("usersGroup")
@@ -190,6 +205,7 @@ export default {
           dispatch("SEND_PAY_REPORT", {
             name: payload.name,
             coach: payload.coach,
+            nameGroup: payload.nameGroup,
             type: "mini",
             date: new Date(),
             price: payload.subscription

@@ -173,6 +173,15 @@ const routes = [
     component: () => import("../views/admin/SignUpAdmin.vue")
   },
   {
+    path: "/system/sendreport",
+    name: "SustemSendReport",
+    meta: {
+      AuthRequired: true,
+      title: "System - add send report"
+    },
+    component: () => import("../views/system/SendPay.vue")
+  },
+  {
     path: "/signin",
     name: "SignIn",
     meta: { title: "Edem Dance - Вход в админ панель" },
