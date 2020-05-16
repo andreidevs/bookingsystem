@@ -4,9 +4,9 @@
       <v-progress-circular indeterminate color="accent" :size="100" />
     </div>
     <div v-show="!loading">
-      <v-alert type="success">
-        {{ new Date().format("dddd, mmmm d, yyyy") }}
-      </v-alert>
+      <!-- <v-alert type="success">
+        {{ this.date }}
+      </v-alert> -->
       <v-data-table
         v-model="selected"
         :headers="tableHeaders"
@@ -47,13 +47,23 @@
         circle
         color="success"
       ></v-pagination>
-      <v-row class="d-flex">
-        <v-btn class="mr-2" :loading="loadingB" outlined @click="addItem()"
-          ><v-icon>mdi-plus</v-icon> Добавить</v-btn
-        >
-        <v-btn outlined @click="perform"
-          ><v-icon>mdi-check</v-icon> Подтвердить</v-btn
-        >
+      <v-row>
+        <v-col cols="12" sm="12" lg="6">
+          <v-btn
+            color="info"
+            class="mr-2"
+            :loading="loadingB"
+            style="width: 100%"
+            outlined
+            @click="addItem()"
+            ><v-icon>mdi-plus</v-icon> Добавить тренировку</v-btn
+          >
+        </v-col>
+        <v-col cols="12" sm="12" lg="6">
+          <v-btn style="width: 100%" color="success" @click="perform"
+            ><v-icon>mdi-check</v-icon> Подтвердить</v-btn
+          >
+        </v-col>
       </v-row>
       <v-row justify="center">
         <v-dialog v-model="dialog" max-width="600px">
@@ -70,7 +80,7 @@
                     label="Группы/Индивы"
                   ></v-switch>
                   <v-row>
-                    <v-col :cols="!switch1 ? 4 : 6">
+                    <v-col :lg="!switch1 ? 4 : 6" cols="12" sm="12">
                       <v-text-field
                         v-model="selectName"
                         :label="!switch1 ? 'Имя клиента' : 'Название группы'"
@@ -80,7 +90,7 @@
                         @input="changeFilter(selectName)"
                       ></v-text-field>
                     </v-col>
-                    <v-col v-if="!switch1" cols="4">
+                    <v-col v-if="!switch1" cols="12" sm="12" lg="4">
                       <v-text-field
                         v-model="selectPhone"
                         label="Номер телефона"
@@ -92,7 +102,7 @@
                       >
                       </v-text-field>
                     </v-col>
-                    <v-col v-if="!switch1" cols="3">
+                    <v-col v-if="!switch1" cols="12" sm="12" lg="3">
                       <v-btn rounded color="info" @click="step = 2"
                         >Нет в списке</v-btn
                       >
@@ -128,6 +138,12 @@
                     circle
                     color="success"
                   ></v-pagination>
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="blue darken-1" text @click="dialog = false"
+                      >Закрыть</v-btn
+                    >
+                  </v-card-actions>
                   <v-row justify="center">
                     <v-dialog v-model="dialogPay" persistent max-width="290">
                       <v-card>
@@ -323,11 +339,13 @@ export default {
       selectName: "",
       selectPhone: "",
       selectedItem: {},
+      date: null,
       dialogPerform: false
     };
   },
   created() {
     this.updateTable();
+    // this.date = new Date().format("dddd, mmmm d, yyyy");
   },
   computed: {
     ...mapGetters({

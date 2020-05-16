@@ -5,7 +5,7 @@
     </div>
     <div v-show="!loading">
       <v-row>
-        <v-col cols="6">
+        <v-col cols="12" sm="12" lg="6">
           <div class="chart_loader" v-show="loadingChart">
             <v-progress-circular indeterminate color="info" :size="50" />
           </div>
@@ -13,7 +13,7 @@
             <canvas ref="canvas"></canvas>
           </div>
         </v-col>
-        <v-col cols="6">
+        <v-col cols="12" sm="12" lg="6">
           <v-card class="mx-auto" max-width="450">
             <v-card-text>
               <span class="title font-weight-black"
@@ -44,7 +44,7 @@
         </v-col>
       </v-row>
       <v-row>
-        <v-col cols="3">
+        <v-col cols="6" sm="6" lg="3">
           <v-select
             outlined
             dense
@@ -54,7 +54,7 @@
             @change="filterWeek"
           ></v-select>
         </v-col>
-        <v-col cols="2">
+        <v-col cols="6" sm="6" lg="2">
           <v-select
             outlined
             dense
@@ -117,7 +117,7 @@
       >
         <template v-slot:top>
           <v-btn
-            class="update-button"
+            class="update-button ub"
             style="margin-left: 92%"
             color="success"
             text
@@ -600,4 +600,10 @@ export default {
   }
 };
 </script>
-<style></style>
+<style scoped>
+@media (max-width: 700px) {
+  .ub {
+    margin-top: 0 !important;
+  }
+}
+</style>

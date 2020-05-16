@@ -5,7 +5,7 @@
     </div>
     <div v-show="!loading">
       <v-row>
-        <v-col cols="4" lg="2" sm="3">
+        <v-col cols="6" lg="2" sm="6">
           <v-select
             v-model="day"
             :items="daysItems"
@@ -15,7 +15,7 @@
             @input="changeFilter(day)"
           ></v-select>
         </v-col>
-        <v-col cols="4" lg="2" sm="3">
+        <v-col cols="6" lg="2" sm="6">
           <v-select
             v-model="time"
             :items="timeItems"
@@ -35,7 +35,7 @@
             @input="changeFilter(coach)"
           ></v-select>
         </v-col>
-        <v-col cols="3">
+        <v-col cols="3" sm="2" lg="3">
           <v-btn rounded color="info" @click="clearFilter"
             >Очистить фильтр</v-btn
           >
@@ -59,14 +59,7 @@
         :search="searchFilter"
       >
         <template v-slot:top>
-          <v-btn
-            class="update-button"
-            color="success"
-            text
-            dark
-            small
-            @click="updateTable()"
-          >
+          <v-btn color="success" text dark small @click="updateTable()">
             Обновить
             <v-icon>mdi-reload</v-icon>
           </v-btn>

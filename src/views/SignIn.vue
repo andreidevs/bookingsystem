@@ -19,10 +19,8 @@
       ></v-text-field>
 
       <v-text-field
-        :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
-        :type="show1 ? 'text' : 'password'"
+        :type="'password'"
         class="input-group--focused"
-        @click:append="show1 = !show1"
         v-model="password"
         label="Пароль"
         required
