@@ -111,6 +111,15 @@
               <v-list-item-title>Добавить группу</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
+
+          <v-list-item class="ml-8" link to="/admin/anotherpay">
+            <!-- <v-list-item-action>
+              <v-icon color="success">mdi-folder-plus</v-icon>
+            </v-list-item-action> -->
+            <v-list-item-content>
+              <v-list-item-title>Другая оплата</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
         </v-list-group>
 
         <v-list-item v-if="user.admin" link to="/admin/signup">

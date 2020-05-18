@@ -147,6 +147,16 @@ const routes = [
     component: () => import("../views/admin/ReviewIndiv.vue")
   },
   {
+    path: "/admin/anotherpay",
+    name: "AdminAnotherPay",
+    meta: {
+      AuthRequired: true,
+      layout: "admin",
+      title: "Edem Dance - Другая оплата"
+    },
+    component: () => import("../views/admin/AnotherPay.vue")
+  },
+  {
     path: "/admin",
     name: "AdminMain",
     meta: { AuthRequired: true, layout: "admin", title: "Edem Dance" },
@@ -177,7 +187,7 @@ const routes = [
     name: "SustemSendReport",
     meta: {
       AuthRequired: true,
-      title: "System - add send report"
+      title: "System - send pay report"
     },
     component: () => import("../views/system/SendPay.vue")
   },

@@ -204,7 +204,7 @@ export default {
           value: "name"
         },
         {
-          text: "Тип занятия",
+          text: "Тип",
           value: "type"
         },
         {
@@ -522,8 +522,10 @@ export default {
                 data.type = "Индив";
               } else if (g.type === "group") {
                 data.type = "Группа";
-              } else {
+              } else if (g.type === "single") {
                 data.type = "Разовое";
+              } else {
+                data.type = "Другая оплата";
               }
               this.sampleTable.push(data);
             }
