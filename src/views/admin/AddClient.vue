@@ -235,6 +235,29 @@
         >
       </v-card-actions>
     </div>
+    <v-row justify="center">
+      <v-dialog v-model="dialogCheck" persistent max-width="290">
+        <v-card>
+          <v-card-title class="headline"
+            >Данный клиент уже существует!</v-card-title
+          >
+          <v-card-text>Добавить еще раз?</v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn
+              color="green darken-1"
+              text
+              @click="
+                dialogCheck = false;
+                loading = false;
+              "
+              >Нет</v-btn
+            >
+            <v-btn color="green darken-1" text @click="afterChecking">Да</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </v-row>
   </v-card>
 </template>
 
@@ -311,6 +334,8 @@ export default {
       nameGroup: "",
       uidGroup: null,
       nameCoach: "",
+      payload: {},
+      dialogCheck: false,
       headersGroup: [
         {
           text: "Дни",
@@ -343,7 +368,8 @@ export default {
   computed: {
     ...mapGetters({
       allGroups: "ALLGROUPS",
-      coachList: "COACH"
+      coachList: "COACH",
+      check: "CHECK"
     })
   },
   created() {
@@ -360,7 +386,9 @@ export default {
       sendPaySingle: "SEND_PAY_SINGLE",
       sendPayGroup: "SEND_PAY_SUB",
       sendPayIndiv: "SEND_PAY_INDIV",
-      sendPayMini: "SEND_PAY_MINI"
+      sendPayMini: "SEND_PAY_MINI",
+      checkGroup: "CHECK_USERS_GROUP",
+      checkIndiv: "CHECK_INDIV"
     }),
     filterGroups() {
       if (this.miniGroupCheck) {
@@ -394,6 +422,10 @@ export default {
           break;
       }
     },
+    afterChecking() {
+      this.addBase();
+      this.dialogCheck = false;
+    },
     step1(item) {
       this.nameGroup = item.name;
       this.uidGroup = item.id;
@@ -424,12 +456,17 @@ export default {
               this.priceMiniGroup === "2000" ? "2000" : this.priceMini,
             coach: this.nameCoach,
             paid: false,
+
+            type: "Mini",
             sendT: true
           };
-          this.writeMiniUser(payload);
+          this.payload = payload;
+          this.checkGroup(payload, "Mini");
           setTimeout(() => {
-            if (this.statusPaid) {
-              this.sendPayMini(payload);
+            if (this.check) {
+              this.dialogCheck = true;
+            } else {
+              this.addBase();
             }
           }, 1000);
         } else if (this.radioGroup === "1500") {
@@ -443,15 +480,17 @@ export default {
             subscription: this.radioGroup,
             coach: this.nameCoach,
             paid: false,
-            type: "single",
-            datePay: this.statusPaid ? new Date().format("dd.mm.yyyy") : "",
-            datePayNoformat: this.statusPaid ? new Date() : "",
+
+            type: "Single",
             sendT: true
           };
-          this.writeSingleLesson(payload);
+          this.payload = payload;
+          this.checkGroup(payload, "Single");
           setTimeout(() => {
-            if (this.statusPaid) {
-              this.sendPaySingle(payload);
+            if (this.check) {
+              this.dialogCheck = true;
+            } else {
+              this.addBase();
             }
           }, 1000);
         } else {
@@ -465,23 +504,57 @@ export default {
             uidGroup: this.uidGroup,
             subscription: this.radioGroup,
             coach: this.nameCoach,
-            paid: this.statusPaid ? true : false,
-            datePay: this.statusPaid ? new Date().format("dd.mm.yyyy") : "",
-            datePayNoformat: this.statusPaid ? new Date() : "",
+            paid: false,
+            type: "Group",
             sendT: true
           };
-          this.writeUserGroup(payload);
+          this.payload = payload;
+          this.checkGroup(payload, "Group");
           setTimeout(() => {
-            if (this.statusPaid) {
-              this.sendPayGroup(payload);
+            if (this.check) {
+              this.dialogCheck = true;
+            } else {
+              this.addBase();
             }
           }, 1000);
         }
-        setTimeout(() => {
-          this.loading = false;
-          this.step = 1;
-        }, 2000);
       }
+    },
+    addBase() {
+      this.loading = true;
+      if (this.payload.type === "Group") {
+        this.writeUserGroup(this.payload);
+        setTimeout(() => {
+          if (this.statusPaid) {
+            this.sendPayGroup(this.payload);
+          }
+        }, 1000);
+      } else if (this.payload.type === "Mini") {
+        this.writeMiniUser(this.payload);
+        setTimeout(() => {
+          if (this.statusPaid) {
+            this.sendPayMini(this.payload);
+          }
+        }, 1000);
+      } else if (this.payload.type === "Single") {
+        this.writeSingleLesson(this.payload);
+        setTimeout(() => {
+          if (this.statusPaid) {
+            this.sendPaySingle(this.payload);
+          }
+        }, 1000);
+      } else {
+        this.writeIndivUser(this.payload);
+        setTimeout(() => {
+          if (this.statusPaid) {
+            this.sendPayIndiv(this.payload);
+          }
+        }, 1000);
+      }
+      setTimeout(() => {
+        this.loading = false;
+        this.step = 0;
+      }, 2000);
     },
     addWeekday(chip) {
       this.chip.map(c =>
@@ -513,16 +586,16 @@ export default {
           days += item + ", ";
         });
         payload.title = `${payload.name} ${days} ${payload.time} ${payload.coach}`;
-        this.writeIndivUser(payload);
+
+        this.payload = payload;
+        this.checkIndiv(payload);
         setTimeout(() => {
-          if (this.statusPaid) {
-            this.sendPayIndiv(payload);
+          if (this.check) {
+            this.dialogCheck = true;
+          } else {
+            this.addBase();
           }
         }, 1000);
-        setTimeout(() => {
-          this.loading = false;
-          this.step = 0;
-        }, 2000);
       }
     }
   }

@@ -88,7 +88,7 @@
             <span v-if="step === 2">Назад</span>
           </v-btn>
         </v-col>
-        <v-col>
+        <v-col class="sm-none">
           <export-excel
             :data="sampleTable"
             :fields="excel_fields"

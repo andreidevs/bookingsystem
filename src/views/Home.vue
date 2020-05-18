@@ -441,8 +441,7 @@ export default {
             nameGroup: this.nameGroup,
             subscription: this.radioGroup,
             coach: this.nameCoach,
-            paid: false,
-            type: "single"
+            paid: false
           };
           this.writeSingleLesson(payload);
           this.dialogOk = true;

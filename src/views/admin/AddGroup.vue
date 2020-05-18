@@ -69,6 +69,23 @@
             >Добавить</v-btn
           >
         </v-card-actions>
+        <v-row justify="center">
+          <v-dialog v-model="dialogCheck" persistent max-width="280">
+            <v-card>
+              <v-card-title class="headline"
+                >Данная группа уже существует!</v-card-title
+              >
+              <v-card-text>Измените параметры и поворите попытку</v-card-text>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+
+                <v-btn color="green darken-1" text @click="dialogCheck = false"
+                  >Ок</v-btn
+                >
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+        </v-row>
         <v-btn
           style="position:fixed!important; bottom:10px; left:10px; z-index:1000;"
           @click="$router.go(-1)"
@@ -86,7 +103,6 @@ import { mapGetters, mapActions } from "vuex";
 export default {
   data: () => ({
     drawer: false,
-    dialogAddCoach: false,
     loadingCard: false,
     coach: {
       name: ""
@@ -95,6 +111,7 @@ export default {
     selectCoach: "",
     selectTypeWorkout: "",
     coachList: [],
+    dialogCheck: "",
     typeWorkoutList: [],
     chip: [
       { title: "Пн", active: false, color: "red" },
@@ -131,7 +148,8 @@ export default {
   computed: {
     ...mapGetters({
       coachLists: "COACH",
-      typeWorkoutLists: "TYPEWORKOUT"
+      typeWorkoutLists: "TYPEWORKOUT",
+      check: "CHECK"
     })
   },
   created() {
@@ -144,7 +162,8 @@ export default {
     ...mapActions({
       getCoachList: "GET_COACH_LIST",
       getTypeWorkoutList: "GET_TYPEWORKOUT_LIST",
-      createGrooup: "CREATE_GROUP"
+      createGrooup: "CREATE_GROUP",
+      checkGroup: "CHECK_GROUP"
     }),
     addWeekday(chip) {
       this.chip.map(c =>
@@ -191,11 +210,18 @@ export default {
           text: "Проверьте заполнены ли все поля"
         });
       } else {
-        this.createGrooup(massData);
+        this.checkGroup(massData);
+        setTimeout(() => {
+          if (this.check) {
+            this.dialogCheck = true;
+          } else {
+            this.createGrooup(massData);
+          }
+        }, 1000);
       }
       setTimeout(() => {
         this.loadingCard = false;
-      }, 1500);
+      }, 2000);
     }
   }
 };
