@@ -480,7 +480,7 @@ export default {
       refGroup.get().then(function(doc) {
         users = doc.data().users;
         count = doc.data().count;
-        count = +count - 1;
+        count = parseInt(count) - 1;
         users.push(payload.id);
         refGroup
           .update({
@@ -613,7 +613,7 @@ export default {
                 .collection("groups")
                 .doc(payload.uidGroup)
                 .update({
-                  count: +count + 1,
+                  count: parseInt(count) + 1,
                   users: newUsers
                 })
                 .then(function() {

@@ -6,7 +6,7 @@
     <div v-show="!loading">
       <v-row>
         <v-col cols="12" sm="12" md="3">
-          <v-card style="margin-left: -8%" max-width="200" tile>
+          <v-card style="margin-left: -8%" max-width="245" tile>
             <v-list shaped>
               <v-subheader class="subtitle-1">Отчеты</v-subheader>
               <v-list-item-group v-model="item" color="primary">
@@ -98,8 +98,8 @@ export default {
       item: "",
       itemsMenu: [
         { text: "За день", icon: "mdi-calendar" },
-        { text: "За месяц", icon: "mdi-calendar-check" }
-        // { text: "За пол года", icon: "mdi-calendar-clock" },
+        { text: "За месяц", icon: "mdi-calendar-check" },
+        { text: "За прошлый месяц", icon: "mdi-calendar-clock" }
         // { text: "За год", icon: "mdi-calendar-blank" }
       ],
       sampleTable: [],
@@ -149,7 +149,6 @@ export default {
       getCoachList: "GET_COACH_LIST"
     }),
     selectCoach() {
-      // console.log("sample", this.sampleTable)
       if (this.coach != "Все") {
         this.tableData = [];
         this.sampleTable.forEach(c => {
@@ -175,295 +174,93 @@ export default {
       this.tableData = this.tableData.filter(g => g.type !== "Всего");
       this.tableData.push({ type: "Всего", count, summ });
     },
+    inMonth(value) {
+      let r = [];
+      let month = new Date().getMonth();
+      if (value) {
+        month = new Date().getMonth() - 1;
+      }
+      r = this.allReports.filter(
+        c => c.year === new Date().getFullYear() && c.month === month
+      );
+      r.forEach(c => {
+        if (c.group.length > 0) {
+          this.tableData.push({
+            coach: c.coach,
+            count: c.group.length,
+            type: "Группа",
+            summ: c.group.length * 2000
+          });
+        }
+        if (c.indiv.length > 0) {
+          this.tableData.push({
+            coach: c.coach,
+            count: c.indiv.length,
+            type: "Индив",
+            summ: c.indiv.length * 1500
+          });
+        }
+      });
+      let mass = [];
+      this.tableData.forEach(c => {
+        let item = mass.find(
+          item => item.coach === c.coach && item.type === c.type
+        );
+        if (item) {
+          item.count += c.count;
+          if (item.type === "Индив") {
+            item.summ += c.count * 1500;
+          } else {
+            item.summ += c.count * 2000;
+          }
+        } else {
+          mass.push(c);
+        }
+      });
+
+      this.tableData = mass;
+    },
     showReport(item) {
       this.tableData = [];
+
       switch (item) {
         case 0:
           {
             let r = [];
-            this.allReports.forEach(c => {
-              if (
+            r = this.allReports.filter(
+              c =>
                 c.year === new Date().getFullYear() &&
-                c.month === new Date().getMonth()
-              ) {
-                r.push(c);
-              }
-            });
-
-            const thisday = "day-" + new Date().getDate();
+                c.month === new Date().getMonth() &&
+                c.day === new Date().getDate()
+            );
 
             r.forEach(c => {
-              if (c[thisday] != undefined) {
-                if (c[thisday].group.length > 0) {
-                  this.tableData.push({
-                    coach: c.coach,
-                    count: c[thisday].group.length,
-                    type: "Группа",
-                    summ: c[thisday].group.length * 2000
-                  });
-                }
-                if (c[thisday].indiv.length > -1) {
-                  this.tableData.push({
-                    coach: c.coach,
-                    count: c[thisday].indiv.length,
-                    type: "Индив",
-                    summ: c[thisday].indiv.length * 1500
-                  });
-                }
-              }
-            });
-          }
-          break;
-        case 1:
-          {
-            let r = [];
-            this.allReports.forEach(c => {
-              if (
-                c.year === new Date().getFullYear() &&
-                c.month === new Date().getMonth()
-              ) {
-                r.push(c);
-              }
-            });
-            r.forEach(c => {
-              let groupL = 0,
-                indivL = 0;
-
-              for (let i = 0; i < 30; i++) {
-                const thisday = "day-" + i;
-                if (c[thisday] != undefined) {
-                  groupL += c[thisday].group.length;
-                  indivL += c[thisday].indiv.length;
-                }
-              }
-              if (groupL > 0) {
+              if (c.group.length > 0) {
                 this.tableData.push({
                   coach: c.coach,
-                  count: groupL,
+                  count: c.group.length,
                   type: "Группа",
-                  summ: groupL * 2000
+                  summ: c.group.length * 2000
                 });
               }
-
-              if (indivL > 0) {
+              if (c.indiv.length > 0) {
                 this.tableData.push({
                   coach: c.coach,
-                  count: indivL,
+                  count: c.indiv.length,
                   type: "Индив",
-                  summ: indivL * 1500
+                  summ: c.indiv.length * 1500
                 });
               }
             });
           }
           break;
-        case 2:
-          {
-            let r = [];
-
-            let massdate = [];
-            const month = new Date().getMonth();
-            let year = new Date().getFullYear();
-            let count = 5;
-            ////////////////////////////////Месяцы
-            for (let i = month; i > 0; i--) {
-              massdate.push({ month: i, year: year });
-              if (count != 0) {
-                count--;
-              } else {
-                break;
-              }
-            }
-            if (count > 0) {
-              year--;
-
-              for (let i = 11; i >= 0; i--) {
-                massdate.push({ month: i, year: year });
-                if (count != 0) {
-                  count--;
-                } else {
-                  break;
-                }
-              }
-            }
-
-            this.allReports.forEach(c => {
-              if (
-                (c.year === massdate[0].year &&
-                  c.month === massdate[0].month) ||
-                (c.year === massdate[1].year &&
-                  c.month === massdate[1].month) ||
-                (c.year === massdate[2].year &&
-                  c.month === massdate[2].month) ||
-                (c.year === massdate[3].year &&
-                  c.month === massdate[3].month) ||
-                (c.year === massdate[4].year &&
-                  c.month === massdate[4].month) ||
-                (c.year === massdate[5].year && c.month === massdate[5].month)
-              ) {
-                r.push(c);
-              }
-            });
-
-            r.forEach(c => {
-              let groupL = 0,
-                indivL = 0;
-              ///////////Дни
-              for (let i = 0; i < 30; i++) {
-                const thisday = "day-" + i;
-                if (c[thisday] != undefined) {
-                  groupL += c[thisday].group.length;
-                  indivL += c[thisday].indiv.length;
-                }
-              }
-              count = 0;
-              if (groupL > 0) {
-                if (
-                  this.tableData.some(
-                    g => g.coach === c.coach && g.type === "Группа"
-                  )
-                ) {
-                  let idx = this.tableData.findIndex(
-                    g => g.coach === c.coach && g.type === "Группа"
-                  );
-                  this.tableData[idx].count += groupL;
-                  this.tableData[idx].summ = this.tableData[idx].count * 2000;
-                } else {
-                  this.tableData.push({
-                    coach: c.coach,
-                    count: groupL,
-                    type: "Группа",
-                    summ: groupL * 2000
-                  });
-                }
-              }
-
-              if (indivL > 0) {
-                if (
-                  this.tableData.some(
-                    g => g.coach === c.coach && g.type === "Индив"
-                  )
-                ) {
-                  let idx = this.tableData.findIndex(
-                    g => g.coach === c.coach && g.type === "Индив"
-                  );
-                  this.tableData[idx].count += indivL;
-                  this.tableData[idx].summ = this.tableData[idx].count * 1500;
-                } else {
-                  this.tableData.push({
-                    coach: c.coach,
-                    count: indivL,
-                    type: "Индив",
-                    summ: indivL * 1500
-                  });
-                }
-              }
-            });
-
-            // this.sampleTable = this.tableData;
-          }
+        case 1: {
+          this.inMonth(false);
           break;
-        case 3: {
-          let r = [];
-
-          let massdate = [];
-          const month = new Date().getMonth();
-          let year = new Date().getFullYear();
-          let count = 11;
-          ////////////////////////////////Месяцы
-          for (let i = month; i > 0; i--) {
-            massdate.push({ month: i, year: year });
-            if (count != 0) {
-              count--;
-            } else {
-              break;
-            }
-          }
-          if (count > 0) {
-            year--;
-
-            for (let i = 11; i >= 0; i--) {
-              massdate.push({ month: i, year: year });
-              if (count != 0) {
-                count--;
-              } else {
-                break;
-              }
-            }
-          }
-
-          this.allReports.forEach(c => {
-            if (
-              (c.year === massdate[0].year && c.month === massdate[0].month) ||
-              (c.year === massdate[1].year && c.month === massdate[1].month) ||
-              (c.year === massdate[2].year && c.month === massdate[2].month) ||
-              (c.year === massdate[3].year && c.month === massdate[3].month) ||
-              (c.year === massdate[4].year && c.month === massdate[4].month) ||
-              (c.year === massdate[5].year && c.month === massdate[5].month) ||
-              (c.year === massdate[6].year && c.month === massdate[6].month) ||
-              (c.year === massdate[7].year && c.month === massdate[7].month) ||
-              (c.year === massdate[8].year && c.month === massdate[8].month) ||
-              (c.year === massdate[9].year && c.month === massdate[9].month) ||
-              (c.year === massdate[10].year &&
-                c.month === massdate[10].month) ||
-              (c.year === massdate[11].year && c.month === massdate[11].month)
-            ) {
-              r.push(c);
-            }
-          });
-          r.forEach(c => {
-            let groupL = 0,
-              indivL = 0;
-            ///////////Дни
-            for (let i = 0; i < 30; i++) {
-              const thisday = "day-" + i;
-              if (c[thisday] != undefined) {
-                groupL += c[thisday].group.length;
-                indivL += c[thisday].indiv.length;
-              }
-            }
-            count = 0;
-            if (groupL > 0) {
-              if (
-                this.tableData.some(
-                  g => g.coach === c.coach && g.type === "Группа"
-                )
-              ) {
-                let idx = this.tableData.findIndex(
-                  g => g.coach === c.coach && g.type === "Группа"
-                );
-                this.tableData[idx].count += groupL;
-                this.tableData[idx].summ = this.tableData[idx].count * 2000;
-              } else {
-                this.tableData.push({
-                  coach: c.coach,
-                  count: groupL,
-                  type: "Группа",
-                  summ: groupL * 2000
-                });
-              }
-            }
-
-            if (indivL > 0) {
-              if (
-                this.tableData.some(
-                  g => g.coach === c.coach && g.type === "Индив"
-                )
-              ) {
-                let idx = this.tableData.findIndex(
-                  g => g.coach === c.coach && g.type === "Индив"
-                );
-                this.tableData[idx].count += indivL;
-                this.tableData[idx].summ = this.tableData[idx].count * 1500;
-              } else {
-                this.tableData.push({
-                  coach: c.coach,
-                  count: indivL,
-                  type: "Индив",
-                  summ: indivL * 1500
-                });
-              }
-            }
-          });
+        }
+        case 2: {
+          this.inMonth(true);
+          break;
         }
       }
 

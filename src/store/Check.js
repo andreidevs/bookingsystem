@@ -83,6 +83,24 @@ export default {
         .catch(function(error) {
           commit("SET_ERROR", error);
         });
+    },
+    CHECK_DAILY({ commit }, payload) {
+      let check = false;
+      vue.$db
+        .collection("reportsDaily")
+        .doc(payload.coach + "-" + payload.day + "-" + payload.month)
+        .get()
+        .then(function(doc) {
+          if (doc.exists) {
+            check = true;
+          } else {
+            check = false;
+          }
+          commit("SET_CHECK", check);
+        })
+        .catch(function(error) {
+          commit("SET_ERROR", error);
+        });
     }
   }
 };

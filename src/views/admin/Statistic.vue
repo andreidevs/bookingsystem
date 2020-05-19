@@ -524,6 +524,8 @@ export default {
                 data.type = "Группа";
               } else if (g.type === "single") {
                 data.type = "Разовое";
+              } else if (g.type === "mini") {
+                data.type = "Минигруппа";
               } else {
                 data.type = "Другая оплата";
               }

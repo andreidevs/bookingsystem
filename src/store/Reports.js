@@ -17,35 +17,18 @@ export default {
     }
   },
   actions: {
-    SEND_DAILY({ commit, getters }, payload) {
+    SEND_DAILY({ commit }, payload) {
       vue.$db
-        .collection("reports")
-        .doc(getters.USER.name + "-" + new Date().format("mm-yyyy"))
-        .update({
-          ...payload,
-          coach: getters.USER.name,
-          month: new Date().getMonth(),
-          year: new Date().getFullYear()
+        .collection("reportsDaily")
+        .doc(payload.coach + "-" + payload.day + "-" + payload.month)
+        .set({
+          ...payload
         })
         .then(function() {
           commit("SET_SUCCESS");
         })
-        .catch(function() {
-          vue.$db
-            .collection("reports")
-            .doc(getters.USER.name + "-" + new Date().format("mm-yyyy"))
-            .set({
-              ...payload,
-              coach: getters.USER.name,
-              month: new Date().getMonth(),
-              year: new Date().getFullYear()
-            })
-            .then(function() {
-              commit("SET_SUCCESS");
-            })
-            .catch(function(error) {
-              commit("SET_ERROR", error);
-            });
+        .catch(function(error) {
+          commit("SET_ERROR", error);
         });
     },
     SEND_PAY_REPORT({ commit }, payload) {
@@ -93,7 +76,7 @@ export default {
     GET_REPORTS({ commit }) {
       const reports = [];
       vue.$db
-        .collection("reports")
+        .collection("reportsDaily")
         .get()
         .then(function(querySnapshot) {
           querySnapshot.forEach(function(doc) {
