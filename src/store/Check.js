@@ -88,7 +88,15 @@ export default {
       let check = false;
       vue.$db
         .collection("reportsDaily")
-        .doc(payload.coach + "-" + payload.day + "-" + payload.month)
+        .doc(
+          payload.coach +
+            "-" +
+            payload.day +
+            "-" +
+            payload.month +
+            "-" +
+            payload.year
+        )
         .get()
         .then(function(doc) {
           if (doc.exists) {

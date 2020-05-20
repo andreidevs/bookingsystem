@@ -20,7 +20,15 @@ export default {
     SEND_DAILY({ commit }, payload) {
       vue.$db
         .collection("reportsDaily")
-        .doc(payload.coach + "-" + payload.day + "-" + payload.month)
+        .doc(
+          payload.coach +
+            "-" +
+            payload.day +
+            "-" +
+            payload.month +
+            "-" +
+            payload.year
+        )
         .set({
           ...payload
         })
