@@ -118,6 +118,18 @@
             :value="item.value"
           ></v-radio>
         </v-radio-group>
+        <v-text-field
+          v-show="
+            radioGroup !== '1500' &&
+              radioGroup !== '10000' &&
+              radioGroup !== '12000'
+          "
+          v-model="radioGroupPrice"
+          label="Другая цена"
+          outlined
+          dense
+          v-mask="'######'"
+        ></v-text-field>
         <v-radio-group v-if="miniGroup" v-model="priceMiniGroup" class="mt-n4">
           <v-radio
             color="success"
@@ -258,6 +270,13 @@
         </v-card>
       </v-dialog>
     </v-row>
+    <v-btn
+      style="position:fixed!important; bottom:10px; left:10px; z-index:1000;"
+      @click="$router.go(-1)"
+    >
+      <v-icon>mdi-keyboard-backspace</v-icon>
+      Назад
+    </v-btn>
   </v-card>
 </template>
 
@@ -316,6 +335,7 @@ export default {
       timeMinute: "00",
       searchTable1: "",
       radioGroup: "1500",
+      radioGroupPrice: "",
       priceIndivGroup: "3000",
       radioItemsIndiv: [
         { text: "Цена - 3000", value: "3000" },
@@ -328,7 +348,8 @@ export default {
       radioItems: [
         { text: "Разовое занятие - 1500тг", value: "1500" },
         { text: "8 занятий - 10000тг", value: "10000" },
-        { text: "12 занятий - 12000тг", value: "12000" }
+        { text: "12 занятий - 12000тг", value: "12000" },
+        { text: "Другая цена", value: "Другая цена" }
       ],
 
       nameGroup: "",
@@ -502,7 +523,10 @@ export default {
             email: this.email,
             nameGroup: this.nameGroup,
             uidGroup: this.uidGroup,
-            subscription: this.radioGroup,
+            subscription:
+              this.radioGroup !== "Другая цена"
+                ? this.radioGroup
+                : this.radioGroupPrice,
             coach: this.nameCoach,
             paid: false,
             type: "Group",

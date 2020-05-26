@@ -175,7 +175,7 @@ export default {
       priceGroupInMonth: 0,
       priceIndivInMonth: 0,
       priceSingleInMonth: 0,
-      itemsWeek: ["За день", "За неделю", "За месяц", "За пол года", "За год"],
+      itemsWeek: ["За день", "За неделю", "За месяц", "За полгода", "За год"],
       tableHeaders: [
         {
           text: "Имя",

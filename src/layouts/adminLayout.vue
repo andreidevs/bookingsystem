@@ -2,6 +2,15 @@
   <v-container>
     <v-navigation-drawer v-model="drawer" app>
       <v-list shaped>
+        <v-list-item exact link to="/admin">
+          <v-list-item-action>
+            <v-icon color="success">mdi-home</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Главная</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+
         <v-list-item v-if="user.admin" link to="/admin/statistic">
           <v-list-item-action>
             <v-icon color="success">mdi-chart-areaspline</v-icon>
@@ -43,7 +52,7 @@
             <v-list-item-title>Ученики</v-list-item-title>
           </template>
 
-          <v-list-item class="ml-8" exact link to="/admin/users">
+          <v-list-item class="ml-8" exact link to="/admin/users/group">
             <!-- <v-list-item-action>
             <v-icon color="success">mdi-account-multiple</v-icon>
           </v-list-item-action> -->
@@ -91,7 +100,7 @@
 
         <v-list-group color="success" prepend-icon="mdi-playlist-plus">
           <template v-slot:activator>
-            <v-list-item-title>Добавление</v-list-item-title>
+            <v-list-item-title>Добавить</v-list-item-title>
           </template>
 
           <v-list-item class="ml-8" link to="/admin/addclient">
@@ -142,7 +151,7 @@
 
         <v-list-item v-if="user.admin" link to="/admin/wages">
           <v-list-item-action>
-            <v-icon color="success">mdi-currency-btc</v-icon>
+            <v-icon color="success">mdi-currency-rub</v-icon>
           </v-list-item-action>
           <v-list-item-content>
             <v-list-item-title>Расчет ЗП</v-list-item-title>
@@ -175,6 +184,7 @@
 
 <script>
 import { mapActions, mapGetters, mapMutations } from "vuex";
+import { eventBus } from "../main";
 export default {
   name: "adminLayout",
   data: () => ({
@@ -191,6 +201,12 @@ export default {
       success: "SUCCESS",
       user: "USER"
     })
+  },
+  updated() {
+    eventBus.$emit("useradmin", this.user.admin);
+  },
+  mounted() {
+    eventBus.$emit("useradmin", this.user.admin);
   },
   watch: {
     success(is) {

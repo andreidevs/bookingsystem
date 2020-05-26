@@ -19,6 +19,8 @@ import excel from "vue-excel-export";
 import "./assets/main.css";
 import "./plugins/date.format";
 
+export const eventBus = new Vue();
+
 Vue.config.productionTip = false;
 Vue.use(Notifications);
 Vue.use(VueTheMask);

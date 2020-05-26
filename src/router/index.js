@@ -37,12 +37,12 @@ const routes = [
     component: () => import("../views/admin/AddClient.vue")
   },
   {
-    path: "/admin/users",
+    path: "/admin/users/group",
     name: "AdminUsers",
     meta: {
       AuthRequired: true,
       layout: "admin",
-      title: "Edem Dance - Список учеников "
+      title: "Edem Dance - Список учеников групп "
     },
     component: () => import("../views/admin/ReviewUsers.vue")
   },

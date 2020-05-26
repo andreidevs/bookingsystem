@@ -20,6 +20,13 @@
         <v-btn @click="submit" color="info" :loading="loading">Отправить</v-btn>
       </v-form>
     </v-card>
+    <v-btn
+      style="position:fixed!important; bottom:10px; left:10px; z-index:1000;"
+      @click="$router.go(-1)"
+    >
+      <v-icon>mdi-keyboard-backspace</v-icon>
+      Назад
+    </v-btn>
   </v-container>
 </template>
 
