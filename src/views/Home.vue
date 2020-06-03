@@ -3,7 +3,7 @@
     <div class="d-flex align-center justify-center" style="margin-right: 25%">
       <img style="width: 200px" src="../assets/logo Original.png" />
       <h1 class="text-center font-weight-light ml-4">
-        Записаться на тренеровку
+        Записаться на тренировку
       </h1>
     </div>
     <v-card class="ml-auto cardMain" max-width="520" shaped :loading="loading">

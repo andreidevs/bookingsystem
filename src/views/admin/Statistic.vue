@@ -480,7 +480,7 @@ export default {
             this.week = "месяц";
           }
           break;
-        case "За пол года":
+        case "За полгода":
           {
             isFilter = date => {
               let mDate = Math.ceil(
