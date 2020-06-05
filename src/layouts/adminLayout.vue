@@ -29,6 +29,15 @@
           </v-list-item-content>
         </v-list-item>
 
+        <v-list-item v-if="user.admin" link to="/admin/expenses">
+          <v-list-item-action>
+            <v-icon color="success">mdi-cash-multiple</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Расходы</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+
         <v-list-item link to="/admin/daily">
           <v-list-item-action>
             <v-icon color="success">mdi-table-edit</v-icon>

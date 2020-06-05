@@ -262,16 +262,16 @@
         >
           <v-list-item-content
             style="cursor: pointer;"
-            @click="$router.push('/admin/signup')"
+            @click="$router.push('/admin/expenses')"
           >
             <div class="d-flex pa-2 align-center justify-center pt-6">
               <v-icon style="font-size: 64px" color="white"
-                >mdi-account-key</v-icon
+                >mdi-cash-multiple</v-icon
               >
               <v-card-title
                 class="headline font-weight-light mb-1 ml-n1"
                 style="color: white"
-                >Регистрация тренера</v-card-title
+                >Расходы</v-card-title
               >
             </div>
           </v-list-item-content>

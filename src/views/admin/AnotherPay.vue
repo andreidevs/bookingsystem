@@ -17,7 +17,7 @@
           dense
           label="Коменнтарий (не обязательно)"
         ></v-text-field>
-        <v-btn @click="submit" color="info" :loading="loading">Отправить</v-btn>
+        <v-btn @click="submit" color="info" :loading="loading">Добавить</v-btn>
       </v-form>
     </v-card>
     <v-btn

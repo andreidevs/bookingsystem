@@ -2,11 +2,13 @@ import vue from "vue";
 export default {
   state: {
     reports: [],
-    payReports: []
+    payReports: [],
+    expenses: []
   },
   getters: {
     REPORTS: s => s.reports,
-    PAYREPORTS: s => s.payReports
+    PAYREPORTS: s => s.payReports,
+    EXPENSES: s => s.expenses
   },
   mutations: {
     SET_REPORTS(state, payload) {
@@ -14,6 +16,9 @@ export default {
     },
     SET_ALL_PAY(state, payload) {
       state.payReports = payload;
+    },
+    SET_EXPENSES(state, payload) {
+      state.expenses = payload;
     }
   },
   actions: {
@@ -43,9 +48,10 @@ export default {
       const id = Math.random()
         .toString(36)
         .substr(2, 11);
+      const date = new Date().getMonth() + 1 + "-" + new Date().getFullYear();
       vue.$db
         .collection("reportPay")
-        .doc(new Date().format("mm-yyyy"))
+        .doc(date)
         .update({
           [id]: payload
         })
@@ -55,7 +61,7 @@ export default {
         .catch(function() {
           vue.$db
             .collection("reportPay")
-            .doc(new Date().format("mm-yyyy"))
+            .doc(date)
             .set({
               [id]: payload
               // month: new Date().getMonth(),
@@ -96,6 +102,46 @@ export default {
         });
 
       commit("SET_REPORTS", reports);
+    },
+    SEND_EXPENSES({ commit }, payload) {
+      const date = new Date().getMonth() + 1 + "-" + new Date().getFullYear();
+      vue.$db
+        .collection("expenses")
+        .doc(date)
+        .update({
+          [payload.id]: payload
+        })
+        .then(function() {
+          commit("SET_SUCCESS");
+        })
+        .catch(function() {
+          vue.$db
+            .collection("expenses")
+            .doc(date)
+            .set({
+              [payload.id]: payload
+              // month: new Date().getMonth(),
+              // year: new Date().getFullYear()
+            })
+            .then(function() {
+              commit("SET_SUCCESS");
+            })
+            .catch(function(error) {
+              commit("SET_ERROR", error);
+            });
+        });
+    },
+    GET_EXPENSES({ commit }) {
+      let report = [];
+      vue.$db
+        .collection("expenses")
+        .get()
+        .then(function(querySnapshot) {
+          querySnapshot.forEach(function(doc) {
+            report.push(doc.data());
+          });
+        });
+      commit("SET_EXPENSES", report);
     }
   }
 };

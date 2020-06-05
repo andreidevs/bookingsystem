@@ -20,7 +20,10 @@
                 >Общий доход за {{ week }}: {{ countWorkInMonth }}
               </span>
               <br />
-              <span class="headline">{{ priceWorkInMonth }} KZT</span>
+              <span class="headline"
+                >{{ priceWorkInMonth }} KZT - {{ priceExpenses }} KZT =
+                {{ totalWork }} KZT
+              </span>
               <br />
               <span class="title font-weight-black"
                 >Абонементы: {{ countGroupInMonth }}
@@ -175,6 +178,8 @@ export default {
       priceGroupInMonth: 0,
       priceIndivInMonth: 0,
       priceSingleInMonth: 0,
+      priceExpenses: 0,
+      totalWork: 0,
       itemsWeek: ["За день", "За неделю", "За месяц", "За полгода", "За год"],
       tableHeaders: [
         {
@@ -235,6 +240,8 @@ export default {
       selectName: "",
       searchFilter: "",
       sampleTable: [],
+      dataExp: [],
+      allExp: [],
       allData: [],
       loadingChart: false,
       options: {
@@ -303,6 +310,7 @@ export default {
   created() {
     this.updateTable();
     this.getCoachList();
+    this.getExpenses();
     this.nameExcel = "Отчет " + new Date().format("dd.mm.yyyy");
     this.coachList = this.coachLists;
     setTimeout(() => {
@@ -311,18 +319,25 @@ export default {
           this.allData.push(g);
         });
       });
+      this.allExpenses.forEach(c => {
+        Object.values(c).forEach(g => {
+          this.allExp.push(g);
+        });
+      });
     }, 1000);
   },
   computed: {
     ...mapGetters({
       allReports: "PAYREPORTS",
-      coachLists: "COACH"
+      coachLists: "COACH",
+      allExpenses: "EXPENSES"
     })
   },
   methods: {
     ...mapActions({
       getReports: "GET_ALL_PAY",
-      getCoachList: "GET_COACH_LIST"
+      getCoachList: "GET_COACH_LIST",
+      getExpenses: "GET_EXPENSES"
     }),
     selectType() {
       if (this.type === "Все" || this.type === undefined) {
@@ -331,6 +346,7 @@ export default {
         this.sampleTable = this.tableData.filter(c => c.type === this.type);
       }
     },
+    ///////////////////////Charts
     createChartMonth() {
       this.loadingChart = true;
       setTimeout(() => {
@@ -361,53 +377,6 @@ export default {
         this.loadingChart = false;
       }, 2600);
     },
-    // createChartWeek() {
-    //   this.loadingChart = true;
-    //   setTimeout(() => {
-    //     for (let i = 0; i < 3; i++) {
-    //      this.dataBar.labels.unshift(i+1);
-    //       switch(i){
-    //         case 0: {
-    //           let D = new Date();
-    //            D.setDate(D.getDate() - 7);
-
-    //         }
-    //         break;
-    //         case 1: {
-    //           let D = new Date();
-    //            D.setDate(D.getDate() - 7);
-
-    //         }
-    //         break;
-    //       }
-
-    //      let isFilter = date => {  let mDate = Math.ceil(
-    //             Math.abs(D.getTime() - date * 1000) /
-    //               (1000 * 60 * 60 * 24)
-    //           );
-    //           return mDate <= 7;
-    //           }
-    //       this.dataBar.datasets[0].data.unshift(
-    //         this.allData.filter(
-    //          isFilter
-    //         ).length
-    //       );
-    //       this.dataBar.datasets[1].data.unshift(
-    //         this.allData
-    //           .filter(
-    //            isFilter
-    //           )
-    //           .reduce((total, r) => (total += +r.price), 0)
-    //       );
-    //     }
-    //   }, 2500);
-
-    //   setTimeout(() => {
-    //     this.renderChart(this.dataBar, this.options);
-    //     this.loadingChart = false;
-    //   }, 2600);
-    // },
-
     updateFileds() {
       this.countWorkInMonth = 0;
       this.countGroupInMonth = 0;
@@ -417,6 +386,8 @@ export default {
       this.priceGroupInMonth = 0;
       this.priceIndivInMonth = 0;
       this.priceSingleInMonth = 0;
+      this.priceExpenses = 0;
+      this.totalWork = 0;
       this.sampleTable.forEach(c => {
         if (c.type === "Индив") {
           this.countIndivInMonth++;
@@ -429,6 +400,9 @@ export default {
           this.priceSingleInMonth += +c.price;
         }
       });
+      this.dataExp.forEach(c => {
+        this.priceExpenses += +c.price;
+      });
       this.countWorkInMonth =
         this.countIndivInMonth +
         this.countGroupInMonth +
@@ -437,6 +411,7 @@ export default {
         this.priceGroupInMonth +
         this.priceIndivInMonth +
         this.priceSingleInMonth;
+      this.totalWork = this.priceWorkInMonth - this.priceExpenses;
     },
     toogleGroup() {
       if (this.step === 1) {
@@ -476,7 +451,8 @@ export default {
         case "За месяц":
           {
             isFilter = date =>
-              new Date(date * 1000).getMonth() == new Date().getMonth();
+              new Date(date * 1000).getMonth() == new Date().getMonth() &&
+              new Date(date * 1000).getFullYear() == new Date().getFullYear();
             this.week = "месяц";
           }
           break;
@@ -535,6 +511,7 @@ export default {
         });
       });
 
+      this.dataExp = this.allExp.filter(c => isFilter(c.date.seconds));
       this.tableData = this.sampleTable;
       // if(this.selectWeek==="За месяц"){
       //   this.createChartMonth();
