@@ -326,16 +326,20 @@ export default {
           commit("SET_ERROR", error);
         });
     },
-    GET_ALL_GROUPS({ commit, getters }) {
+    GET_ALL_GROUPS({ commit, getters }, trigger) {
       let groups = [];
       vue.$db
         .collection("groups")
         .get()
         .then(function(querySnapshot) {
           querySnapshot.forEach(function(doc) {
-            if (!getters.USER.admin && getters.USER.isAuth) {
-              if (getters.USER.name === doc.data().coach)
+            if (!trigger) {
+              if (!getters.USER.admin && getters.USER.isAuth) {
+                if (getters.USER.name === doc.data().coach)
+                  groups.push(doc.data());
+              } else {
                 groups.push(doc.data());
+              }
             } else {
               groups.push(doc.data());
             }
@@ -377,16 +381,20 @@ export default {
         });
       commit("SET_ALL_SINGLE", users);
     },
-    GET_ALL_INDIV({ commit, getters }) {
+    GET_ALL_INDIV({ commit, getters }, trigger) {
       let users = [];
       vue.$db
         .collection("usersIndiv")
         .get()
         .then(function(querySnapshot) {
           querySnapshot.forEach(function(doc) {
-            if (!getters.USER.admin && getters.USER.isAuth) {
-              if (getters.USER.name === doc.data().coach)
+            if (!trigger) {
+              if (!getters.USER.admin && getters.USER.isAuth) {
+                if (getters.USER.name === doc.data().coach)
+                  users.push(doc.data());
+              } else {
                 users.push(doc.data());
+              }
             } else {
               users.push(doc.data());
             }

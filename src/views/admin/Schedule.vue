@@ -58,8 +58,8 @@ export default {
     })
   },
   created() {
-    this.getAllGroups();
-    this.getAllIndiv();
+    this.getAllGroups(true);
+    this.getAllIndiv(true);
     if (this.user.name === "София") {
       this.getIndivSofia();
     }

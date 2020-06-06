@@ -142,6 +142,38 @@ export default {
           });
         });
       commit("SET_EXPENSES", report);
+    },
+    DELETE_EXPENSES({ dispatch, state, commit }, payload) {
+      dispatch("GET_EXPENSES");
+      let data = [];
+      const date =
+        new Date(payload.date.seconds * 1000).getMonth() +
+        1 +
+        "-" +
+        new Date(payload.date.seconds * 1000).getFullYear();
+      setTimeout(() => {
+        const allExpenses = state.expenses;
+
+        allExpenses.forEach(c => {
+          Object.values(c).forEach(g => {
+            if (payload.id !== g.id) {
+              data.push(g);
+            }
+          });
+        });
+        vue.$db
+          .collection("expenses")
+          .doc(date)
+          .set({
+            ...data
+          })
+          .then(function() {
+            commit("SET_SUCCESS");
+          })
+          .catch(function(error) {
+            commit("SET_ERROR", error);
+          });
+      }, 1000);
     }
   }
 };

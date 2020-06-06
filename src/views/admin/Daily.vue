@@ -463,7 +463,7 @@ export default {
     updateTable() {
       this.loading = true;
       this.sampleTable = [];
-      this.getAllGroups();
+      this.getAllGroups(true);
       this.getAllIndiv();
       let filter = "";
       if (this.yesterday) {
