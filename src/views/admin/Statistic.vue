@@ -14,7 +14,7 @@
           </div>
         </v-col>
         <v-col cols="12" sm="12" lg="6">
-          <v-card class="mx-auto" max-width="450">
+          <v-card class="mx-auto" max-width="550">
             <v-card-text>
               <span class="title font-weight-black"
                 >Общий доход за {{ week }}: {{ countWorkInMonth }}

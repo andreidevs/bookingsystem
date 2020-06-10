@@ -1,8 +1,8 @@
 {
   "hosting": {
     "public": "dist",
-    // "site": "edemdance0",
-    "site": "bookingsystem0 ",
+    "site": "edemdance0",
+    // "site": "bookingsystem0 ",
     "ignore": [
       "firebase.json",
       "**/.*",

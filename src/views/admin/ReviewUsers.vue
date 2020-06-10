@@ -40,11 +40,10 @@
         :page.sync="page"
         :dense="dense"
         hide-default-footer
-        disable-sort
         item-key="id"
         :loading="loading"
         loading-text="Загрузка... Пожалуйста подождите"
-        sort-by="nameGroup"
+        sort-by="datePay"
         @page-count="pageCount = $event"
         :search="searchFilter"
       >
