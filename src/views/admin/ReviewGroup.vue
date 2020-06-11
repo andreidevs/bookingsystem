@@ -344,7 +344,7 @@ export default {
           c => (c = { ...c, type: c.mini ? "Минигруппа" : "Группа" })
         );
         this.loading = false;
-      }, 1500);
+      }, 1000);
     },
     updateTableS() {
       this.loading = true;
@@ -357,7 +357,7 @@ export default {
       setTimeout(() => {
         this.sampleUsers = this.usersByGroup;
         this.loading = false;
-      }, 1500);
+      }, 1000);
     },
     showUsers(item) {
       this.selectedItem = item;

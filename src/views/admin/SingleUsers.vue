@@ -83,6 +83,9 @@
             >mdi-close</v-icon
           >
         </template>
+        <template v-slot:item.edit="{ item }">
+          <v-icon @click="editUser(item)">mdi-pencil</v-icon>
+        </template>
         <template v-slot:no-data>
           <span
             >Невозможно получить данные либо таблица пуста, попробуйте обновить
@@ -154,6 +157,69 @@
           </v-card>
         </v-dialog>
       </v-row>
+      <v-row justify="center">
+        <v-dialog v-model="dialogEditUser" max-width="630">
+          <v-card>
+            <v-card-title class="headline"
+              >Редактирование пользователя
+            </v-card-title>
+            <v-form ref="formEdit">
+              <v-row class="row_null">
+                <v-col cols="12" lg="6" sm="12">
+                  <v-text-field
+                    label="ФИО"
+                    dense
+                    clearable
+                    :rules="$validation.required"
+                    v-model="editItem.name"
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12" lg="6" sm="12">
+                  <v-text-field
+                    dense
+                    v-model="editItem.phone"
+                    v-mask="'+7(###)###-##-##'"
+                    clearable
+                    :rules="$validation.phone"
+                    label="Телефон"
+                  >
+                  </v-text-field>
+                </v-col>
+                <v-col cols="12" lg="6" sm="12">
+                  <v-text-field
+                    dense
+                    v-model="editItem.price"
+                    v-mask="'######'"
+                    clearable
+                    :rules="$validation.required"
+                    label="Цена"
+                  >
+                  </v-text-field>
+                </v-col>
+                <v-col cols="12" lg="6" sm="12">
+                  <v-select
+                    class="mt-n3"
+                    v-model="editItem.coach"
+                    label="Тренер"
+                    item-text="name"
+                    item-value="name"
+                    :items="itemsCoach"
+                  ></v-select>
+                </v-col>
+              </v-row>
+            </v-form>
+            <v-card-actions class="mt-n2">
+              <v-spacer></v-spacer>
+              <v-btn color="green darken-1" text @click="dialogEditUser = false"
+                >Отмена</v-btn
+              >
+              <v-btn color="green darken-1" text @click="successEdit()"
+                >Подтвердить</v-btn
+              >
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </v-row>
       <v-btn
         style="position:fixed!important; bottom:10px; left:10px; z-index:1000;"
         @click="$router.go(-1)"
@@ -199,6 +265,10 @@ export default {
         },
         {
           text: "",
+          value: "edit"
+        },
+        {
+          text: "",
           value: "removes"
         }
       ],
@@ -210,7 +280,16 @@ export default {
       searchFilter: "",
       selectedItem: {},
       dialogPay: false,
-      dialogRemoveUser: false
+      itemsCoach: [],
+      dialogRemoveUser: false,
+      dialogEditUser: false,
+      editItem: {
+        id: "",
+        name: "",
+        phone: "",
+        price: "",
+        coach: ""
+      }
     };
   },
   created() {
@@ -220,20 +299,25 @@ export default {
   mounted() {},
   computed: {
     ...mapGetters({
-      allSingleState: "ALLSINGLE"
+      allSingleState: "ALLSINGLE",
+      coachList: "COACH"
     })
   },
   methods: {
     ...mapActions({
       getAllSingle: "GET_ALL_SINGLE",
       setPayStatus: "SEND_PAY_SINGLE",
-      deleteUser: "DELETE_USER_SINGLE"
+      deleteUser: "DELETE_USER_SINGLE",
+      getCoachList: "GET_COACH_LIST",
+      updateUser: "UPDATE_USER_SINGLE"
     }),
     updateTable() {
       this.loading = true;
       this.sampleUsers = [];
       this.getAllSingle();
+      this.getCoachList();
       setTimeout(() => {
+        this.itemsCoach = this.coachList;
         this.sampleUsers = this.allSingleState.map(
           c =>
             (c = {
@@ -246,6 +330,33 @@ export default {
         );
         this.loading = false;
       }, 1500);
+    },
+    editUser(item) {
+      this.selectedItem = item;
+      this.dialogEditUser = true;
+      this.editItem = {
+        id: item.id,
+        name: item.name,
+        phone: item.phone,
+        price: item.subscription,
+        coach: item.coach
+      };
+    },
+    successEdit() {
+      if (this.$refs.formEdit.validate()) {
+        this.dialogEditUser = false;
+        this.updateUser(this.editItem);
+        this.updateTableLocal();
+      }
+    },
+    updateTableLocal() {
+      const idx = this.sampleUsers.findIndex(
+        c => c.id === this.selectedItem.id
+      );
+      this.sampleUsers[idx].name = this.editItem.name;
+      this.sampleUsers[idx].phone = this.editItem.phone;
+      this.sampleUsers[idx].subscription = this.editItem.price;
+      this.sampleUsers[idx].coach = this.editItem.coach;
     },
     clearFilter() {
       this.selectPhone = "";

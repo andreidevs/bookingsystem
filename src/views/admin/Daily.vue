@@ -456,7 +456,7 @@ export default {
         } else {
           this.mainStep = 1;
         }
-      }, 2000);
+      }, 1000);
       this.dialogPreview = false;
     },
 
@@ -490,7 +490,7 @@ export default {
               .map(c => (c = { ...c, typeW: "Индив" }))
           );
         this.loading = false;
-      }, 2000);
+      }, 1000);
     },
     addItem() {
       this.loadingB = true;

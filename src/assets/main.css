@@ -39,3 +39,8 @@
     align-self: center;
     justify-content: center;
   }
+
+.row_null{
+    margin-left: 0;
+    margin-right: 0;
+}

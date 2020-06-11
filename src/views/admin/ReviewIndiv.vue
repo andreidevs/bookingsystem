@@ -83,6 +83,9 @@
             >mdi-close</v-icon
           >
         </template>
+        <template v-slot:item.edit="{ item }">
+          <v-icon @click="editUser(item)">mdi-pencil</v-icon>
+        </template>
         <template v-slot:no-data>
           <span
             >Невозможно получить данные либо таблица пуста, попробуйте обновить
@@ -154,7 +157,99 @@
           </v-card>
         </v-dialog>
       </v-row>
+      <v-row justify="center">
+        <v-dialog v-model="dialogEditUser" max-width="630">
+          <v-card>
+            <v-card-title class="headline"
+              >Редактирование пользователя
+            </v-card-title>
+            <v-form ref="formEdit">
+              <v-row class="row_null">
+                <v-col cols="12" lg="6" sm="12">
+                  <v-text-field
+                    label="ФИО"
+                    dense
+                    clearable
+                    :rules="$validation.required"
+                    v-model="editItem.name"
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12" lg="6" sm="12">
+                  <v-text-field
+                    dense
+                    v-model="editItem.phone"
+                    v-mask="'+7(###)###-##-##'"
+                    clearable
+                    :rules="$validation.phone"
+                    label="Телефон"
+                  >
+                  </v-text-field>
+                </v-col>
+                <v-col cols="12" lg="6" sm="12">
+                  <v-text-field
+                    dense
+                    v-model="editItem.price"
+                    v-mask="'######'"
+                    clearable
+                    :rules="$validation.required"
+                    label="Цена"
+                  >
+                  </v-text-field>
+                </v-col>
+                <v-col cols="12" lg="6" sm="12" class="mt-n4">
+                  <v-select
+                    v-model="editItem.coach"
+                    :items="itemsCoach"
+                    label="Тренер"
+                  ></v-select>
+                </v-col>
+                <v-col cols="12">
+                  <v-chip-group multiple>
+                    <v-chip
+                      v-for="item in chip"
+                      :key="item.title"
+                      class="ma-2"
+                      :color="item.active ? 'success' : ''"
+                      :text-color="item.active ? 'white' : 'black'"
+                      @click="addWeekday(item)"
+                    >
+                      {{ item.title }}
+                    </v-chip>
+                  </v-chip-group>
+                </v-col>
+                <v-row class="ml-2 mt-2 row_null">
+                  <v-col cols="6">
+                    <v-select
+                      v-model="editItem.timeHour"
+                      :items="timehours"
+                      label="Часы"
+                    >
+                    </v-select>
+                  </v-col>
+                  <v-col cols="6">
+                    <v-select
+                      v-model="editItem.timeMinute"
+                      :items="timeminuts"
+                      label="Минуты"
+                    >
+                    </v-select>
+                  </v-col>
+                </v-row>
+              </v-row>
+            </v-form>
 
+            <v-card-actions class="mt-n2">
+              <v-spacer></v-spacer>
+              <v-btn color="green darken-1" text @click="dialogEditUser = false"
+                >Отмена</v-btn
+              >
+              <v-btn color="green darken-1" text @click="successEdit()"
+                >Подтвердить</v-btn
+              >
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </v-row>
       <v-btn
         style="position:fixed!important; bottom:10px; left:10px; z-index:1000;"
         @click="$router.go(-1)"
@@ -200,6 +295,10 @@ export default {
         },
         {
           text: "",
+          value: "edit"
+        },
+        {
+          text: "",
           value: "removes"
         }
       ],
@@ -211,7 +310,48 @@ export default {
       searchFilter: "",
       selectedItem: {},
       dialogPay: false,
-      dialogRemoveUser: false
+      dialogRemoveUser: false,
+      dialogEditUser: false,
+      chip: [
+        { title: "Пн", active: false, color: "red" },
+        { title: "Вт", active: false, color: "purple" },
+        { title: "Ср", active: false, color: "teal accent-3" },
+        { title: "Чт", active: false, color: "light-green accent-3" },
+        { title: "Пт", active: false, color: "pink darken-1" },
+        { title: "Сб", active: false, color: "blue" },
+        { title: "Вс", active: false, color: "yellow darken-1" }
+      ],
+      timehours: [
+        "07",
+        "08",
+        "09",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15",
+        "16",
+        "17",
+        "18",
+        "19",
+        "20",
+        "21"
+      ],
+      timeminuts: ["00", "30"],
+      itemsCoach: [],
+      editItem: {
+        id: "",
+        name: "",
+        phone: "",
+        price: "",
+        coach: "",
+        time: "",
+        title: "",
+        timeHour: "07",
+        timeMinute: "00",
+        weekDays: []
+      }
     };
   },
   created() {
@@ -221,20 +361,25 @@ export default {
   mounted() {},
   computed: {
     ...mapGetters({
-      allIndivState: "ALLINDIV"
+      allIndivState: "ALLINDIV",
+      coachList: "COACH"
     })
   },
   methods: {
     ...mapActions({
       getAllIndiv: "GET_ALL_INDIV",
       setPayStatus: "SEND_PAY_INDIV",
-      deleteUser: "DELETE_USER_INDIV"
+      deleteUser: "DELETE_USER_INDIV",
+      updateUser: "UPDATE_USER_INDIV",
+      getCoachList: "GET_COACH_LIST"
     }),
     updateTable() {
       this.loading = true;
       this.sampleUsers = [];
       this.getAllIndiv();
+      this.getCoachList();
       setTimeout(() => {
+        this.itemsCoach = this.coachList;
         this.sampleUsers = this.allIndivState.map(
           c =>
             (c = {
@@ -246,7 +391,61 @@ export default {
             })
         );
         this.loading = false;
-      }, 1500);
+      }, 1000);
+    },
+    editUser(item) {
+      this.selectedItem = item;
+      this.dialogEditUser = true;
+      const t = item.time.split(":");
+      this.editItem = {
+        id: item.id,
+        name: item.name,
+        phone: item.phone,
+        price: item.subscription,
+        coach: item.coach,
+        weekDays: item.weekDays,
+        timeHour: t[0],
+        timeMinute: t[1]
+      };
+      this.chip.map(g => {
+        g.active = false;
+      });
+
+      this.selectedItem.weekDays.forEach(c => {
+        this.chip.map(g => {
+          if (g.title === c) {
+            g.active = true;
+          }
+        });
+      });
+    },
+    successEdit() {
+      if (this.$refs.formEdit.validate()) {
+        this.dialogEditUser = false;
+        this.editItem.weekDays = this.chip
+          .filter(c => c.active)
+          .map(c => c.title);
+        let days = "";
+        this.editItem.weekDays.forEach(item => {
+          days += item + ", ";
+        });
+        this.editItem.time =
+          this.editItem.timeHour + ":" + this.editItem.timeMinute;
+        this.editItem.title = `${this.editItem.name} ${days} ${this.editItem.time} ${this.editItem.coach}`;
+        this.updateUser(this.editItem);
+        this.updateTableLocal();
+      }
+    },
+    updateTableLocal() {
+      const idx = this.sampleUsers.findIndex(
+        c => c.id === this.selectedItem.id
+      );
+      this.sampleUsers[idx].name = this.editItem.name;
+      this.sampleUsers[idx].phone = this.editItem.phone;
+      this.sampleUsers[idx].subscription = this.editItem.price;
+      this.sampleUsers[idx].weekDays = this.editItem.weekDays;
+      this.sampleUsers[idx].title = this.editItem.title;
+      this.sampleUsers[idx].time = this.editItem.time;
     },
     clearFilter() {
       this.selectPhone = "";
@@ -265,6 +464,11 @@ export default {
     deleteUserLocal() {
       this.sampleUsers = this.sampleUsers.filter(
         c => c.id !== this.selectedItem.id
+      );
+    },
+    addWeekday(chip) {
+      this.chip.map(c =>
+        c.title == chip.title ? (c.active = !c.active) : c.active
       );
     },
     changeFilter(item) {

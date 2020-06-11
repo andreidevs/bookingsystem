@@ -81,6 +81,9 @@
             >mdi-close</v-icon
           >
         </template>
+        <template v-slot:item.edit="{ item }">
+          <v-icon @click="editUser(item)">mdi-pencil</v-icon>
+        </template>
         <template v-slot:no-data>
           <span
             >Невозможно получить данные либо таблица пуста, попробуйте обновить
@@ -153,6 +156,77 @@
           </v-card>
         </v-dialog>
       </v-row>
+      <v-row justify="center">
+        <v-dialog v-model="dialogEditUser" max-width="630">
+          <v-card>
+            <v-card-title class="headline"
+              >Редактирование пользователя
+            </v-card-title>
+            <v-form ref="formEdit">
+              <v-row class="row_null">
+                <v-col cols="12" lg="6" sm="12">
+                  <v-text-field
+                    label="ФИО"
+                    dense
+                    clearable
+                    :rules="$validation.required"
+                    v-model="editItem.name"
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12" lg="6" sm="12">
+                  <v-text-field
+                    dense
+                    v-model="editItem.phone"
+                    v-mask="'+7(###)###-##-##'"
+                    clearable
+                    :rules="$validation.phone"
+                    label="Телефон"
+                  >
+                  </v-text-field>
+                </v-col>
+                <v-col cols="12" lg="6" sm="12">
+                  <v-text-field
+                    dense
+                    v-model="editItem.price"
+                    v-mask="'######'"
+                    clearable
+                    :rules="$validation.required"
+                    label="Цена"
+                  >
+                  </v-text-field>
+                </v-col>
+                <v-col cols="12" lg="6" sm="12">
+                  <v-select
+                    class="mt-n3"
+                    v-model="editItem.group"
+                    label="Группа"
+                    item-text="name"
+                    item-value="name"
+                    :items="itemsGroups"
+                  ></v-select>
+                </v-col>
+              </v-row>
+            </v-form>
+
+            <v-card-actions class="mt-n2">
+              <v-btn
+                color="success"
+                small
+                @click="dialogPay = true"
+                class="mr-2"
+                >Оплатить</v-btn
+              >
+              <v-spacer></v-spacer>
+              <v-btn color="green darken-1" text @click="dialogEditUser = false"
+                >Отмена</v-btn
+              >
+              <v-btn color="green darken-1" text @click="successEdit()"
+                >Подтвердить</v-btn
+              >
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </v-row>
       <v-btn
         style="position:fixed!important; bottom:10px; left:10px; z-index:1000;"
         @click="$router.go(-1)"
@@ -202,6 +276,10 @@ export default {
         },
         {
           text: "",
+          value: "edit"
+        },
+        {
+          text: "",
           value: "removes"
         }
       ],
@@ -212,8 +290,18 @@ export default {
       sampleUsers: [],
       searchFilter: "",
       selectedItem: {},
+      itemsGroups: [],
       dialogPay: false,
-      dialogRemoveUser: false
+      dialogRemoveUser: false,
+      dialogEditUser: false,
+      editItem: {
+        id: "",
+        name: "",
+        group: "",
+        phone: "",
+        price: "",
+        coach: ""
+      }
     };
   },
   created() {
@@ -221,20 +309,28 @@ export default {
   },
   computed: {
     ...mapGetters({
-      allUsersState: "ALLUSERS"
+      allUsersState: "ALLUSERS",
+      allGroupsState: "ALLGROUPS"
     })
   },
   methods: {
     ...mapActions({
       getAllUsers: "GET_ALL_USERS",
+      getAllGroups: "GET_ALL_GROUPS",
       setPayStatus: "SEND_PAY_SUB",
-      deleteUser: "DELETE_USER_GROUP"
+      deleteUser: "DELETE_USER_GROUP",
+      updateUser: "UPDATE_USER_GROUP",
+      updateGroup: "UPDATE_GROUP_USERS_TO_USERS"
     }),
     updateTable() {
       this.loading = true;
       this.sampleUsers = [];
       this.getAllUsers();
+      this.getAllGroups();
       setTimeout(() => {
+        this.itemsGroups = this.allGroupsState.filter(
+          c => !c.mini && c.count > 0
+        );
         this.sampleUsers = this.allUsersState.map(
           c =>
             (c = {
@@ -245,8 +341,54 @@ export default {
                   : new Date().format("dd.mm.yyyy")
             })
         );
+        this.allGroupsState;
         this.loading = false;
-      }, 1500);
+      }, 1000);
+    },
+    editUser(item) {
+      this.selectedItem = item;
+      this.dialogEditUser = true;
+      this.editItem = {
+        id: item.id,
+        name: item.name,
+        group: item.nameGroup,
+        phone: item.phone,
+        price: item.subscription,
+        coach: item.coach,
+        uidGroup: item.uidGroup
+      };
+    },
+    successEdit() {
+      if (this.$refs.formEdit.validate()) {
+        this.dialogEditUser = false;
+        if (this.selectedItem.nameGroup !== this.editItem.group) {
+          this.editItem.coach = this.itemsGroups.find(
+            c => c.name === this.editItem.group
+          ).coach;
+          let data = {
+            fromGroup: this.itemsGroups.find(
+              c => c.name === this.selectedItem.nameGroup
+            ).id,
+            toGroup: this.itemsGroups.find(c => c.name === this.editItem.group)
+              .id,
+            userId: this.editItem.id
+          };
+          this.editItem.uidGroup = data.toGroup;
+          this.updateGroup(data);
+        }
+        this.updateUser(this.editItem);
+        this.updateTableLocal();
+      }
+    },
+    updateTableLocal() {
+      const idx = this.sampleUsers.findIndex(
+        c => c.id === this.selectedItem.id
+      );
+      this.sampleUsers[idx].name = this.editItem.name;
+      this.sampleUsers[idx].phone = this.editItem.phone;
+      this.sampleUsers[idx].subscription = this.editItem.price;
+      this.sampleUsers[idx].nameGroup = this.editItem.group;
+      this.sampleUsers[idx].uidGroup = this.editItem.uidGroup;
     },
     updatePaidItem() {
       const idx = this.sampleUsers.findIndex(

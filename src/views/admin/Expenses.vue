@@ -14,6 +14,7 @@
                 outlined
                 :rules="$validation.required"
                 dense
+                clearable
                 label="Введите сумму"
                 v-mask="'######'"
               ></v-text-field>
@@ -21,8 +22,9 @@
                 v-model="comment"
                 outlined
                 dense
+                clearable
                 :rules="$validation.required"
-                label="Коменнтарий"
+                label="Комментарий"
               ></v-text-field>
               <v-btn @click="submit" color="info" :loading="loadingB"
                 >Добавить</v-btn
@@ -65,6 +67,11 @@
             страницу</span
           >
         </template>
+        <template v-slot:item.removes="{ item }">
+          <v-icon @click="(selectedItem = item), (dialogRemove = true)"
+            >mdi-close</v-icon
+          >
+        </template>
       </v-data-table>
       <v-btn
         style="position:fixed!important; bottom:10px; left:10px; z-index:1000;"
@@ -74,6 +81,30 @@
         Назад
       </v-btn>
     </div>
+    <v-row justify="center">
+      <v-dialog v-model="dialogRemove" persistent max-width="400">
+        <v-card>
+          <v-card-title class="headline">Подтвердить удаление </v-card-title>
+
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="green darken-1" text @click="dialogRemove = false"
+              >Отмена</v-btn
+            >
+            <v-btn
+              color="green darken-1"
+              text
+              @click="
+                dialogRemove = false;
+                deleteExpenses(selectedItem);
+                deleteExpensesLocal();
+              "
+              >Подтвердить</v-btn
+            >
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </v-row>
   </v-container>
 </template>
 
@@ -86,10 +117,12 @@ export default {
       loadingB: false,
       price: "",
       dialog: false,
+      dialogRemove: false,
       comment: "",
       tableData: [],
       page: 1,
       pageCount: 1,
+      selectedItem: {},
       searchFilter: "",
       tableHeaders: [
         {
@@ -103,6 +136,10 @@ export default {
         {
           text: "Дата",
           value: "dateFormat"
+        },
+        {
+          text: "",
+          value: "removes"
         }
       ]
     };
@@ -115,20 +152,29 @@ export default {
   created() {
     this.loading = true;
     this.getExpenses();
+    let isFilter = date => {
+      let mDate = Math.ceil(
+        Math.abs(new Date().getTime() - date * 1000) /
+          (1000 * 60 * 60 * 24 * 30)
+      );
+      return mDate <= 6;
+    };
     setTimeout(() => {
-      this.allExpenses.forEach(c => {
-        Object.values(c).forEach(g => {
-          this.tableData.push(g);
-        });
-      });
+      this.tableData = this.allExpenses.filter(c => isFilter(c.date.seconds));
       this.loading = false;
-    }, 1500);
+    }, 1000);
   },
   methods: {
     ...mapActions({
       sendExpenses: "SEND_EXPENSES",
-      getExpenses: "GET_EXPENSES"
+      getExpenses: "GET_EXPENSES",
+      deleteExpenses: "DELETE_EXPENSES"
     }),
+    deleteExpensesLocal() {
+      this.tableData = this.tableData.filter(
+        c => c.id !== this.selectedItem.id
+      );
+    },
     submit() {
       if (this.$refs.form.validate()) {
         this.loadingB = true;
@@ -143,8 +189,7 @@ export default {
         this.tableData.push(payload);
         setTimeout(() => {
           this.loadingB = false;
-          this.comment = "";
-          this.price = "";
+          this.dialog = false;
         }, 1000);
       }
     }

@@ -175,7 +175,6 @@ export default {
           datePay: new Date().format("dd.mm.yyyy")
         })
         .then(function() {
-          commit("SET_SUCCESS");
           // let d = new Date();
           // d.setMonth(d.getMonth() - 12);
           dispatch("SEND_PAY_REPORT", {
@@ -201,7 +200,6 @@ export default {
           datePay: new Date().format("dd.mm.yyyy")
         })
         .then(function() {
-          commit("SET_SUCCESS");
           dispatch("SEND_PAY_REPORT", {
             name: payload.name,
             coach: payload.coach,
@@ -227,7 +225,6 @@ export default {
           datePay: new Date().format("dd.mm.yyyy")
         })
         .then(function() {
-          commit("SET_SUCCESS");
           dispatch("SEND_PAY_REPORT", {
             name: payload.name,
             coach: payload.coach,
@@ -250,7 +247,6 @@ export default {
           datePay: new Date().format("dd.mm.yyyy")
         })
         .then(function() {
-          commit("SET_SUCCESS");
           dispatch("SEND_PAY_REPORT", {
             name: payload.name,
             coach: payload.coach,
@@ -596,6 +592,130 @@ export default {
           commit("SET_ERROR", error);
         });
     },
+    UPDATE_USER_GROUP({ commit }, payload) {
+      vue.$db
+        .collection("usersGroup")
+        .doc(payload.id)
+        .update({
+          name: payload.name,
+          nameGroup: payload.group,
+          phone: payload.phone,
+          subscription: payload.price,
+          coach: payload.coach,
+          uidGroup: payload.uidGroup
+        })
+        .then(function() {
+          commit("SET_SUCCESS");
+        })
+        .catch(function(error) {
+          commit("SET_ERROR", error);
+        });
+    },
+    UPDATE_USER_MINI({ commit }, payload) {
+      vue.$db
+        .collection("usersMini")
+        .doc(payload.id)
+        .update({
+          name: payload.name,
+          nameGroup: payload.group,
+          phone: payload.phone,
+          subscription: payload.price,
+          coach: payload.coach,
+          uidGroup: payload.uidGroup
+        })
+        .then(function() {
+          commit("SET_SUCCESS");
+        })
+        .catch(function(error) {
+          commit("SET_ERROR", error);
+        });
+    },
+    UPDATE_USER_SINGLE({ commit }, payload) {
+      vue.$db
+        .collection("usersSingle")
+        .doc(payload.id)
+        .update({
+          name: payload.name,
+          phone: payload.phone,
+          subscription: payload.price,
+          coach: payload.coach
+        })
+        .then(function() {
+          commit("SET_SUCCESS");
+        })
+        .catch(function(error) {
+          commit("SET_ERROR", error);
+        });
+    },
+    UPDATE_USER_INDIV({ commit }, payload) {
+      vue.$db
+        .collection("usersIndiv")
+        .doc(payload.id)
+        .update({
+          name: payload.name,
+          phone: payload.phone,
+          subscription: payload.price,
+          coach: payload.coach,
+          time: payload.time,
+          title: payload.title,
+          weekDays: payload.weekDays
+        })
+        .then(function() {
+          commit("SET_SUCCESS");
+        })
+        .catch(function(error) {
+          commit("SET_ERROR", error);
+        });
+    },
+    UPDATE_GROUP_USERS_TO_USERS({ commit }, payload) {
+      vue.$db
+        .collection("groups")
+        .doc(payload.fromGroup)
+        .get()
+        .then(function(doc) {
+          let count = 0;
+          let users = [];
+          let newUsers = [];
+          users = doc.data().users;
+          count = doc.data().count;
+          newUsers = users.filter(item => item !== payload.userId);
+          vue.$db
+            .collection("groups")
+            .doc(payload.fromGroup)
+            .update({
+              count: parseInt(count) + 1,
+              users: newUsers
+            })
+            .then(function() {
+              vue.$db
+                .collection("groups")
+                .doc(payload.toGroup)
+                .get()
+                .then(function(doc) {
+                  let count = 0;
+                  let users = [];
+
+                  users = doc.data().users;
+                  count = doc.data().count;
+                  users.push(payload.userId);
+                  vue.$db
+                    .collection("groups")
+                    .doc(payload.toGroup)
+                    .update({
+                      count: parseInt(count) - 1,
+                      users
+                    })
+                    .then(function() {})
+                    .catch(function(error) {
+                      commit("SET_ERROR", error);
+                    });
+                });
+            })
+            .catch(function(error) {
+              commit("SET_ERROR", error);
+            });
+        });
+    },
     DELETE_USER_GROUP({ commit }, payload) {
       vue.$db
         .collection("usersGroup")
@@ -612,11 +732,7 @@ export default {
               let newUsers = [];
               users = doc.data().users;
               count = doc.data().count;
-              users.forEach(item => {
-                if (item !== payload.id) {
-                  newUsers.push(item);
-                }
-              });
+              newUsers = users.filter(item => item !== payload.id);
               vue.$db
                 .collection("groups")
                 .doc(payload.uidGroup)
@@ -634,9 +750,6 @@ export default {
             .catch(function(error) {
               commit("SET_ERROR", error);
             });
-        })
-        .catch(function(error) {
-          commit("SET_ERROR", error);
         });
     },
     DELETE_USER_MINI({ commit }, payload) {

@@ -319,11 +319,7 @@ export default {
           this.allData.push(g);
         });
       });
-      this.allExpenses.forEach(c => {
-        Object.values(c).forEach(g => {
-          this.allExp.push(g);
-        });
-      });
+      this.allExp = this.allExpenses;
     }, 1000);
   },
   computed: {
@@ -370,12 +366,12 @@ export default {
               .reduce((total, r) => (total += +r.price), 0)
           );
         }
-      }, 2500);
+      }, 1700);
 
       setTimeout(() => {
         this.renderChart(this.dataBar, this.options);
         this.loadingChart = false;
-      }, 2600);
+      }, 1800);
     },
     updateFileds() {
       this.countWorkInMonth = 0;
@@ -512,6 +508,7 @@ export default {
       });
 
       this.dataExp = this.allExp.filter(c => isFilter(c.date.seconds));
+
       this.tableData = this.sampleTable;
       // if(this.selectWeek==="За месяц"){
       //   this.createChartMonth();
@@ -576,7 +573,7 @@ export default {
       setTimeout(() => {
         this.filterWeek();
         this.loading = false;
-      }, 1500);
+      }, 1700);
     }
   }
 };

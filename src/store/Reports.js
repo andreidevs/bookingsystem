@@ -104,31 +104,15 @@ export default {
       commit("SET_REPORTS", reports);
     },
     SEND_EXPENSES({ commit }, payload) {
-      const date = new Date().getMonth() + 1 + "-" + new Date().getFullYear();
       vue.$db
         .collection("expenses")
-        .doc(date)
-        .update({
-          [payload.id]: payload
-        })
+        .doc(payload.id)
+        .set({ ...payload })
         .then(function() {
           commit("SET_SUCCESS");
         })
-        .catch(function() {
-          vue.$db
-            .collection("expenses")
-            .doc(date)
-            .set({
-              [payload.id]: payload
-              // month: new Date().getMonth(),
-              // year: new Date().getFullYear()
-            })
-            .then(function() {
-              commit("SET_SUCCESS");
-            })
-            .catch(function(error) {
-              commit("SET_ERROR", error);
-            });
+        .catch(function(error) {
+          commit("SET_ERROR", error);
         });
     },
     GET_EXPENSES({ commit }) {
@@ -143,37 +127,17 @@ export default {
         });
       commit("SET_EXPENSES", report);
     },
-    DELETE_EXPENSES({ dispatch, state, commit }, payload) {
-      dispatch("GET_EXPENSES");
-      let data = [];
-      const date =
-        new Date(payload.date.seconds * 1000).getMonth() +
-        1 +
-        "-" +
-        new Date(payload.date.seconds * 1000).getFullYear();
-      setTimeout(() => {
-        const allExpenses = state.expenses;
-
-        allExpenses.forEach(c => {
-          Object.values(c).forEach(g => {
-            if (payload.id !== g.id) {
-              data.push(g);
-            }
-          });
+    DELETE_EXPENSES({ commit }, payload) {
+      vue.$db
+        .collection("expenses")
+        .doc(payload.id)
+        .delete()
+        .then(function() {
+          commit("SET_SUCCESS");
+        })
+        .catch(function(error) {
+          commit("SET_ERROR", error);
         });
-        vue.$db
-          .collection("expenses")
-          .doc(date)
-          .set({
-            ...data
-          })
-          .then(function() {
-            commit("SET_SUCCESS");
-          })
-          .catch(function(error) {
-            commit("SET_ERROR", error);
-          });
-      }, 1000);
     }
   }
 };
