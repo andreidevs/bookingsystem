@@ -178,6 +178,7 @@ export default {
       priceGroupInMonth: 0,
       priceIndivInMonth: 0,
       priceSingleInMonth: 0,
+      priceOtherInMonth: 0,
       priceExpenses: 0,
       totalWork: 0,
       itemsWeek: ["За день", "За неделю", "За месяц", "За полгода", "За год"],
@@ -382,6 +383,7 @@ export default {
       this.priceGroupInMonth = 0;
       this.priceIndivInMonth = 0;
       this.priceSingleInMonth = 0;
+      this.priceOtherInMonth = 0;
       this.priceExpenses = 0;
       this.totalWork = 0;
       this.sampleTable.forEach(c => {
@@ -391,9 +393,11 @@ export default {
         } else if (c.type === "Группа") {
           this.countGroupInMonth++;
           this.priceGroupInMonth += +c.price;
-        } else {
+        } else if (c.type === "Разовое") {
           this.countSingleInMonth++;
           this.priceSingleInMonth += +c.price;
+        } else {
+          this.priceOtherInMonth += +c.price;
         }
       });
       this.dataExp.forEach(c => {
@@ -406,7 +410,8 @@ export default {
       this.priceWorkInMonth =
         this.priceGroupInMonth +
         this.priceIndivInMonth +
-        this.priceSingleInMonth;
+        this.priceSingleInMonth +
+        this.priceOtherInMonth;
       this.totalWork = this.priceWorkInMonth - this.priceExpenses;
     },
     toogleGroup() {
