@@ -21,3 +21,4 @@ yarn-error.log*
 *.sw?
 deploy.cmd
 bookingsystem.zip
+src/config/firebaseMain.js
