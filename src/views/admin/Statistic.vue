@@ -10,7 +10,7 @@
             <v-progress-circular indeterminate color="info" :size="50" />
           </div>
           <div v-show="!loadingChart">
-            <canvas ref="canvas"></canvas>
+            <canvas ref="canvas" class="mt-8"></canvas>
           </div>
         </v-col>
         <v-col cols="12" sm="12" lg="6">
@@ -42,6 +42,12 @@
               </span>
               <br />
               <span class="headline"> {{ priceSingleInMonth }} KZT </span>
+              <br />
+              <span class="title font-weight-black"
+                >Другие оплаты: {{ countOtherInMonth }}
+              </span>
+              <br />
+              <span class="headline"> {{ priceOtherInMonth }} KZT </span>
             </v-card-text>
           </v-card>
         </v-col>
@@ -174,6 +180,7 @@ export default {
       countGroupInMonth: 0,
       countIndivInMonth: 0,
       countSingleInMonth: 0,
+      countOtherInMonth: 0,
       priceWorkInMonth: 0,
       priceGroupInMonth: 0,
       priceIndivInMonth: 0,
@@ -397,6 +404,7 @@ export default {
           this.countSingleInMonth++;
           this.priceSingleInMonth += +c.price;
         } else {
+          this.countOtherInMonth++;
           this.priceOtherInMonth += +c.price;
         }
       });
@@ -406,7 +414,8 @@ export default {
       this.countWorkInMonth =
         this.countIndivInMonth +
         this.countGroupInMonth +
-        this.countSingleInMonth;
+        this.countSingleInMonth +
+        this.countOtherInMonth;
       this.priceWorkInMonth =
         this.priceGroupInMonth +
         this.priceIndivInMonth +
