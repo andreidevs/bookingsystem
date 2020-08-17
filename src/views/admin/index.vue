@@ -11,7 +11,7 @@
         >
           <v-list-item-content
             style="cursor: pointer;"
-            @click="$router.push('/admin/daily')"
+            @click="$router.push('/daily')"
           >
             <div class="d-flex pa-2 align-center justify-center pt-7">
               <v-icon style="font-size: 64px" color="white"
@@ -48,28 +48,28 @@
                 small
                 outlined
                 color="white"
-                @click="$router.push('/admin/users/group')"
+                @click="$router.push('/users/group')"
                 >Групп</v-btn
               >
               <v-btn
                 small
                 outlined
                 color="white"
-                @click="$router.push('/admin/users/mini')"
+                @click="$router.push('/users/mini')"
                 >Минигрупп</v-btn
               >
               <v-btn
                 small
                 outlined
                 color="white"
-                @click="$router.push('/admin/users/indiv')"
+                @click="$router.push('/users/indiv')"
                 >Индив</v-btn
               >
               <v-btn
                 small
                 outlined
                 color="white"
-                @click="$router.push('/admin/users/single')"
+                @click="$router.push('/users/single')"
                 >Разовые</v-btn
               >
             </v-card-actions>
@@ -98,21 +98,21 @@
                 small
                 outlined
                 color="white"
-                @click="$router.push('/admin/addclient')"
+                @click="$router.push('/addclient')"
                 >Клиента</v-btn
               >
               <v-btn
                 small
                 outlined
                 color="white"
-                @click="$router.push('/admin/addgroup')"
+                @click="$router.push('/addgroup')"
                 >Группу</v-btn
               >
               <v-btn
                 small
                 outlined
                 color="white"
-                @click="$router.push('/admin/anotherpay')"
+                @click="$router.push('/anotherpay')"
                 >Другая оплата</v-btn
               >
             </v-card-actions>
@@ -131,7 +131,7 @@
         >
           <v-list-item-content
             style="cursor: pointer;"
-            @click="$router.push('/admin/schedule')"
+            @click="$router.push('/schedule')"
           >
             <div class="d-flex pa-2 align-center justify-center pt-7">
               <v-icon style="font-size: 64px" color="white"
@@ -156,7 +156,7 @@
         >
           <v-list-item-content
             style="cursor: pointer;"
-            @click="$router.push('/admin/groups')"
+            @click="$router.push('/groups')"
           >
             <div class="d-flex pa-2 align-center justify-center pt-7">
               <v-icon style="font-size: 64px" color="white"
@@ -182,7 +182,7 @@
         >
           <v-list-item-content
             style="cursor: pointer;"
-            @click="$router.push('/admin/historysingle')"
+            @click="$router.push('/historysingle')"
           >
             <div class="d-flex pa-2 align-center justify-center pt-n4">
               <v-icon style="font-size: 64px" color="white">mdi-run</v-icon>
@@ -209,7 +209,7 @@
         >
           <v-list-item-content
             style="cursor: pointer;"
-            @click="$router.push('/admin/statistic')"
+            @click="$router.push('/statistic')"
           >
             <div class="d-flex pa-2 align-center justify-center pt-6">
               <v-icon style="font-size: 64px" color="white"
@@ -235,7 +235,7 @@
         >
           <v-list-item-content
             style="cursor: pointer;"
-            @click="$router.push('/admin/wages')"
+            @click="$router.push('/wages')"
           >
             <div class="d-flex pa-2 align-center justify-center pt-n4">
               <v-icon style="font-size: 64px" color="white"
@@ -262,7 +262,7 @@
         >
           <v-list-item-content
             style="cursor: pointer;"
-            @click="$router.push('/admin/expenses')"
+            @click="$router.push('/expenses')"
           >
             <div class="d-flex pa-2 align-center justify-center pt-6">
               <v-icon style="font-size: 64px" color="white"

@@ -373,25 +373,24 @@ export default {
       updateUser: "UPDATE_USER_INDIV",
       getCoachList: "GET_COACH_LIST"
     }),
-    updateTable() {
+    async updateTable() {
       this.loading = true;
       this.sampleUsers = [];
-      this.getAllIndiv();
-      this.getCoachList();
-      setTimeout(() => {
-        this.itemsCoach = this.coachList;
-        this.sampleUsers = this.allIndivState.map(
-          c =>
-            (c = {
-              ...c,
-              dateRegg:
-                c.dateReg != undefined
-                  ? new Date(c.dateReg.seconds * 1000).format("dd.mm.yyyy")
-                  : new Date().format("dd.mm.yyyy")
-            })
-        );
-        this.loading = false;
-      }, 1000);
+      const res = await this.getAllIndiv();
+      const coachlist = await this.getCoachList();
+
+      this.itemsCoach = coachlist;
+      this.sampleUsers = res.map(
+        c =>
+          (c = {
+            ...c,
+            dateRegg:
+              c.dateReg != undefined
+                ? this.$moment(c.dateReg.seconds * 1000).format("DD.MM.YYYY")
+                : this.$moment().format("DD.MM.YYYY")
+          })
+      );
+      this.loading = false;
     },
     editUser(item) {
       this.selectedItem = item;
@@ -458,7 +457,7 @@ export default {
         c => c.id === this.selectedItem.id
       );
       this.sampleUsers[idx].paid = true;
-      this.sampleUsers[idx].datePay = new Date().format("dd.mm.yyyy");
+      this.sampleUsers[idx].datePay = this.$moment().format("DD.MM.YYYY");
       this.sampleUsers[idx].datePayNoformat = new Date();
     },
     deleteUserLocal() {

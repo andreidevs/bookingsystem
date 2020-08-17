@@ -47,10 +47,11 @@
           </v-col>
         </v-row>
         <v-card-actions class="d-flex justify-space-between mt-n4">
-          <v-btn color="secondary" outlined @click="showMore"
-            >Просмотреть все <v-icon class="ml-1">mdi-more</v-icon></v-btn
+          <v-btn color="secondary" outlined @click="showMore" class="btn-large"
+            >Просмотреть все
+            <v-icon class="ml-1 btn-large">mdi-more</v-icon></v-btn
           >
-          <v-btn color="success" @click="stepOne"
+          <v-btn color="success" @click="stepOne" class="btn-small"
             >Далее <v-icon class="ml-1">mdi-arrow-right</v-icon></v-btn
           >
         </v-card-actions>
@@ -474,10 +475,16 @@ export default {
 
 <style scoped>
 .cardMain {
-  margin-right: 27%;
-  margin-top: -6%;
+  margin-right: 25vw;
+  margin-top: -5vh;
 }
-@media (max-width: 600px) {
+@media (max-width: 1300px) {
+  .cardMain {
+    margin-right: 15%;
+    margin-top: -5%;
+  }
+}
+@media (max-width: 700px) {
   .cardMain {
     margin-right: 0;
     margin-top: 0;
@@ -489,5 +496,15 @@ export default {
 
 .v-btn--floating {
   position: relative;
+}
+@media (max-width: 370px) {
+  .btn-large {
+    width: 65%;
+    font-size: 12px !important;
+  }
+  .btn-small {
+    width: 35%;
+    font-size: 12px !important;
+  }
 }
 </style>

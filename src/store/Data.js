@@ -136,37 +136,25 @@ export default {
         });
       });
     },
-    // CHECK_FOR_TYPE({commit}, type, payload){
-    //   vue.$db
-    //   .collection(type)
-    //   .where("capital", "==", true)
-    // .get()
-    // .then(function(querySnapshot) {
-    //     querySnapshot.forEach(function(doc) {
-    //         // doc.data() is never undefined for query doc snapshots
-    //         console.log(doc.id, " => ", doc.data());
-    //     });
-    // })
-    // .catch(function(error) {
-    //     console.log("Error getting documents: ", error);
-    // });
-    // },
-    SET_TYPEWORKOUT({ commit }, payload) {
-      vue.$db
+
+    SET_TYPEWORKOUT: async ({ commit }, payload) => {
+      await vue.$db
         .collection("typeWorkout")
         .add({
           name: payload
         })
         .then(function() {
           commit("SET_SUCCESS");
+          return "success";
         })
         .catch(function(error) {
           commit("SET_ERROR", error);
+          return error;
         });
     },
 
-    SEND_PAY_SUB({ commit, dispatch }, payload) {
-      vue.$db
+    SEND_PAY_SUB: async ({ commit, dispatch }, payload) => {
+      await vue.$db
         .collection("usersGroup")
         .doc(payload.id)
         .update({
@@ -185,13 +173,15 @@ export default {
             date: new Date(),
             price: payload.subscription
           });
+          return "success";
         })
         .catch(function(error) {
           commit("SET_ERROR", error);
+          return error;
         });
     },
-    SEND_PAY_MINI({ commit, dispatch }, payload) {
-      vue.$db
+    SEND_PAY_MINI: async ({ commit, dispatch }, payload) => {
+      await vue.$db
         .collection("usersMini")
         .doc(payload.id)
         .update({
@@ -208,15 +198,17 @@ export default {
             date: new Date(),
             price: payload.subscription
           });
+          return "success";
         })
         .catch(function(error) {
           commit("SET_ERROR", error);
+          return error;
         });
     },
-    SEND_PAY_INDIV({ commit, dispatch }, payload) {
+    SEND_PAY_INDIV: async ({ commit, dispatch }, payload) => {
       // let d = new Date();
       // d.setMonth(d.getMonth() - 12);
-      vue.$db
+      await vue.$db
         .collection("usersIndiv")
         .doc(payload.id)
         .update({
@@ -232,13 +224,15 @@ export default {
             date: new Date(),
             price: payload.subscription
           });
+          return "success";
         })
         .catch(function(error) {
           commit("SET_ERROR", error);
+          return error;
         });
     },
-    SEND_PAY_SOFIA_INDIV({ commit, dispatch }, payload) {
-      vue.$db
+    SEND_PAY_SOFIA_INDIV: async ({ commit, dispatch }, payload) => {
+      await vue.$db
         .collection("indivSofia")
         .doc(payload.id)
         .update({
@@ -254,13 +248,15 @@ export default {
             date: new Date(),
             price: payload.subscription
           });
+          return "success";
         })
         .catch(function(error) {
           commit("SET_ERROR", error);
+          return error;
         });
     },
-    SEND_PAY_SINGLE({ commit, dispatch }, payload) {
-      vue.$db
+    SEND_PAY_SINGLE: async ({ commit, dispatch }, payload) => {
+      await vue.$db
         .collection("usersSingle")
         .doc(payload.id)
         .delete()
@@ -278,10 +274,12 @@ export default {
             .add({ ...payload, datePay: new Date().format("dd.mm.yyyy") })
             .then(function() {
               commit("SET_SUCCESS");
+              return "success";
             });
         })
         .catch(function(error) {
           commit("SET_ERROR", error);
+          return error;
         });
     },
     GET_TYPEWORKOUT_LIST({ commit }) {
@@ -296,9 +294,9 @@ export default {
         });
       commit("SET_TYPEWORKOUT_LIST", typeWorkoutList);
     },
-    GET_COACH_LIST({ commit }) {
+    GET_COACH_LIST: async ({ commit }) => {
       let coachList = [];
-      vue.$db
+      await vue.$db
         .collection("coach")
         .get()
         .then(function(querySnapshot) {
@@ -307,9 +305,10 @@ export default {
           });
         });
       commit("SET_COACH_LIST", coachList);
+      return coachList;
     },
-    CREATE_GROUP({ commit }, payload) {
-      vue.$db
+    CREATE_GROUP: async ({ commit }, payload) => {
+      await vue.$db
         .collection("groups")
         .doc(payload.id)
         .set({
@@ -317,14 +316,16 @@ export default {
         })
         .then(function() {
           commit("SET_SUCCESS");
+          return "success";
         })
         .catch(function(error) {
           commit("SET_ERROR", error);
+          return error;
         });
     },
-    GET_ALL_GROUPS({ commit, getters }, trigger) {
+    GET_ALL_GROUPS: async ({ commit, getters }, trigger) => {
       let groups = [];
-      vue.$db
+      await vue.$db
         .collection("groups")
         .get()
         .then(function(querySnapshot) {
@@ -342,10 +343,11 @@ export default {
           });
         });
       commit("SET_ALL_GROUPS", groups);
+      return groups;
     },
-    GET_ALL_USERS({ commit, getters }) {
+    GET_ALL_USERS: async ({ commit, getters }) => {
       let users = [];
-      vue.$db
+      await vue.$db
         .collection("usersGroup")
         .get()
         .then(function(querySnapshot) {
@@ -359,10 +361,11 @@ export default {
           });
         });
       commit("SET_ALL_USERS", users);
+      return users;
     },
-    GET_ALL_SINGLE({ commit, getters }) {
+    GET_ALL_SINGLE: async ({ commit, getters }) => {
       let users = [];
-      vue.$db
+      await vue.$db
         .collection("usersSingle")
         .get()
         .then(function(querySnapshot) {
@@ -376,10 +379,11 @@ export default {
           });
         });
       commit("SET_ALL_SINGLE", users);
+      return users;
     },
-    GET_ALL_INDIV({ commit, getters }, trigger) {
+    GET_ALL_INDIV: async ({ commit, getters }, trigger) => {
       let users = [];
-      vue.$db
+      await vue.$db
         .collection("usersIndiv")
         .get()
         .then(function(querySnapshot) {
@@ -397,10 +401,11 @@ export default {
           });
         });
       commit("SET_ALL_INDIV", users);
+      return users;
     },
-    GET_SOFIA_INDIV({ commit }) {
+    GET_SOFIA_INDIV: async ({ commit }) => {
       let users = [];
-      vue.$db
+      await vue.$db
         .collection("indivSofia")
         .get()
         .then(function(querySnapshot) {
@@ -409,10 +414,11 @@ export default {
           });
         });
       commit("SET_SOFIA_INDIV", users);
+      return users;
     },
-    GET_ALL_MINI({ commit, getters }) {
+    GET_ALL_MINI: async ({ commit, getters }) => {
       let users = [];
-      vue.$db
+      await vue.$db
         .collection("usersMini")
         .get()
         .then(function(querySnapshot) {
@@ -426,10 +432,11 @@ export default {
           });
         });
       commit("SET_ALL_MINI", users);
+      return users;
     },
-    GET_USERS_BY_GROUP({ commit, getters }, payload) {
+    GET_USERS_BY_GROUP: async ({ commit, getters }, payload) => {
       let users = [];
-      vue.$db
+      await vue.$db
         .collection("usersGroup")
         .get()
         .then(function(querySnapshot) {
@@ -445,10 +452,11 @@ export default {
           });
         });
       commit("SET_USERS_BY_GROUP", users);
+      return users;
     },
-    GET_USERS_BY_MINI({ commit, getters }, payload) {
+    GET_USERS_BY_MINI: async ({ commit, getters }, payload) => {
       let users = [];
-      vue.$db
+      await vue.$db
         .collection("usersMini")
         .get()
         .then(function(querySnapshot) {
@@ -464,10 +472,11 @@ export default {
           });
         });
       commit("SET_USERS_BY_GROUP", users);
+      return users;
     },
-    GET_ALL_SINGLE_HISTORY({ commit }) {
+    GET_ALL_SINGLE_HISTORY: async ({ commit }) => {
       let report = [];
-      vue.$db
+      await vue.$db
         .collection("historySingle")
         .get()
         .then(function(querySnapshot) {
@@ -476,12 +485,13 @@ export default {
           });
         });
       commit("SET_ALL_SINGLE_HISTORY", report);
+      return report;
     },
-    SUBSTRACT_COUNT_GROUP({ commit }, payload) {
+    SUBSTRACT_COUNT_GROUP: async ({ commit }, payload) => {
       let users, count;
-      const refGroup = vue.$db.collection("groups").doc(payload.uidGroup);
+      const refGroup = await vue.$db.collection("groups").doc(payload.uidGroup);
 
-      refGroup.get().then(function(doc) {
+      await refGroup.get().then(function(doc) {
         users = doc.data().users;
         count = doc.data().count;
         count = parseInt(count) - 1;
@@ -493,11 +503,12 @@ export default {
           })
           .catch(function(error) {
             commit("SET_ERROR", error);
+            return error;
           });
       });
     },
-    WRITE_USER_GROUP({ commit, dispatch }, payload) {
-      vue.$db
+    WRITE_USER_GROUP: async ({ commit, dispatch }, payload) => {
+      await vue.$db
         .collection("usersGroup")
         .doc(payload.id)
         .set({
@@ -510,17 +521,19 @@ export default {
               name: payload.name,
               phone: payload.phone,
               text: `Запись в группу ${payload.nameGroup} Оплата ${payload.subscription}`,
-              link: `https://edemdance.web.app/admin/deleteuser/group/${payload.id}`
+              link: `https://crm.edemdance.kz/deleteuser/group/${payload.id}`
             });
           }
           commit("SET_SUCCESS");
+          return "success";
         })
         .catch(function(error) {
           commit("SET_ERROR", error);
+          return error;
         });
     },
-    WRITE_USER_SINGLE({ commit, dispatch }, payload) {
-      vue.$db
+    WRITE_USER_SINGLE: async ({ commit, dispatch }, payload) => {
+      await vue.$db
         .collection("usersSingle")
         .doc(payload.id)
         .set({
@@ -533,17 +546,19 @@ export default {
               name: payload.name,
               phone: payload.phone,
               text,
-              link: `https://edemdance.web.app/admin/deleteuser/single/${payload.id}`
+              link: `https://crm.edemdance.kz/deleteuser/single/${payload.id}`
             });
           }
           commit("SET_SUCCESS");
+          return "success";
         })
         .catch(function(error) {
           commit("SET_ERROR", error);
+          return error;
         });
     },
-    WRITE_USER_INDIV({ commit }, payload) {
-      vue.$db
+    WRITE_USER_INDIV: async ({ commit }, payload) => {
+      await vue.$db
         .collection("usersIndiv")
         .doc(payload.id)
         .set({
@@ -558,13 +573,15 @@ export default {
           //   link: `https://edemdance.web.app/admin/deleteuser/indiv/${payload.id}`
           // });
           commit("SET_SUCCESS");
+          return "success";
         })
         .catch(function(error) {
           commit("SET_ERROR", error);
+          return error;
         });
     },
-    WRITE_USER_SOFIA_INDIV({ commit }, payload) {
-      vue.$db
+    WRITE_USER_SOFIA_INDIV: async ({ commit }, payload) => {
+      await vue.$db
         .collection("indivSofia")
         .doc(payload.id)
         .set({
@@ -572,12 +589,14 @@ export default {
         })
         .then(function() {
           commit("SET_SUCCESS");
+          return "success";
         })
         .catch(function(error) {
           commit("SET_ERROR", error);
+          return error;
         });
     },
-    WRITE_USER_MINI({ commit, dispatch }, payload) {
+    WRITE_USER_MINI: async ({ commit, dispatch }, payload) => {
       vue.$db
         .collection("usersMini")
         .doc(payload.id)
@@ -587,13 +606,15 @@ export default {
         .then(function() {
           dispatch("SUBSTRACT_COUNT_GROUP", payload);
           commit("SET_SUCCESS");
+          return "success";
         })
         .catch(function(error) {
           commit("SET_ERROR", error);
+          return error;
         });
     },
-    UPDATE_USER_GROUP({ commit }, payload) {
-      vue.$db
+    UPDATE_USER_GROUP: async ({ commit }, payload) => {
+      await vue.$db
         .collection("usersGroup")
         .doc(payload.id)
         .update({
@@ -606,13 +627,15 @@ export default {
         })
         .then(function() {
           commit("SET_SUCCESS");
+          return "success";
         })
         .catch(function(error) {
           commit("SET_ERROR", error);
+          return error;
         });
     },
-    UPDATE_USER_MINI({ commit }, payload) {
-      vue.$db
+    UPDATE_USER_MINI: async ({ commit }, payload) => {
+      await vue.$db
         .collection("usersMini")
         .doc(payload.id)
         .update({
@@ -625,13 +648,15 @@ export default {
         })
         .then(function() {
           commit("SET_SUCCESS");
+          return "success";
         })
         .catch(function(error) {
           commit("SET_ERROR", error);
+          return error;
         });
     },
-    UPDATE_USER_SINGLE({ commit }, payload) {
-      vue.$db
+    UPDATE_USER_SINGLE: async ({ commit }, payload) => {
+      await vue.$db
         .collection("usersSingle")
         .doc(payload.id)
         .update({
@@ -642,13 +667,15 @@ export default {
         })
         .then(function() {
           commit("SET_SUCCESS");
+          return "success";
         })
         .catch(function(error) {
           commit("SET_ERROR", error);
+          return error;
         });
     },
-    UPDATE_USER_INDIV({ commit }, payload) {
-      vue.$db
+    UPDATE_USER_INDIV: async ({ commit }, payload) => {
+      await vue.$db
         .collection("usersIndiv")
         .doc(payload.id)
         .update({
@@ -662,13 +689,15 @@ export default {
         })
         .then(function() {
           commit("SET_SUCCESS");
+          return "success";
         })
         .catch(function(error) {
           commit("SET_ERROR", error);
+          return error;
         });
     },
-    UPDATE_GROUP_USERS_TO_USERS({ commit }, payload) {
-      vue.$db
+    UPDATE_GROUP_USERS_TO_USERS: async ({ commit }, payload) => {
+      await vue.$db
         .collection("groups")
         .doc(payload.fromGroup)
         .get()
@@ -705,19 +734,23 @@ export default {
                       count: parseInt(count) - 1,
                       users
                     })
-                    .then(function() {})
+                    .then(function() {
+                      return "success";
+                    })
                     .catch(function(error) {
                       commit("SET_ERROR", error);
+                      return error;
                     });
                 });
             })
             .catch(function(error) {
               commit("SET_ERROR", error);
+              return error;
             });
         });
     },
-    DELETE_USER_GROUP({ commit }, payload) {
-      vue.$db
+    DELETE_USER_GROUP: async ({ commit }, payload) => {
+      await vue.$db
         .collection("usersGroup")
         .doc(payload.id)
         .delete()
@@ -742,18 +775,21 @@ export default {
                 })
                 .then(function() {
                   commit("SET_SUCCESS");
+                  return "success";
                 })
                 .catch(function(error) {
                   commit("SET_ERROR", error);
+                  return error;
                 });
             })
             .catch(function(error) {
               commit("SET_ERROR", error);
+              return error;
             });
         });
     },
-    DELETE_USER_MINI({ commit }, payload) {
-      vue.$db
+    DELETE_USER_MINI: async ({ commit }, payload) => {
+      await vue.$db
         .collection("usersMini")
         .doc(payload.id)
         .delete()
@@ -782,22 +818,26 @@ export default {
                 })
                 .then(function() {
                   commit("SET_SUCCESS");
+                  return "success";
                 })
                 .catch(function(error) {
                   commit("SET_ERROR", error);
+                  return error;
                 });
             })
             .catch(function(error) {
               commit("SET_ERROR", error);
+              return error;
             });
         })
         .catch(function(error) {
           commit("SET_ERROR", error);
+          return error;
         });
     },
-    DELETE_USER_GROUP_BY_ID({ commit, dispatch }, payload) {
+    DELETE_USER_GROUP_BY_ID: async ({ commit, dispatch }, payload) => {
       let user = [];
-      vue.$db
+      await vue.$db
         .collection("usersGroup")
         .doc(payload)
         .get()
@@ -807,46 +847,53 @@ export default {
         })
         .catch(function(error) {
           commit("SET_ERROR", error);
+          return error;
         });
     },
-    DELETE_USER_INDIV({ commit }, payload) {
-      vue.$db
+    DELETE_USER_INDIV: async ({ commit }, payload) => {
+      await vue.$db
         .collection("usersIndiv")
         .doc(payload.id)
         .delete()
         .then(function() {
           commit("SET_SUCCESS");
+          return "success";
         })
         .catch(function(error) {
           commit("SET_ERROR", error);
+          return error;
         });
     },
-    DELETE_USER_SOFIA_INDIV({ commit }, payload) {
-      vue.$db
+    DELETE_USER_SOFIA_INDIV: async ({ commit }, payload) => {
+      await vue.$db
         .collection("indivSofia")
         .doc(payload.id)
         .delete()
         .then(function() {
           commit("SET_SUCCESS");
+          return "success";
         })
         .catch(function(error) {
           commit("SET_ERROR", error);
+          return error;
         });
     },
-    DELETE_USER_SINGLE({ commit }, payload) {
-      vue.$db
+    DELETE_USER_SINGLE: async ({ commit }, payload) => {
+      await vue.$db
         .collection("usersSingle")
         .doc(payload.id)
         .delete()
         .then(function() {
           commit("SET_SUCCESS");
+          return "success";
         })
         .catch(function(error) {
           commit("SET_ERROR", error);
+          return error;
         });
     },
-    DELETE_GROUP({ commit }, payload) {
-      vue.$db
+    DELETE_GROUP: async ({ commit }, payload) => {
+      await vue.$db
         .collection("groups")
         .doc(payload.id)
         .delete()
@@ -859,15 +906,18 @@ export default {
                 .delete()
                 .then(function() {
                   commit("SET_SUCCESS");
+                  return "success";
                 })
                 .catch(function(error) {
                   commit("SET_ERROR", error);
+                  return error;
                 });
             });
           }
         })
         .catch(function(error) {
           commit("SET_ERROR", error);
+          return error;
         });
     }
   }

@@ -72,9 +72,8 @@
             @click="showUsers(item)"
             color="success"
             min-width="120"
+            >Список учеников</v-btn
           >
-            Список учеников
-          </v-btn>
         </template>
         <template v-slot:item.removes="{ item }">
           <v-icon @click="(selectedItem = item), (dialogRemoveGroup = true)"
@@ -82,10 +81,10 @@
           >
         </template>
         <template v-slot:no-data>
-          <span
-            >Невозможно получить данные либо таблица пуста, попробуйте обновить
-            страницу</span
-          >
+          <span>
+            Невозможно получить данные либо таблица пуста, попробуйте обновить
+            страницу
+          </span>
         </template>
       </v-data-table>
       <v-pagination
@@ -97,15 +96,16 @@
       <v-row justify="center">
         <v-dialog v-model="dialogRemoveGroup" persistent max-width="400">
           <v-card>
-            <v-card-title class="headline">Подтвердить удаление </v-card-title>
-            <v-card-text
-              >Вы действительно хотите навсегда удалить группу
-              <strong> {{ selectedItem.name }}</strong> <br />
-              <strong style="color:red">ВНИМАНИЕ</strong> <br />
-              <span style="color:red"
-                >Это приведет к удаление всех клиентов занимающихся в этой
-                группе</span
-              >
+            <v-card-title class="headline">Подтвердить удаление</v-card-title>
+            <v-card-text>
+              Вы действительно хотите навсегда удалить группу
+              <strong>{{ selectedItem.name }}</strong>
+              <br />
+              <strong style="color:red">ВНИМАНИЕ</strong>
+              <br />
+              <span style="color:red">
+                Это приведет к удаление всех клиентов занимающихся в этой группе
+              </span>
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
@@ -166,16 +166,22 @@
                   min-width="120"
                 >
                   {{ item.paid === false ? "Оплатить" : "Оплачен" }}
-                  <v-icon small v-if="!item.paid" class="ml-1">
-                    mdi-cash-usd
-                  </v-icon></v-btn
+                  <v-icon small v-if="!item.paid" class="ml-1"
+                    >mdi-cash-usd</v-icon
+                  >
+                </v-btn>
+              </template>
+              <template v-slot:item.removes="{ item }">
+                <v-icon
+                  @click="(selectedItem = item), (dialogRemoveUser = true)"
+                  >mdi-close</v-icon
                 >
               </template>
               <template v-slot:no-data>
-                <span
-                  >Невозможно получить данные либо таблица пуста, попробуйте
-                  обновить страницу</span
-                >
+                <span>
+                  Невозможно получить данные либо таблица пуста, попробуйте
+                  обновить страницу
+                </span>
               </template>
             </v-data-table>
           </v-card>
@@ -184,11 +190,11 @@
       <v-row justify="center">
         <v-dialog v-model="dialogPay" persistent max-width="400">
           <v-card>
-            <v-card-title class="headline">Подтвердить оплату </v-card-title>
-            <v-card-text
-              >Стоимость абонемента
+            <v-card-title class="headline">Подтвердить оплату</v-card-title>
+            <v-card-text>
+              Стоимость абонемента
               <strong>{{ selectedItem.subscription }}тг</strong> Клиент
-              <strong> {{ selectedItem.name }}</strong>
+              <strong>{{ selectedItem.name }}</strong>
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
@@ -202,12 +208,35 @@
           </v-card>
         </v-dialog>
       </v-row>
+      <v-row justify="center">
+        <v-dialog v-model="dialogRemoveUser" persistent max-width="400">
+          <v-card>
+            <v-card-title class="headline">Подтвердить удаление </v-card-title>
+            <v-card-text
+              >Вы действительно хотите удалить клиента
+              <strong> {{ selectedItem.name }}</strong> из группы
+              <strong>{{ selectedItem.nameGroup }}</strong>
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn
+                color="green darken-1"
+                text
+                @click="dialogRemoveUser = false"
+                >Отмена</v-btn
+              >
+              <v-btn color="green darken-1" text @click="deleteUser()"
+                >Подтвердить</v-btn
+              >
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </v-row>
       <v-btn
         style="position:fixed!important; bottom:10px; left:10px; z-index:1000;"
         @click="$router.go(-1)"
       >
-        <v-icon>mdi-keyboard-backspace</v-icon>
-        Назад
+        <v-icon>mdi-keyboard-backspace</v-icon>Назад
       </v-btn>
     </div>
   </v-container>
@@ -220,6 +249,7 @@ export default {
     return {
       page: 1,
       pageS: 1,
+      dialogRemoveUser: false,
       tableHeadersUsers: [
         {
           text: "Имя",
@@ -240,6 +270,10 @@ export default {
         {
           text: "Статус",
           value: "actions"
+        },
+        {
+          text: "",
+          value: "removes"
         }
       ],
       tableHeaders: [
@@ -309,18 +343,20 @@ export default {
         "20",
         "21"
       ],
-      coachItems: []
+      coachItems: [],
+      allGroupsState: [],
+      usersByGroup: []
     };
   },
-  created() {
+  async created() {
     this.updateTable();
-    this.getCoachList();
-    this.coachItems = this.coachList;
+    const coachlist = await this.getCoachList();
+    this.coachItems = coachlist;
   },
   computed: {
     ...mapGetters({
-      allGroupsState: "ALLGROUPS",
-      usersByGroup: "USERSBYGROUP",
+      // allGroupsState: "ALLGROUPS",
+      // usersByGroup: "USERSBYGROUP",
       coachList: "COACH"
     })
   },
@@ -330,34 +366,51 @@ export default {
       deleteGroup: "DELETE_GROUP",
       getCoachList: "GET_COACH_LIST",
       getUser: "GET_USERS_BY_GROUP",
+      deleteUserGroup: "DELETE_USER_GROUP",
+      deleteUserMini: "DELETE_USER_MINI",
       getUserMini: "GET_USERS_BY_MINI",
       sendPayStatusGroup: "SEND_PAY_SUB",
       sendPayStatusMini: "SEND_PAY_MINI"
     }),
-    updateTable() {
+    async updateTable() {
       this.loading = true;
       this.sampleGroups = [];
-      this.getAllGroups();
+      this.allGroupsState = await this.getAllGroups();
 
-      setTimeout(() => {
-        this.sampleGroups = this.allGroupsState.map(
-          c => (c = { ...c, type: c.mini ? "Минигруппа" : "Группа" })
-        );
-        this.loading = false;
-      }, 1000);
+      this.sampleGroups = this.allGroupsState.map(
+        c => (c = { ...c, type: c.mini ? "Минигруппа" : "Группа" })
+      );
+      this.loading = false;
     },
-    updateTableS() {
+    deleteUserLocal() {
+      this.sampleUsers = this.sampleUsers.filter(
+        c => c.id !== this.selectedItem.id
+      );
+    },
+    deleteUser() {
+      this.dialogRemoveUser = false;
+      if (
+        this.selectedItem.nameGroup
+          .trim()
+          .split(" ")
+          .pop() === "Минигруппа"
+      ) {
+        this.deleteUserMini(this.selectedItem);
+      } else {
+        this.deleteUserGroup(this.selectedItem);
+      }
+      this.deleteUserLocal();
+    },
+    async updateTableS() {
       this.loading = true;
       this.sampleUsers = [];
       if (!this.selectedItem.mini || this.selectedItem.mini === undefined) {
-        this.getUser(this.selectedItem.id);
+        this.usersByGroup = await this.getUser(this.selectedItem.id);
       } else {
-        this.getUserMini(this.selectedItem.id);
+        this.usersByGroup = await this.getUserMini(this.selectedItem.id);
       }
-      setTimeout(() => {
-        this.sampleUsers = this.usersByGroup;
-        this.loading = false;
-      }, 1000);
+      this.sampleUsers = this.usersByGroup;
+      this.loading = false;
     },
     showUsers(item) {
       this.selectedItem = item;
@@ -387,7 +440,7 @@ export default {
         c => c.id === this.selectedItem.id
       );
       this.sampleUsers[idx].paid = true;
-      this.sampleUsers[idx].datePay = new Date().format("dd.mm.yyyy");
+      this.sampleUsers[idx].datePay = this.$moment.format("DD.MM.YYYY");
       this.sampleUsers[idx].datePayNoformat = new Date();
     },
     deleteGroupLocal() {

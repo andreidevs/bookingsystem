@@ -22,8 +22,8 @@ export default {
     }
   },
   actions: {
-    SEND_DAILY({ commit }, payload) {
-      vue.$db
+    SEND_DAILY: async ({ commit }, payload) => {
+      await vue.$db
         .collection("reportsDaily")
         .doc(
           payload.coach +
@@ -39,17 +39,19 @@ export default {
         })
         .then(function() {
           commit("SET_SUCCESS");
+          return "success";
         })
         .catch(function(error) {
           commit("SET_ERROR", error);
+          return error;
         });
     },
-    SEND_PAY_REPORT({ commit }, payload) {
+    SEND_PAY_REPORT: async ({ commit }, payload) => {
       const id = Math.random()
         .toString(36)
         .substr(2, 11);
       const date = new Date().getMonth() + 1 + "-" + new Date().getFullYear();
-      vue.$db
+      await vue.$db
         .collection("reportPay")
         .doc(date)
         .update({
@@ -69,15 +71,17 @@ export default {
             })
             .then(function() {
               commit("SET_SUCCESS");
+              return "success";
             })
             .catch(function(error) {
               commit("SET_ERROR", error);
+              return error;
             });
         });
     },
-    GET_ALL_PAY({ commit }) {
+    GET_ALL_PAY: async ({ commit }) => {
       let report = [];
-      vue.$db
+      await vue.$db
         .collection("reportPay")
         .get()
         .then(function(querySnapshot) {
@@ -86,10 +90,11 @@ export default {
           });
         });
       commit("SET_ALL_PAY", report);
+      return report;
     },
-    GET_REPORTS({ commit }) {
+    GET_REPORTS: async ({ commit }) => {
       const reports = [];
-      vue.$db
+      await vue.$db
         .collection("reportsDaily")
         .get()
         .then(function(querySnapshot) {
@@ -99,25 +104,29 @@ export default {
         })
         .catch(function(error) {
           commit("SET_ERROR", error);
+          return error;
         });
 
       commit("SET_REPORTS", reports);
+      return reports;
     },
-    SEND_EXPENSES({ commit }, payload) {
-      vue.$db
+    SEND_EXPENSES: async ({ commit }, payload) => {
+      await vue.$db
         .collection("expenses")
         .doc(payload.id)
         .set({ ...payload })
         .then(function() {
           commit("SET_SUCCESS");
+          return "success";
         })
         .catch(function(error) {
           commit("SET_ERROR", error);
+          return error;
         });
     },
-    GET_EXPENSES({ commit }) {
+    GET_EXPENSES: async ({ commit }) => {
       let report = [];
-      vue.$db
+      await vue.$db
         .collection("expenses")
         .get()
         .then(function(querySnapshot) {
@@ -126,17 +135,20 @@ export default {
           });
         });
       commit("SET_EXPENSES", report);
+      return report;
     },
-    DELETE_EXPENSES({ commit }, payload) {
-      vue.$db
+    DELETE_EXPENSES: async ({ commit }, payload) => {
+      await vue.$db
         .collection("expenses")
         .doc(payload.id)
         .delete()
         .then(function() {
           commit("SET_SUCCESS");
+          return "success";
         })
         .catch(function(error) {
           commit("SET_ERROR", error);
+          return error;
         });
     }
   }

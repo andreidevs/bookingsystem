@@ -2,7 +2,7 @@
   <v-container>
     <v-navigation-drawer v-model="drawer" app>
       <v-list shaped>
-        <v-list-item exact link to="/admin">
+        <v-list-item exact link to="/">
           <v-list-item-action>
             <v-icon color="success">mdi-home</v-icon>
           </v-list-item-action>
@@ -11,7 +11,7 @@
           </v-list-item-content>
         </v-list-item>
 
-        <v-list-item v-if="user.admin" link to="/admin/statistic">
+        <v-list-item v-if="user.admin" link to="/statistic">
           <v-list-item-action>
             <v-icon color="success">mdi-chart-areaspline</v-icon>
           </v-list-item-action>
@@ -20,7 +20,7 @@
           </v-list-item-content>
         </v-list-item>
 
-        <v-list-item link to="/admin/schedule">
+        <v-list-item link to="/schedule">
           <v-list-item-action>
             <v-icon color="success">mdi-calendar</v-icon>
           </v-list-item-action>
@@ -29,7 +29,7 @@
           </v-list-item-content>
         </v-list-item>
 
-        <v-list-item v-if="user.admin" link to="/admin/expenses">
+        <v-list-item v-if="user.admin" link to="/expenses">
           <v-list-item-action>
             <v-icon color="success">mdi-cash-multiple</v-icon>
           </v-list-item-action>
@@ -38,7 +38,7 @@
           </v-list-item-content>
         </v-list-item>
 
-        <v-list-item link to="/admin/daily">
+        <v-list-item link to="/daily">
           <v-list-item-action>
             <v-icon color="success">mdi-table-edit</v-icon>
           </v-list-item-action>
@@ -47,7 +47,7 @@
           </v-list-item-content>
         </v-list-item>
 
-        <v-list-item v-if="user.name === 'София'" link to="/admin/indiv">
+        <v-list-item v-if="user.name === 'София'" link to="/indivsofia">
           <v-list-item-action>
             <v-icon color="success">mdi-account-star</v-icon>
           </v-list-item-action>
@@ -61,7 +61,7 @@
             <v-list-item-title>Ученики</v-list-item-title>
           </template>
 
-          <v-list-item class="ml-8" exact link to="/admin/users/group">
+          <v-list-item class="ml-8" exact link to="/users/group">
             <!-- <v-list-item-action>
             <v-icon color="success">mdi-account-multiple</v-icon>
           </v-list-item-action> -->
@@ -70,7 +70,7 @@
             </v-list-item-content>
           </v-list-item>
 
-          <v-list-item class="ml-8" link to="/admin/users/mini">
+          <v-list-item class="ml-8" link to="/users/mini">
             <!-- <v-list-item-action>
             <v-icon color="success">mdi-account-multiple</v-icon>
           </v-list-item-action> -->
@@ -79,7 +79,7 @@
             </v-list-item-content>
           </v-list-item>
 
-          <v-list-item class="ml-8" link to="/admin/users/single">
+          <v-list-item class="ml-8" link to="/users/single">
             <!-- <v-list-item-action>
             <v-icon color="success">mdi-account-multiple</v-icon>
           </v-list-item-action> -->
@@ -88,7 +88,7 @@
             </v-list-item-content>
           </v-list-item>
 
-          <v-list-item class="ml-8" link to="/admin/users/indiv">
+          <v-list-item class="ml-8" link to="/users/indiv">
             <!-- <v-list-item-action>
             <v-icon color="success">mdi-account-multiple</v-icon>
           </v-list-item-action> -->
@@ -98,7 +98,7 @@
           </v-list-item>
         </v-list-group>
 
-        <v-list-item link to="/admin/groups">
+        <v-list-item link to="/groups">
           <v-list-item-action>
             <v-icon color="success">mdi-folder-account</v-icon>
           </v-list-item-action>
@@ -112,7 +112,7 @@
             <v-list-item-title>Добавить</v-list-item-title>
           </template>
 
-          <v-list-item class="ml-8" link to="/admin/addclient">
+          <v-list-item class="ml-8" link to="/addclient">
             <!-- <v-list-item-action>
               <v-icon color="success">mdi-plus-circle-outline</v-icon>
             </v-list-item-action> -->
@@ -121,7 +121,7 @@
             </v-list-item-content>
           </v-list-item>
 
-          <v-list-item class="ml-8" link to="/admin/addgroup">
+          <v-list-item class="ml-8" link to="/addgroup">
             <!-- <v-list-item-action>
               <v-icon color="success">mdi-folder-plus</v-icon>
             </v-list-item-action> -->
@@ -130,7 +130,7 @@
             </v-list-item-content>
           </v-list-item>
 
-          <v-list-item class="ml-8" link to="/admin/anotherpay">
+          <v-list-item class="ml-8" link to="/anotherpay">
             <!-- <v-list-item-action>
               <v-icon color="success">mdi-folder-plus</v-icon>
             </v-list-item-action> -->
@@ -140,7 +140,7 @@
           </v-list-item>
         </v-list-group>
 
-        <v-list-item v-if="user.admin" link to="/admin/signup">
+        <v-list-item v-if="user.admin" link to="/signup">
           <v-list-item-action>
             <v-icon color="success">mdi-account-key</v-icon>
           </v-list-item-action>
@@ -149,7 +149,7 @@
           </v-list-item-content>
         </v-list-item>
 
-        <v-list-item v-if="user.admin" link to="/admin/historysingle">
+        <v-list-item v-if="user.admin" link to="/historysingle">
           <v-list-item-action>
             <v-icon color="success">mdi-run</v-icon>
           </v-list-item-action>
@@ -158,7 +158,7 @@
           </v-list-item-content>
         </v-list-item>
 
-        <v-list-item v-if="user.admin" link to="/admin/wages">
+        <v-list-item v-if="user.admin" link to="/wages">
           <v-list-item-action>
             <v-icon color="success">mdi-currency-rub</v-icon>
           </v-list-item-action>

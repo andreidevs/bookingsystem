@@ -123,24 +123,24 @@ export default {
         }
       ],
       page: 1,
-      pageCount: 1
+      pageCount: 1,
+      allReports: [],
+      coachList: []
     };
   },
-  created() {
+  async created() {
     this.loading = true;
-    this.getReports();
-    this.getCoachList();
-    this.coachList = this.coachLists;
+    this.allReports = await this.getReports();
+    const coachlis = await this.getCoachList();
+    this.coachList = coachlis;
     this.coachList.push("Все");
-    setTimeout(() => {
-      this.loading = false;
-    }, 2000);
+    this.loading = false;
   },
 
   computed: {
     ...mapGetters({
-      allReports: "REPORTS",
-      coachLists: "COACH"
+      // allReports: "REPORTS",
+      // coachLists: "COACH"
     })
   },
   methods: {
@@ -273,7 +273,7 @@ export default {
         this.exportButton = true;
       }
 
-      this.nameExcel = "Отчет " + new Date().format("dd.mm.yyyy");
+      this.nameExcel = "Отчет " + this.$moment().format("DD.MM.YYYY");
     }
   }
 };

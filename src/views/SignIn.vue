@@ -80,7 +80,7 @@ export default {
           type: "success",
           text: "Успешный вход"
         });
-        this.$router.push("/admin");
+        this.$router.push("/");
         this.loading = false;
       }
     },

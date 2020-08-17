@@ -289,7 +289,8 @@ export default {
         phone: "",
         price: "",
         coach: ""
-      }
+      },
+      allSingleState: []
     };
   },
   created() {
@@ -299,7 +300,7 @@ export default {
   mounted() {},
   computed: {
     ...mapGetters({
-      allSingleState: "ALLSINGLE",
+      // allSingleState: "ALLSINGLE",
       coachList: "COACH"
     })
   },
@@ -311,25 +312,24 @@ export default {
       getCoachList: "GET_COACH_LIST",
       updateUser: "UPDATE_USER_SINGLE"
     }),
-    updateTable() {
+    async updateTable() {
       this.loading = true;
       this.sampleUsers = [];
-      this.getAllSingle();
-      this.getCoachList();
-      setTimeout(() => {
-        this.itemsCoach = this.coachList;
-        this.sampleUsers = this.allSingleState.map(
-          c =>
-            (c = {
-              ...c,
-              dateRegg:
-                c.dateReg != undefined
-                  ? new Date(c.dateReg.seconds * 1000).format("dd.mm.yyyy")
-                  : new Date().format("dd.mm.yyyy")
-            })
-        );
-        this.loading = false;
-      }, 1500);
+      this.allSingleState = await this.getAllSingle();
+      const coachlist = await this.getCoachList();
+
+      this.itemsCoach = coachlist;
+      this.sampleUsers = this.allSingleState.map(
+        c =>
+          (c = {
+            ...c,
+            dateRegg:
+              c.dateReg != undefined
+                ? this.$moment(c.dateReg.seconds * 1000).format("DD.MM.YYYY")
+                : this.$moment().format("DD.MM.YYYY")
+          })
+      );
+      this.loading = false;
     },
     editUser(item) {
       this.selectedItem = item;
@@ -369,7 +369,7 @@ export default {
         c => c.id === this.selectedItem.id
       );
       this.sampleUsers[idx].paid = true;
-      this.sampleUsers[idx].datePay = new Date().format("dd.mm.yyyy");
+      this.sampleUsers[idx].datePay = this.$moment().format("DD.MM.YYYY");
       this.sampleUsers[idx].datePayNoformat = new Date();
     },
     deleteUserLocal() {

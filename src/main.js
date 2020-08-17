@@ -7,9 +7,12 @@ import vuetify from "./plugins/vuetify";
 import "roboto-fontface/css/roboto/roboto-fontface.css";
 
 import firebase from "firebase/app";
-import firebaseConfig from "./config/firebaseTest";
+import firebaseConfig from "./config/firebaseMain";
 import "firebase/auth";
 import "firebase/firestore";
+
+import moment from "moment";
+Vue.prototype.$moment = moment;
 
 import VueTheMask from "vue-the-mask";
 import Notifications from "vue-notification";

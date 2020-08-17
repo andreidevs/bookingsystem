@@ -294,7 +294,9 @@ export default {
         phone: "",
         price: "",
         coach: ""
-      }
+      },
+      allUsersState: [],
+      allGroupsState: []
     };
   },
   created() {
@@ -302,8 +304,8 @@ export default {
   },
   computed: {
     ...mapGetters({
-      allUsersState: "ALLMINI",
-      allGroupsState: "ALLGROUPS"
+      // allUsersState: "ALLMINI",
+      // allGroupsState: "ALLGROUPS"
     })
   },
   methods: {
@@ -315,27 +317,24 @@ export default {
       getAllGroups: "GET_ALL_GROUPS",
       updateGroup: "UPDATE_GROUP_USERS_TO_USERS"
     }),
-    updateTable() {
+    async updateTable() {
       this.loading = true;
       this.sampleUsers = [];
-      this.getAllUsers();
-      this.getAllGroups();
-      setTimeout(() => {
-        this.itemsGroups = this.allGroupsState.filter(
-          c => c.mini && c.count > 0
-        );
-        this.sampleUsers = this.allUsersState.map(
-          c =>
-            (c = {
-              ...c,
-              dateRegg:
-                c.dateReg != undefined
-                  ? new Date(c.dateReg.seconds * 1000).format("dd.mm.yyyy")
-                  : new Date().format("dd.mm.yyyy")
-            })
-        );
-        this.loading = false;
-      }, 1000);
+      this.allUsersState = await this.getAllUsers();
+      this.allGroupsState = await this.getAllGroups();
+
+      this.itemsGroups = this.allGroupsState.filter(c => c.mini && c.count > 0);
+      this.sampleUsers = this.allUsersState.map(
+        c =>
+          (c = {
+            ...c,
+            dateRegg:
+              c.dateReg != undefined
+                ? this.$moment(c.dateReg.seconds * 1000).format("DD.MM.YYYY")
+                : this.$moment().format("DD.MM.YYYY")
+          })
+      );
+      this.loading = false;
     },
     editUser(item) {
       this.selectedItem = item;
@@ -387,7 +386,7 @@ export default {
         c => c.id === this.selectedItem.id
       );
       this.sampleUsers[idx].paid = true;
-      this.sampleUsers[idx].datePay = new Date().format("dd.mm.yyyy");
+      this.sampleUsers[idx].datePay = this.$moment().format("DD.MM.YYYY");
       this.sampleUsers[idx].datePayNoformat = new Date();
     },
     deleteUserLocal() {

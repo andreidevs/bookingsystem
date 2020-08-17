@@ -598,7 +598,7 @@ export default {
             this.priceIndivGroup === "3000" ? "3000" : this.priceIndiv,
           coach: this.nameCoach,
           paid: this.statusPaid ? true : false,
-          datePay: this.statusPaid ? new Date().format("dd.mm.yyyy") : "",
+          datePay: this.statusPaid ? this.$moment().format("DD.MM.YYYY") : "",
           datePayNoformat: this.statusPaid ? new Date() : "",
           weekDays: [],
           time: this.timeHour + ":" + this.timeMinute

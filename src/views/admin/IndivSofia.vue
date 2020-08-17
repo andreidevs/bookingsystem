@@ -391,7 +391,7 @@ export default {
             this.priceIndivGroup === "3000" ? "3000" : this.priceIndiv,
           coach: this.nameCoach,
           paid: this.statusPaid ? true : false,
-          datePay: this.statusPaid ? new Date().format("dd.mm.yyyy") : "",
+          datePay: this.statusPaid ? this.$moment().format("DD.MM.YYYY") : "",
           datePayNoformat: this.statusPaid ? new Date() : "",
           weekDays: [],
           time: this.timeHour + ":" + this.timeMinute
@@ -432,8 +432,8 @@ export default {
               ...c,
               dateRegg:
                 c.dateReg != undefined
-                  ? new Date(c.dateReg.seconds * 1000).format("dd.mm.yyyy")
-                  : new Date().format("dd.mm.yyyy")
+                  ? this.$moment(c.dateReg.seconds * 1000).format("DD.MM.YYYY")
+                  : this.$moment().format("DD.MM.YYYY")
             })
         );
         this.loading = false;
@@ -450,7 +450,7 @@ export default {
         c => c.id === this.selectedItem.id
       );
       this.sampleUsers[idx].paid = true;
-      this.sampleUsers[idx].datePay = new Date().format("dd.mm.yyyy");
+      this.sampleUsers[idx].datePay = this.$moment().format("DD.MM.YYYY");
       this.sampleUsers[idx].datePayNoformat = new Date();
     },
     deleteUserLocal() {

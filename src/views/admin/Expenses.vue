@@ -141,17 +141,18 @@ export default {
           text: "",
           value: "removes"
         }
-      ]
+      ],
+      allExpenses: []
     };
   },
   computed: {
     ...mapGetters({
-      allExpenses: "EXPENSES"
+      // allExpenses: "EXPENSES"
     })
   },
-  created() {
+  async created() {
     this.loading = true;
-    this.getExpenses();
+    this.allExpenses = await this.getExpenses();
     let isFilter = date => {
       let mDate = Math.ceil(
         Math.abs(new Date().getTime() - date * 1000) /
@@ -159,10 +160,9 @@ export default {
       );
       return mDate <= 6;
     };
-    setTimeout(() => {
-      this.tableData = this.allExpenses.filter(c => isFilter(c.date.seconds));
-      this.loading = false;
-    }, 1000);
+
+    this.tableData = this.allExpenses.filter(c => isFilter(c.date.seconds));
+    this.loading = false;
   },
   methods: {
     ...mapActions({
@@ -183,7 +183,7 @@ export default {
           price: this.price,
           name: this.comment,
           date: new Date(),
-          dateFormat: new Date().format("dd.mm.yyyy")
+          dateFormat: this.$moment().format("DD.MM.YYYY")
         };
         this.sendExpenses(payload);
         this.tableData.push(payload);

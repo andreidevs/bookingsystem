@@ -46,66 +46,63 @@ export default {
         { date: "2020-05-01", name: "Пт" },
         { date: "2020-05-02", name: "Сб" }
       ],
-      allWork: []
+      allWork: [],
+      allGroupsState: [],
+      allIndivState: [],
+      allSofiaIndiv: []
     };
   },
   computed: {
     ...mapGetters({
-      allGroupsState: "ALLGROUPS",
-      allIndivState: "ALLINDIV",
-      allSofiaIndiv: "INDIVSOFIA",
+      // allGroupsState: "ALLGROUPS",
+      // allIndivState: "ALLINDIV",
+      // allSofiaIndiv: "INDIVSOFIA",
       user: "USER"
     })
   },
-  created() {
-    this.getAllGroups(true);
-    this.getAllIndiv(true);
+  async created() {
+    this.loading = true;
+    this.allGroupsState = await this.getAllGroups(true);
+    this.allIndivState = await this.getAllIndiv(true);
     if (this.user.name === "София") {
-      this.getIndivSofia();
+      this.allSofiaIndiv = await this.getIndivSofia();
     }
     this.selectedDate = this.weekDays[new Date().getDay()].date;
-  },
-  mounted() {
-    this.loading = true;
-    setTimeout(() => {
-      this.allWork = this.allGroupsState;
-      this.allWork = this.allWork.concat(this.allIndivState);
-      if (this.user.name === "София") {
-        this.allWork = this.allWork.concat(this.allSofiaIndiv);
-      }
 
-      this.allWork.forEach(item => {
-        const t = item.time.split(":");
-        const eTime = (+t[0] + 1).toString() + ":" + t[1];
+    this.allWork = this.allGroupsState;
+    this.allWork = this.allWork.concat(this.allIndivState);
+    if (this.user.name === "София") {
+      this.allWork = this.allWork.concat(this.allSofiaIndiv);
+    }
 
-        item.weekDays.forEach(c => {
-          const e = {
-            start: "",
-            end: "",
-            title: "",
-            content: "",
-            class: ""
-          };
-          const date = this.weekDays.filter(g => g.name === c)[0].date;
-          e.start = date + " " + item.time;
-          e.end = date + " " + eTime;
-          e.title = item.coach;
-          const name = item.title
-            ? "Индив"
-            : item.mini
-            ? "Минигруппа"
-            : "Группа";
+    this.allWork.forEach(item => {
+      const t = item.time.split(":");
+      const eTime = (+t[0] + 1).toString() + ":" + t[1];
 
-          e.class =
-            name === "Индив" ? "indiv" : name === "Группа" ? "group" : "mini";
-          const nameIndiv = name === "Индив" ? item.name : "";
-          e.content = name + "<br>" + nameIndiv;
-          this.events.push(e);
-        });
+      item.weekDays.forEach(c => {
+        const e = {
+          start: "",
+          end: "",
+          title: "",
+          content: "",
+          class: ""
+        };
+        const date = this.weekDays.filter(g => g.name === c)[0].date;
+        e.start = date + " " + item.time;
+        e.end = date + " " + eTime;
+        e.title = item.coach;
+        const name = item.title ? "Индив" : item.mini ? "Минигруппа" : "Группа";
+
+        e.class =
+          name === "Индив" ? "indiv" : name === "Группа" ? "group" : "mini";
+        const nameIndiv = name === "Индив" ? item.name : "";
+        e.content = name + "<br>" + nameIndiv;
+        this.events.push(e);
       });
-      this.loading = false;
-    }, 1000);
+    });
+    this.loading = false;
   },
+  mounted() {},
   methods: {
     ...mapActions({
       getAllGroups: "GET_ALL_GROUPS",

@@ -121,7 +121,8 @@ export default {
       selectPhone: "",
       selectName: "",
       searchFilter: "",
-      sampleTable: []
+      sampleTable: [],
+      allHistory: []
     };
   },
   created() {
@@ -129,21 +130,19 @@ export default {
   },
   computed: {
     ...mapGetters({
-      allHistory: "SINGLEHISTORY"
+      // allHistory: "SINGLEHISTORY"
     })
   },
   methods: {
     ...mapActions({
       getHistory: "GET_ALL_SINGLE_HISTORY"
     }),
-    updateTable() {
+    async updateTable() {
       this.loading = true;
       this.sampleTable = [];
-      this.getHistory();
-      setTimeout(() => {
-        this.sampleTable = this.allHistory;
-        this.loading = false;
-      }, 1500);
+      this.allHistory = await this.getHistory();
+      this.sampleTable = this.allHistory;
+      this.loading = false;
     },
     clearFilter() {
       this.selectPhone = "";

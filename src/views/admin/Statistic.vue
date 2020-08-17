@@ -252,6 +252,8 @@ export default {
       allExp: [],
       allData: [],
       loadingChart: false,
+      allReports: [],
+      allExpenses: [],
       options: {
         scales: {
           yAxes: [
@@ -315,26 +317,29 @@ export default {
   mounted() {
     this.createChartMonth();
   },
-  created() {
+  async created() {
+    this.loading = true;
+    const data = await this.getReports();
+    const coachlist = await this.getCoachList();
+    const ex = await this.getExpenses();
+    this.allReports = data;
+    this.allExpenses = ex;
     this.updateTable();
-    this.getCoachList();
-    this.getExpenses();
-    this.nameExcel = "Отчет " + new Date().format("dd.mm.yyyy");
-    this.coachList = this.coachLists;
-    setTimeout(() => {
-      this.allReports.forEach(c => {
-        Object.values(c).forEach(g => {
-          this.allData.push(g);
-        });
+
+    this.nameExcel = "Отчет " + new Date().format("DD.MM.YYYY");
+    this.coachList = coachlist;
+    data.forEach(c => {
+      Object.values(c).forEach(g => {
+        this.allData.push(g);
       });
-      this.allExp = this.allExpenses;
-    }, 1000);
+    });
+    this.allExp = ex;
   },
   computed: {
     ...mapGetters({
-      allReports: "PAYREPORTS",
-      coachLists: "COACH",
-      allExpenses: "EXPENSES"
+      // allReports: "PAYREPORTS",
+      coachLists: "COACH"
+      // allExpenses: "EXPENSES"
     })
   },
   methods: {
@@ -442,8 +447,8 @@ export default {
         case "За день":
           {
             isFilter = date =>
-              new Date(date * 1000).format("dd.mm.yyyy") ==
-              new Date().format("dd.mm.yyyy");
+              this.$moment(date * 1000).format("DD.MM.YYYY") ==
+              this.$moment().format("DD.MM.YYYY");
             this.week = "день";
           }
           break;
@@ -497,7 +502,7 @@ export default {
             if (isFilter(g.date.seconds)) {
               let data = {
                 name: g.name,
-                date: new Date(g.date.seconds * 1000).format("dd.mm.yyyy"),
+                date: this.$moment(g.date.seconds * 1000).format("DD.MM.YYYY"),
                 dateMill: g.date.seconds * 1000,
                 price: g.price,
                 coach: g.coach,
@@ -584,10 +589,8 @@ export default {
       this.sampleTable = [];
       this.getReports();
       this.week = "месяц";
-      setTimeout(() => {
-        this.filterWeek();
-        this.loading = false;
-      }, 1700);
+      this.filterWeek();
+      this.loading = false;
     }
   }
 };

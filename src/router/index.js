@@ -5,7 +5,7 @@ Vue.use(VueRouter);
 
 const routes = [
   {
-    path: "/",
+    path: "/home",
     name: "Home",
     meta: { title: "Edem Dance - Записаться на тренеровку" },
     component: () => import("../views/Home.vue")
@@ -17,7 +17,7 @@ const routes = [
     component: () => import("../views/Indiv.vue")
   },
   {
-    path: "/admin/addgroup",
+    path: "/addgroup",
     name: "AdminAddGroup",
     meta: {
       AuthRequired: true,
@@ -27,7 +27,7 @@ const routes = [
     component: () => import("../views/admin/AddGroup.vue")
   },
   {
-    path: "/admin/addclient",
+    path: "/addclient",
     name: "AdminAddClient",
     meta: {
       AuthRequired: true,
@@ -37,7 +37,7 @@ const routes = [
     component: () => import("../views/admin/AddClient.vue")
   },
   {
-    path: "/admin/users/group",
+    path: "/users/group",
     name: "AdminUsers",
     meta: {
       AuthRequired: true,
@@ -47,7 +47,7 @@ const routes = [
     component: () => import("../views/admin/ReviewUsers.vue")
   },
   {
-    path: "/admin/daily",
+    path: "/daily",
     name: "AdminDaily",
     meta: {
       AuthRequired: true,
@@ -57,7 +57,7 @@ const routes = [
     component: () => import("../views/admin/Daily.vue")
   },
   {
-    path: "/admin/wages",
+    path: "/wages",
     name: "AdminReports",
     meta: {
       AuthRequired: true,
@@ -67,7 +67,7 @@ const routes = [
     component: () => import("../views/admin/Wages.vue")
   },
   {
-    path: "/admin/expenses",
+    path: "/expenses",
     name: "AdminExpenses",
     meta: {
       AuthRequired: true,
@@ -77,7 +77,7 @@ const routes = [
     component: () => import("../views/admin/Expenses.vue")
   },
   {
-    path: "/admin/schedule",
+    path: "/schedule",
     name: "AdminSchedule",
     meta: {
       AuthRequired: true,
@@ -87,7 +87,7 @@ const routes = [
     component: () => import("../views/admin/Schedule.vue")
   },
   {
-    path: "/admin/statistic",
+    path: "/statistic",
     name: "AdminStatistic",
     meta: {
       AuthRequired: true,
@@ -97,7 +97,7 @@ const routes = [
     component: () => import("../views/admin/Statistic.vue")
   },
   {
-    path: "/admin/historysingle",
+    path: "/historysingle",
     name: "AdminHistorySingle",
     meta: {
       AuthRequired: true,
@@ -107,7 +107,7 @@ const routes = [
     component: () => import("../views/admin/SingleHistory.vue")
   },
   {
-    path: "/admin/groups",
+    path: "/groups",
     name: "AdminGroups",
     meta: {
       AuthRequired: true,
@@ -117,7 +117,7 @@ const routes = [
     component: () => import("../views/admin/ReviewGroup.vue")
   },
   {
-    path: "/admin/indiv",
+    path: "/indivsofia",
     name: "AdminIndivSofia",
     meta: {
       AuthRequired: true,
@@ -127,7 +127,7 @@ const routes = [
     component: () => import("../views/admin/IndivSofia.vue")
   },
   {
-    path: "/admin/users/single",
+    path: "/users/single",
     name: "AdminSingleUsers",
     meta: {
       AuthRequired: true,
@@ -137,7 +137,7 @@ const routes = [
     component: () => import("../views/admin/SingleUsers.vue")
   },
   {
-    path: "/admin/users/mini",
+    path: "/users/mini",
     name: "AdminMiniUsers",
     meta: {
       AuthRequired: true,
@@ -147,7 +147,7 @@ const routes = [
     component: () => import("../views/admin/ReviewMini.vue")
   },
   {
-    path: "/admin/users/indiv",
+    path: "/users/indiv",
     name: "AdminIndivUsers",
     meta: {
       AuthRequired: true,
@@ -157,7 +157,7 @@ const routes = [
     component: () => import("../views/admin/ReviewIndiv.vue")
   },
   {
-    path: "/admin/anotherpay",
+    path: "/anotherpay",
     name: "AdminAnotherPay",
     meta: {
       AuthRequired: true,
@@ -167,13 +167,13 @@ const routes = [
     component: () => import("../views/admin/AnotherPay.vue")
   },
   {
-    path: "/admin",
+    path: "/",
     name: "AdminMain",
     meta: { AuthRequired: true, layout: "admin", title: "Edem Dance" },
     component: () => import("../views/admin/index.vue")
   },
   {
-    path: "/admin/deleteuser/:type/:id",
+    path: "/deleteuser/:type/:id",
     name: "AdminDeleteUser",
     meta: {
       AuthRequired: true,
@@ -183,7 +183,7 @@ const routes = [
     component: () => import("../views/admin/DeleteUser.vue")
   },
   {
-    path: "/admin/signup",
+    path: "/signup",
     name: "AdminSignUp",
     meta: {
       AuthRequired: true,

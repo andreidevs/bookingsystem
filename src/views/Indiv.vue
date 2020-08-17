@@ -138,10 +138,16 @@ export default {
 
 <style>
 .cardMain {
-  margin-right: 27%;
-  margin-top: -5%;
+  margin-right: 25vw;
+  margin-top: -5vh;
 }
-@media (max-width: 600px) {
+@media (max-width: 1300px) {
+  .cardMain {
+    margin-right: 15%;
+    margin-top: -5%;
+  }
+}
+@media (max-width: 700px) {
   .cardMain {
     margin-right: 0;
     margin-top: 0;

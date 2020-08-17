@@ -255,7 +255,7 @@
                 <v-btn
                   color="success"
                   text
-                  @click="(dialogPerform = false), $router.push('/admin')"
+                  @click="(dialogPerform = false), $router.push('/')"
                 >
                   Ок
                 </v-btn>
@@ -403,18 +403,20 @@ export default {
       anotherCoach: false,
       dialogPerform: false,
       yesterday: false,
-      dialogPreview: true
+      dialogPreview: true,
+      allGroupsState: [],
+      allIndivState: []
     };
   },
-  created() {
+  async created() {
     // this.updateTable();
-    this.getCoachList();
-    this.coachList = this.coachLists;
+    const list = await this.getCoachList();
+    this.coachList = list;
   },
   computed: {
     ...mapGetters({
-      allGroupsState: "ALLGROUPS",
-      allIndivState: "ALLINDIV",
+      // allGroupsState: "ALLGROUPS",
+      // allIndivState: "ALLINDIV",
       coachLists: "COACH",
       USER: "USER",
       checkD: "CHECK"
@@ -460,37 +462,35 @@ export default {
       this.dialogPreview = false;
     },
 
-    updateTable() {
+    async updateTable() {
       this.loading = true;
       this.sampleTable = [];
-      this.getAllGroups(true);
-      this.getAllIndiv();
+      this.allGroupsState = await this.getAllGroups(true);
+      this.allIndivState = await this.getAllIndiv();
       let filter = "";
       if (this.yesterday) {
         filter = parseInt(new Date().getDay() - 1);
       } else {
         filter = new Date().getDay();
       }
-      setTimeout(() => {
-        this.sampleTable = this.allGroupsState
 
-          .filter(
-            c =>
-              c.coach == this.nameCoach &&
-              c.weekDays.includes(this.days[filter])
-          )
-          .map(c => (c = { ...c, typeW: "Группа" }))
-          .concat(
-            this.allIndivState
-              .filter(
-                c =>
-                  c.coach == this.nameCoach &&
-                  c.weekDays.includes(this.days[filter])
-              )
-              .map(c => (c = { ...c, typeW: "Индив" }))
-          );
-        this.loading = false;
-      }, 1000);
+      this.sampleTable = this.allGroupsState
+
+        .filter(
+          c =>
+            c.coach == this.nameCoach && c.weekDays.includes(this.days[filter])
+        )
+        .map(c => (c = { ...c, typeW: "Группа" }))
+        .concat(
+          this.allIndivState
+            .filter(
+              c =>
+                c.coach == this.nameCoach &&
+                c.weekDays.includes(this.days[filter])
+            )
+            .map(c => (c = { ...c, typeW: "Индив" }))
+        );
+      this.loading = false;
     },
     addItem() {
       this.loadingB = true;
@@ -524,7 +524,7 @@ export default {
           phone: this.selectPhone,
           coach: this.nameCoach,
           paid: false,
-          datePay: new Date().format("dd.mm.yyyy"),
+          datePay: this.$moment().format("DD.MM.YYYY"),
           datePayNoformat: new Date(),
           subscription:
             this.priceIndivGroup === "3000" ? "3000" : this.priceIndiv,
