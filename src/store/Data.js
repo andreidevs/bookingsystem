@@ -2,7 +2,7 @@ import vue from "vue";
 
 const axios = require("axios");
 const telegramAPI =
-  "https://api.telegram.org/bot1103706945:AAFblSSGaI0-GlSE6NslEyzPsWHunBW8rHQ/sendMessage?chat_id=-451337290&parse_mode=html&text";
+  "https://api.telegram.org/bot1103706945:AAFblSSGaI0-GlSE6NslEyzPsWHunBW8rHQ/sendMessage?chat_id=-451337290&parse_mode=html&text=";
 export default {
   state: {
     coachList: [],
@@ -65,12 +65,13 @@ export default {
     SEND_FORM_TELEGRAM({ commit }, payload) {
       const res =
         payload.link !== undefined
-          ? `${telegramAPI}=
-      <b>${payload.text}</b> %0A<b>Имя:</b> ${payload.name}%0A<b>Телефон:</b>${payload.phone}%0A<b>Ссылка на удаление:</b>${payload.link}`
+          ? `
+      <b>${payload.text}</b> <b>Имя:</b> ${payload.name} <b>Телефон:</b>${payload.phone} <b>Ссылка на удаление:</b>${payload.link}`
           : `${telegramAPI}=
-       <b>${payload.text}</b> %0A<b>Имя:</b> ${payload.name}%0A<b>Телефон:</b>${payload.phone}`;
+       <b>${payload.text}</b> <b>Имя:</b> ${payload.name} <b>Телефон:</b>${payload.phone}`;
+
       axios
-        .get(res)
+        .get(telegramAPI + encodeURIComponent(res))
         .then(function() {})
         .catch(function(error) {
           commit("SET_ERROR", error);
