@@ -67,7 +67,7 @@ export default {
         payload.link !== undefined
           ? `
       <b>${payload.text}</b> <b>Имя:</b> ${payload.name} <b>Телефон:</b>${payload.phone} <b>Ссылка на удаление:</b>${payload.link}`
-          : `${telegramAPI}=
+          : `
        <b>${payload.text}</b> <b>Имя:</b> ${payload.name} <b>Телефон:</b>${payload.phone}`;
 
       axios
