@@ -185,11 +185,15 @@ export default {
       );
       r.forEach(c => {
         if (c.group.length > 0) {
+          let zp = 2000;
+          if (c.coach === "Юлия") {
+            zp = 2500;
+          }
           this.tableData.push({
             coach: c.coach,
             count: c.group.length,
             type: "Группа",
-            summ: c.group.length * 2000
+            summ: c.group.length * zp
           });
         }
         if (c.indiv.length > 0) {
@@ -208,10 +212,15 @@ export default {
         );
         if (item) {
           item.count += c.count;
+          let zp = 2000;
+          if (item.coach === "Юлия") {
+            zp = 2500;
+          }
+
           if (item.type === "Индив") {
             item.summ += c.count * 1500;
           } else {
-            item.summ += c.count * 2000;
+            item.summ += c.count * zp;
           }
         } else {
           mass.push(c);
@@ -235,12 +244,16 @@ export default {
             );
 
             r.forEach(c => {
+              let zp = 2000;
+              if (c.coach === "Юлия") {
+                zp = 2500;
+              }
               if (c.group.length > 0) {
                 this.tableData.push({
                   coach: c.coach,
                   count: c.group.length,
                   type: "Группа",
-                  summ: c.group.length * 2000
+                  summ: c.group.length * zp
                 });
               }
               if (c.indiv.length > 0) {
