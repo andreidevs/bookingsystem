@@ -20,7 +20,11 @@
       <v-text-field
         dense
         label="Поиск"
-        style="padding-top: 2% !important; padding-left: 2%; padding-right: 2%;"
+        style="
+                    padding-top: 2% !important;
+                    padding-left: 2%;
+                    padding-right: 2%;
+                "
         v-model="searchTable1"
       >
       </v-text-field>
@@ -42,10 +46,7 @@
       >
         <template v-slot:item.actions="{ item }">
           <v-btn class="mr-4" @click="step1(item)" outlined small color="info"
-            >Выбрать
-            <v-icon small>
-              mdi-pencil
-            </v-icon></v-btn
+            >Выбрать <v-icon small> mdi-pencil </v-icon></v-btn
           >
         </template>
         <template v-slot:no-data>
@@ -128,7 +129,7 @@
           label="Другая цена"
           outlined
           dense
-          v-mask="'######'"
+          v-mask="'#####'"
         ></v-text-field>
         <v-radio-group v-if="miniGroup" v-model="priceMiniGroup" class="mt-n4">
           <v-radio
@@ -271,7 +272,12 @@
       </v-dialog>
     </v-row>
     <v-btn
-      style="position:fixed!important; bottom:10px; left:10px; z-index:1000;"
+      style="
+                position: fixed !important;
+                bottom: 10px;
+                left: 10px;
+                z-index: 1000;
+            "
       @click="$router.go(-1)"
     >
       <v-icon>mdi-keyboard-backspace</v-icon>
@@ -419,7 +425,13 @@ export default {
       } else {
         this.sampleGroups = this.allGroups
           .filter(c => c.count > 0)
-          .map(c => (c = { ...c, type: c.mini ? "Минигруппа" : "Группа" }));
+          .map(
+            c =>
+              (c = {
+                ...c,
+                type: c.mini ? "Минигруппа" : "Группа"
+              })
+          );
       }
     },
     step0() {
@@ -431,7 +443,13 @@ export default {
           setTimeout(() => {
             this.sampleGroups = this.allGroups
               .filter(c => c.count > 0)
-              .map(c => (c = { ...c, type: c.mini ? "Минигруппа" : "Группа" }));
+              .map(
+                c =>
+                  (c = {
+                    ...c,
+                    type: c.mini ? "Минигруппа" : "Группа"
+                  })
+              );
             this.loading = false;
           }, 1000);
           break;
