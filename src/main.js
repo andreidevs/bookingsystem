@@ -12,6 +12,7 @@ import "firebase/auth";
 import "firebase/firestore";
 
 import moment from "moment";
+moment.locale("ru");
 Vue.prototype.$moment = moment;
 
 import VueTheMask from "vue-the-mask";

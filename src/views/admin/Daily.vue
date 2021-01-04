@@ -150,7 +150,13 @@
                         >
                       </template>
                       <template v-slot:item.action="{ item }">
-                        <v-icon @click="addItemInTable(item)">mdi-check</v-icon>
+                        <v-btn
+                          color="primary"
+                          outlined
+                          @click="addItemInTable(item)"
+                        >
+                          Добавить <v-icon>mdi-check</v-icon>
+                        </v-btn>
                       </template>
                     </v-data-table>
                     <v-pagination

@@ -167,6 +167,17 @@
           </v-list-item-content>
         </v-list-item>
 
+        <v-list-item link to="/train">
+          <v-list-item-action>
+            <v-icon color="success">mdi-account-switch</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title
+              >Просмотр проведенных тренировок</v-list-item-title
+            >
+          </v-list-item-content>
+        </v-list-item>
+
         <v-list-item link @click="logOut">
           <v-list-item-action>
             <v-icon color="success">mdi-exit-to-app</v-icon>

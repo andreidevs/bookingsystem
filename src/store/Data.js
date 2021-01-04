@@ -62,6 +62,28 @@ export default {
   },
 
   actions: {
+    GET_REPORT_DAILY_USER: async ({ commit }, payload) => {
+      let data = [];
+      await vue.$db
+        .collection("reportsDaily")
+        .where("year", "==", new Date().getFullYear())
+        .where("month", "==", payload.month)
+        .where("coach", "==", payload.name)
+        .orderBy("day")
+        .get()
+
+        .then(function(querySnapshot) {
+          querySnapshot.forEach(function(doc) {
+            // doc.data() is never undefined for query doc snapshots
+            data.push(doc.data());
+          });
+        })
+        .catch(function(error) {
+          commit("SET_ERROR", error);
+          console.log("errir", error);
+        });
+      return data;
+    },
     SEND_FORM_TELEGRAM({ commit }, payload) {
       const res =
         payload.link !== undefined
