@@ -11,7 +11,7 @@
     "axios": "^0.19.2",
     "chart.js": "^2.9.3",
     "core-js": "^3.6.4",
-    "firebase": "^7.14.2",
+    "firebase": "^7.24.0",
     "generate-id": "^2.0.1",
     "moment": "^2.27.0",
     "roboto-fontface": "*",

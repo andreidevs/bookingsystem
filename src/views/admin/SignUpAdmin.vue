@@ -88,7 +88,7 @@ export default {
           password: this.password.trim()
         });
         this.loading = false;
-        this.$router.push("/admin");
+        // this.$router.push("/admin");
         this.name = this.email = this.password = "";
       }
     }
