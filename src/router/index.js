@@ -126,16 +126,16 @@ const routes = [
     },
     component: () => import("../views/admin/ReviewGroup.vue")
   },
-  {
-    path: "/indivsofia",
-    name: "AdminIndivSofia",
-    meta: {
-      AuthRequired: true,
-      layout: "admin",
-      title: "Edem Dance - Индивы София"
-    },
-    component: () => import("../views/admin/IndivSofia.vue")
-  },
+  // {
+  //   path: "/indivsofia",
+  //   name: "AdminIndivSofia",
+  //   meta: {
+  //     AuthRequired: true,
+  //     layout: "admin",
+  //     title: "Edem Dance - Индивы София"
+  //   },
+  //   component: () => import("../views/admin/IndivSofia.vue")
+  // },
   {
     path: "/users/single",
     name: "AdminSingleUsers",

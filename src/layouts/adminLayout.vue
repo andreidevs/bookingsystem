@@ -46,7 +46,7 @@
             <v-list-item-title>Ежедневный отчет</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-
+        <!-- 
         <v-list-item v-if="user.name === 'София'" link to="/indivsofia">
           <v-list-item-action>
             <v-icon color="success">mdi-account-star</v-icon>
@@ -54,7 +54,7 @@
           <v-list-item-content>
             <v-list-item-title>Мои индивы</v-list-item-title>
           </v-list-item-content>
-        </v-list-item>
+        </v-list-item> -->
 
         <v-list-group color="success" prepend-icon="mdi-account-multiple">
           <template v-slot:activator>

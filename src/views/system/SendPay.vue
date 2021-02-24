@@ -76,7 +76,7 @@ export default {
       price: "",
       type: "",
       date: "",
-      priceList: ["1500", "2000", "3000", "10000", "12000"],
+      priceList: ["1500", "2000", "3000", "10000", "11000", "12000", "13000"],
       typeList: ["indiv", "mini", "group", "single"],
       coachList: [],
       groupList: []

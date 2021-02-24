@@ -89,7 +89,8 @@ export default {
         });
         this.loading = false;
         // this.$router.push("/admin");
-        this.name = this.email = this.password = "";
+        this.$refs.form.reset();
+        // this.name = this.email = this.password = "";
       }
     }
   }

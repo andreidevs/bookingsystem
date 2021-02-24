@@ -122,8 +122,8 @@
         <v-text-field
           v-show="
             radioGroup !== '1500' &&
-              radioGroup !== '10000' &&
-              radioGroup !== '12000'
+              radioGroup !== '11000' &&
+              radioGroup !== '13000'
           "
           v-model="radioGroupPrice"
           label="Другая цена"
@@ -353,8 +353,8 @@ export default {
       ],
       radioItems: [
         { text: "1500тг", value: "1500" },
-        { text: "10000тг", value: "10000" },
-        { text: "12000тг", value: "12000" },
+        { text: "11000тг", value: "11000" },
+        { text: "13000тг", value: "13000" },
         { text: "Другая цена", value: "Другая цена" }
       ],
 

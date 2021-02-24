@@ -64,9 +64,9 @@ export default {
     this.loading = true;
     this.allGroupsState = await this.getAllGroups(true);
     this.allIndivState = await this.getAllIndiv(true);
-    if (this.user.name === "София") {
-      this.allSofiaIndiv = await this.getIndivSofia();
-    }
+    // if (this.user.name === "София") {
+    //   this.allSofiaIndiv = await this.getIndivSofia();
+    // }
     this.selectedDate = this.weekDays[new Date().getDay()].date;
 
     this.allWork = this.allGroupsState;
