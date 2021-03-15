@@ -245,9 +245,9 @@ export default {
 
             r.forEach(c => {
               let zp = 2000;
-              if (c.coach === "Юлия") {
-                zp = 2500;
-              }
+              // if (c.coach === "Юлия") {
+              //   zp = 2500;
+              // }
               if (c.group.length > 0) {
                 this.tableData.push({
                   coach: c.coach,

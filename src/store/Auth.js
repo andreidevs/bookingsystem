@@ -16,10 +16,10 @@ export default {
   },
   mutations: {
     SET_USER(state, payload) {
-      (state.user.isAuth = true),
-        (state.user.uid = payload.uid),
-        (state.user.name = payload.displayName),
-        (state.user.admin = payload.photoURL === "true" ? true : false);
+      state.user.isAuth = true;
+      state.user.uid = payload.uid;
+      state.user.name = payload.displayName;
+      state.user.admin = payload.photoURL === "true" ? true : false;
     },
     CLEAR_USER(state) {
       (state.user.isAuth = false), (state.user.uid = null);
@@ -98,7 +98,6 @@ export default {
         });
     },
     STATE_CHANGE({ commit }, payload) {
-      // console.log("payload", payload)
       if (payload) {
         if (!payload.displayName) {
           vue.$db
@@ -107,6 +106,7 @@ export default {
             .get()
             .then(function(doc) {
               let user = firebase.auth().currentUser;
+
               user
                 .updateProfile({
                   displayName: doc.data().name,

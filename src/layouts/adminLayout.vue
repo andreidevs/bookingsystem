@@ -192,7 +192,7 @@
     <v-app-bar app color="success" dark>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
       <v-toolbar-title
-        >Панель администратора -
+        >Гоголя 57/4 Панель администратора
         {{ $route.meta.title.split("-")[1] }}</v-toolbar-title
       >
     </v-app-bar>

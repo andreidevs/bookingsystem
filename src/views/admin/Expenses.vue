@@ -56,8 +56,6 @@
         hide-default-footer
         item-key="id"
         loading-text="Загрузка... Пожалуйста подождите"
-        sort-by="dateFormat"
-        :sort-desc="[true, false]"
         @page-count="pageCount = $event"
         :search="searchFilter"
       >
@@ -73,6 +71,7 @@
           >
         </template>
       </v-data-table>
+      <v-pagination v-model="page" :length="pageCount"></v-pagination>
       <v-btn
         style="position:fixed!important; bottom:10px; left:10px; z-index:1000;"
         @click="$router.go(-1)"
@@ -153,17 +152,11 @@ export default {
   async created() {
     this.loading = true;
     this.allExpenses = await this.getExpenses();
-    let isFilter = date => {
-      let mDate = Math.ceil(
-        Math.abs(new Date().getTime() - date * 1000) /
-          (1000 * 60 * 60 * 24 * 30)
-      );
-      return mDate <= 6;
-    };
 
-    this.tableData = this.allExpenses.filter(c => isFilter(c.date.seconds));
+    this.tableData = this.allExpenses;
     this.loading = false;
   },
+
   methods: {
     ...mapActions({
       sendExpenses: "SEND_EXPENSES",

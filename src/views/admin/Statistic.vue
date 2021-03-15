@@ -324,9 +324,7 @@ export default {
       }
     };
   },
-  mounted() {
-    this.createChartMonth();
-  },
+
   async created() {
     this.loading = true;
     const data = await this.getReports();
@@ -366,35 +364,30 @@ export default {
       }
     },
     ///////////////////////Charts
-    createChartMonth() {
+    async createChartMonth() {
       this.loadingChart = true;
-      setTimeout(() => {
-        for (let i = 0; i < 6; i++) {
-          let D = new Date();
-          D.setMonth(D.getMonth() - i);
-          this.dataBar.labels.unshift(
-            D.toLocaleString("ru", { month: "long" })
-          );
 
-          this.dataBar.datasets[0].data.unshift(
-            this.allData.filter(
+      for (let i = 0; i < 6; i++) {
+        let D = new Date();
+        D.setMonth(D.getMonth() - i);
+        this.dataBar.labels.unshift(D.toLocaleString("ru", { month: "long" }));
+
+        await this.dataBar.datasets[0].data.unshift(
+          this.allData.filter(
+            c => new Date(c.date.seconds * 1000).getMonth() === D.getMonth()
+          ).length
+        );
+        this.dataBar.datasets[1].data.unshift(
+          await this.allData
+            .filter(
               c => new Date(c.date.seconds * 1000).getMonth() === D.getMonth()
-            ).length
-          );
-          this.dataBar.datasets[1].data.unshift(
-            this.allData
-              .filter(
-                c => new Date(c.date.seconds * 1000).getMonth() === D.getMonth()
-              )
-              .reduce((total, r) => (total += +r.price), 0)
-          );
-        }
-      }, 1700);
+            )
+            .reduce((total, r) => (total += +r.price), 0)
+        );
+      }
 
-      setTimeout(() => {
-        this.renderChart(this.dataBar, this.options);
-        this.loadingChart = false;
-      }, 1800);
+      this.renderChart(this.dataBar, this.options);
+      this.loadingChart = false;
     },
     updateFileds() {
       this.countWorkInMonth = 0;
@@ -450,7 +443,7 @@ export default {
         this.filterWeek();
       }
     },
-    filterWeek() {
+    async filterWeek() {
       this.sampleTable = [];
       let isFilter;
       switch (this.selectWeek) {
@@ -478,6 +471,7 @@ export default {
             isFilter = date =>
               new Date(date * 1000).getMonth() == new Date().getMonth() &&
               new Date(date * 1000).getFullYear() == new Date().getFullYear();
+
             this.week = "месяц";
           }
           break;
@@ -506,8 +500,9 @@ export default {
           }
           break;
       }
-      this.allReports.forEach(c => {
-        Object.values(c).forEach(g => {
+
+      await this.allReports.forEach(async c => {
+        Object.values(c).forEach(async g => {
           if (g.date !== undefined) {
             if (isFilter(g.date.seconds)) {
               let data = {
@@ -536,20 +531,19 @@ export default {
         });
       });
 
+      this.tableData = this.sampleTable;
+
+      this.createChartMonth();
+
       this.dataExp = this.allExp.filter(c => isFilter(c.date.seconds));
 
-      this.tableData = this.sampleTable;
-      // if(this.selectWeek==="За месяц"){
-      //   this.createChartMonth();
-      // } else {
-      //   this.createChartWeek();
-      // }
-      this.updateFileds();
-      this.inTotal();
       if (this.step === 2) {
         this.step = 1;
         this.toogleGroup();
       }
+
+      this.updateFileds();
+      this.inTotal();
     },
     inTotal() {
       let summ = 0;
@@ -597,12 +591,12 @@ export default {
       this.updateFileds();
       this.inTotal();
     },
-    updateTable() {
+    async updateTable() {
       this.loading = true;
       this.sampleTable = [];
       this.getReports();
       this.week = "месяц";
-      this.filterWeek();
+      await this.filterWeek();
       this.loading = false;
     }
   }

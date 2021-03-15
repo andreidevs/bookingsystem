@@ -12,13 +12,24 @@ export default new Vuetify({
     },
     themes: {
       light: {
-        primary: "#057b47",
+        //  PINK COLORS
+
+        primary: "#FF69B4",
         secondary: "#616161",
-        accent: "#FB8C00",
+        accent: "#778899",
         error: "#E53935",
-        info: "#2196F3",
-        success: "#057b47",
+        info: "#20B2AA",
+        success: "#FF69B4",
         warning: "#FFFF00"
+        //
+        // GREEEN COLORS
+        // primary: "#057b47",
+        // secondary: "#616161",
+        // accent: "#FB8C00",
+        // error: "#E53935",
+        // info: "#2196F3",
+        // success: "#057b47",
+        // warning: "#FFFF00"
       }
     }
   },

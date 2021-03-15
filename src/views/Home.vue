@@ -232,9 +232,9 @@ export default {
       emailStep3: "",
       phoneStep3: "",
       emailRules: [],
-      radioGroup: "1500",
+      radioGroup: "2000",
       radioItems: [
-        { text: "Разовое занятие - 1500тг", value: "1500" },
+        { text: "Разовое занятие - 2000тг", value: "2000" },
         { text: "8 занятий - 11000тг", value: "11000" },
         { text: "12 занятий - 13000тг", value: "13000" }
       ],
@@ -419,7 +419,6 @@ export default {
       this.nameGroup = item.name;
       this.uidGroup = item.id;
       this.nameCoach = item.coach;
-      // console.log("uid", item.id)
       this.step = 3;
     },
     stepTree() {
@@ -432,7 +431,7 @@ export default {
       }
       if (this.$refs.formStep3.validate()) {
         this.loading = true;
-        if (this.radioGroup === "1500") {
+        if (this.radioGroup === "2000") {
           let payload = {
             id: this.$g.generate(20),
             dateReg: new Date(),

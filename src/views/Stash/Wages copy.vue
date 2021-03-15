@@ -149,7 +149,6 @@ export default {
       getCoachList: "GET_COACH_LIST"
     }),
     selectCoach() {
-      // console.log("sample", this.sampleTable)
       if (this.coach != "Все") {
         this.tableData = [];
         this.sampleTable.forEach(c => {

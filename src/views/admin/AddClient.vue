@@ -121,7 +121,7 @@
         </v-radio-group>
         <v-text-field
           v-show="
-            radioGroup !== '1500' &&
+            radioGroup !== '2000' &&
               radioGroup !== '11000' &&
               radioGroup !== '13000'
           "
@@ -340,7 +340,7 @@ export default {
       timeHour: "07",
       timeMinute: "00",
       searchTable1: "",
-      radioGroup: "1500",
+      radioGroup: "2000",
       radioGroupPrice: "",
       priceIndivGroup: "3000",
       radioItemsIndiv: [
@@ -352,7 +352,7 @@ export default {
         { text: "Другая цена" }
       ],
       radioItems: [
-        { text: "1500тг", value: "1500" },
+        { text: "2000тг", value: "2000" },
         { text: "11000тг", value: "11000" },
         { text: "13000тг", value: "13000" },
         { text: "Другая цена", value: "Другая цена" }
