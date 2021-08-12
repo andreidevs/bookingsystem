@@ -22,6 +22,7 @@ import excel from "vue-excel-export";
 
 import "./assets/main.css";
 import "./plugins/date.format";
+import "./registerServiceWorker";
 
 export const eventBus = new Vue();
 
@@ -36,6 +37,10 @@ Vue.prototype.$g = new GenerateId();
 firebase.initializeApp(firebaseConfig);
 
 Vue.$db = firebase.firestore();
+
+import wb from "./registerServiceWorker";
+
+Vue.prototype.$workbox = wb;
 
 new Vue({
   router,

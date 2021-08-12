@@ -27,21 +27,21 @@ export default {
         .collection("reportsDaily")
         .doc(
           payload.coach +
-          "-" +
-          payload.day +
-          "-" +
-          payload.month +
-          "-" +
-          payload.year
+            "-" +
+            payload.day +
+            "-" +
+            payload.month +
+            "-" +
+            payload.year
         )
         .set({
           ...payload
         })
-        .then(function () {
+        .then(function() {
           commit("SET_SUCCESS");
           return "success";
         })
-        .catch(function (error) {
+        .catch(function(error) {
           commit("SET_ERROR", error);
           return error;
         });
@@ -57,10 +57,10 @@ export default {
         .update({
           [id]: payload
         })
-        .then(function () {
+        .then(function() {
           commit("SET_SUCCESS");
         })
-        .catch(function () {
+        .catch(function() {
           vue.$db
             .collection("reportPay")
             .doc(date)
@@ -69,11 +69,11 @@ export default {
               // month: new Date().getMonth(),
               // year: new Date().getFullYear()
             })
-            .then(function () {
+            .then(function() {
               commit("SET_SUCCESS");
               return "success";
             })
-            .catch(function (error) {
+            .catch(function(error) {
               commit("SET_ERROR", error);
               return error;
             });
@@ -84,8 +84,8 @@ export default {
       await vue.$db
         .collection("reportPay")
         .get()
-        .then(function (querySnapshot) {
-          querySnapshot.forEach(function (doc) {
+        .then(function(querySnapshot) {
+          querySnapshot.forEach(function(doc) {
             report.push(doc.data());
           });
         });
@@ -97,12 +97,12 @@ export default {
       await vue.$db
         .collection("reportsDaily")
         .get()
-        .then(function (querySnapshot) {
-          querySnapshot.forEach(function (doc) {
+        .then(function(querySnapshot) {
+          querySnapshot.forEach(function(doc) {
             reports.push(doc.data());
           });
         })
-        .catch(function (error) {
+        .catch(function(error) {
           commit("SET_ERROR", error);
           return error;
         });
@@ -116,11 +116,11 @@ export default {
 
         .doc(payload.id)
         .set({ ...payload })
-        .then(function () {
+        .then(function() {
           commit("SET_SUCCESS");
           return "success";
         })
-        .catch(function (error) {
+        .catch(function(error) {
           commit("SET_ERROR", error);
           return error;
         });
@@ -131,8 +131,8 @@ export default {
         .collection("expenses")
         .orderBy("date", "desc")
         .get()
-        .then(function (querySnapshot) {
-          querySnapshot.forEach(function (doc) {
+        .then(function(querySnapshot) {
+          querySnapshot.forEach(function(doc) {
             report.push(doc.data());
           });
         });
@@ -144,11 +144,11 @@ export default {
         .collection("expenses")
         .doc(payload.id)
         .delete()
-        .then(function () {
+        .then(function() {
           commit("SET_SUCCESS");
           return "success";
         })
-        .catch(function (error) {
+        .catch(function(error) {
           commit("SET_ERROR", error);
           return error;
         });

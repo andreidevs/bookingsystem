@@ -21,7 +21,7 @@ export default new Vuetify({
         info: "#20B2AA",
         success: "#FF69B4",
         warning: "#FFFF00"
-        //
+
         // GREEEN COLORS
         // primary: "#057b47",
         // secondary: "#616161",

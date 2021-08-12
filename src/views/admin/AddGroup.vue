@@ -182,7 +182,7 @@ export default {
         coach: "",
         name: "",
         typeWorkout: "",
-        count: this.miniGroup ? 5 : 10,
+        count: this.miniGroup ? 5 : 15,
         users: [],
         mini: this.miniGroup
       };
