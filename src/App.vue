@@ -19,6 +19,7 @@
 
 <script>
 import AdminLayout from "@/layouts/adminLayout";
+import { mapActions } from "vuex";
 export default {
   name: "App",
   computed: {
@@ -31,6 +32,7 @@ export default {
     AdminLayout
   },
   created() {
+    this.getConfig();
     if (this.$workbox) {
       this.$workbox.addEventListener("waiting", () => {
         this.showUpgradeUI = true;
@@ -49,6 +51,9 @@ export default {
     });
   },
   methods: {
+    ...mapActions({
+      getConfig: "GET_CONFIG"
+    }),
     async accept() {
       this.showUpgradeUI = false;
       await this.$workbox.messageSW({ type: "SKIP_WAITING" });

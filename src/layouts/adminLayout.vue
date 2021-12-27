@@ -178,6 +178,15 @@
           </v-list-item-content>
         </v-list-item>
 
+        <v-list-item link to="/general">
+          <v-list-item-action>
+            <v-icon color="success">mdi-cog</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Настройки</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+
         <v-list-item link @click="logOut">
           <v-list-item-action>
             <v-icon color="success">mdi-exit-to-app</v-icon>
@@ -196,9 +205,9 @@
         {{ $route.meta.title.split("-")[1] }}</v-toolbar-title
       >
     </v-app-bar>
-    <v-content>
+    <v-main>
       <slot />
-    </v-content>
+    </v-main>
   </v-container>
 </template>
 
