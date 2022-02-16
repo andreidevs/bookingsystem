@@ -178,7 +178,7 @@
           </v-list-item-content>
         </v-list-item>
 
-        <v-list-item link to="/general">
+        <v-list-item link to="/general" v-if="user.admin">
           <v-list-item-action>
             <v-icon color="success">mdi-cog</v-icon>
           </v-list-item-action>
@@ -201,7 +201,7 @@
     <v-app-bar app color="success" dark>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
       <v-toolbar-title
-        >Гоголя 57/4 Панель администратора
+        >{{ config ? config.mainTitle : "" }} Панель администратора
         {{ $route.meta.title.split("-")[1] }}</v-toolbar-title
       >
     </v-app-bar>
@@ -228,7 +228,8 @@ export default {
     ...mapGetters({
       error: "ERROR",
       success: "SUCCESS",
-      user: "USER"
+      user: "USER",
+      config: "GENERAL"
     })
   },
   updated() {

@@ -19,25 +19,43 @@
 
 <script>
 import AdminLayout from "@/layouts/adminLayout";
-import { mapActions } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 export default {
   name: "App",
   computed: {
     layout() {
       return this.$route.meta.layout + "-layout";
-    }
+    },
+    ...mapGetters({
+      config: "GENERAL"
+    })
   },
 
   components: {
     AdminLayout
   },
-  created() {
-    this.getConfig();
+
+  async created() {
+    await this.getConfig();
     if (this.$workbox) {
       this.$workbox.addEventListener("waiting", () => {
         this.showUpgradeUI = true;
       });
     }
+    // CHANGE MAIN COLORSS
+    if (this.config) {
+      Object.keys(this.config.mainColors).forEach(i => {
+        this.$vuetify.theme.themes.light[i] = this.config.mainColors[i];
+      });
+    } else {
+      this.$notify({
+        group: "app",
+        type: "error",
+        title: "Заполните основные настройки!!"
+      });
+      this.$router.push("/general");
+    }
+
     window.addEventListener("offline", () => {
       this.internetError = true;
     });

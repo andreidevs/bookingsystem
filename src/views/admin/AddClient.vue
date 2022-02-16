@@ -121,9 +121,9 @@
         </v-radio-group>
         <v-text-field
           v-show="
-            radioGroup !== '2000' &&
-              radioGroup !== '11000' &&
-              radioGroup !== '13000'
+            radioGroup !== mp.single &&
+              radioGroup !== mp.group8 &&
+              radioGroup !== mp.group12
           "
           v-model="radioGroupPrice"
           label="Другая цена"
@@ -141,8 +141,8 @@
           ></v-radio>
         </v-radio-group>
         <v-text-field
-          v-show="priceMiniGroup !== '2000'"
-          :disabled="priceMiniGroup === '2000'"
+          v-show="priceMiniGroup !== mp.mini"
+          :disabled="priceMiniGroup === mp.mini"
           v-model="priceMini"
           label="Другая цена"
           outlined
@@ -230,8 +230,8 @@
           ></v-radio>
         </v-radio-group>
         <v-text-field
-          v-show="priceIndivGroup !== '3000'"
-          :disabled="priceIndivGroup === '3000'"
+          v-show="priceIndivGroup !== mp.indiv"
+          :disabled="priceIndivGroup === mp.indiv"
           v-model="priceIndiv"
           label="Другая цена"
           outlined
@@ -293,6 +293,14 @@ export default {
     return {
       step: 0,
       selectType: "",
+      mp: {
+        group8: "",
+        group12: "",
+        mini: "",
+        indiv: "",
+        single: "",
+        semia: ""
+      },
       selectTypeItems: [
         { text: "Запись в группу", value: 1 },
         { text: "Индивидуальные", value: 2 }
@@ -302,7 +310,7 @@ export default {
       email: "",
       phone: "",
       emailRules: [],
-      priceMiniGroup: "2000",
+      priceMiniGroup: "",
       priceMini: "",
       priceIndiv: "",
       statusPaid: false,
@@ -340,23 +348,12 @@ export default {
       timeHour: "07",
       timeMinute: "00",
       searchTable1: "",
-      radioGroup: "2000",
+      radioGroup: "",
       radioGroupPrice: "",
-      priceIndivGroup: "3000",
-      radioItemsIndiv: [
-        { text: "Цена - 3000", value: "3000" },
-        { text: "Другая цена" }
-      ],
-      radioItemsMini: [
-        { text: "Цена - 2000", value: "2000" },
-        { text: "Другая цена" }
-      ],
-      radioItems: [
-        { text: "2000тг", value: "2000" },
-        { text: "11000тг", value: "11000" },
-        { text: "13000тг", value: "13000" },
-        { text: "Другая цена", value: "Другая цена" }
-      ],
+      priceIndivGroup: "",
+      radioItemsIndiv: [],
+      radioItemsMini: [],
+      radioItems: [],
 
       nameGroup: "",
       uidGroup: null,
@@ -396,11 +393,35 @@ export default {
     ...mapGetters({
       allGroups: "ALLGROUPS",
       coachList: "COACH",
-      check: "CHECK"
+      check: "CHECK",
+      config: "GENERAL"
     })
   },
   created() {
     this.getGroups();
+    this.miniGroupCheck = false;
+    setTimeout(() => {
+      this.mp = this.config.subscribPrice;
+
+      this.priceMiniGroup = this.mp.mini;
+      this.radioItemsIndiv = [
+        { text: `Цена - ${this.mp.indiv}тг`, value: this.mp.indiv },
+        { text: "Другая цена" }
+      ];
+      this.radioItemsMini = [
+        { text: `Цена -${this.mp.mini}тг`, value: this.mp.mini },
+        { text: "Другая цена" }
+      ];
+      this.radioItems = [
+        { text: `${this.mp.single}тг`, value: this.mp.single },
+        { text: `${this.mp.group8}тг`, value: this.mp.group8 },
+        { text: `${this.mp.group12}тг`, value: this.mp.group12 },
+        { text: "Другая цена", value: "Другая цена" }
+      ];
+      this.radioGroup = this.mp.single;
+
+      this.priceIndivGroup = this.mp.indiv;
+    }, 2000);
   },
   methods: {
     ...mapActions({
@@ -491,8 +512,8 @@ export default {
             email: this.email,
             nameGroup: this.nameGroup,
             uidGroup: this.uidGroup,
-            subscription:
-              this.priceMiniGroup === "2000" ? "2000" : this.priceMini,
+            subscription: this.mp.mini,
+
             coach: this.nameCoach,
             paid: false,
 
@@ -508,7 +529,7 @@ export default {
               this.addBase();
             }
           }, 1000);
-        } else if (this.radioGroup === "1500") {
+        } else if (this.radioGroup === this.mp.single) {
           let payload = {
             id: this.$g.generate(24),
             name: this.name,
@@ -612,8 +633,7 @@ export default {
           title: "",
           name: this.name,
           phone: this.phone,
-          subscription:
-            this.priceIndivGroup === "3000" ? "3000" : this.priceIndiv,
+          subscription: this.mp.indiv,
           coach: this.nameCoach,
           paid: this.statusPaid ? true : false,
           datePay: this.statusPaid ? this.$moment().format("DD.MM.YYYY") : "",

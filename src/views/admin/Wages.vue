@@ -125,7 +125,8 @@ export default {
       page: 1,
       pageCount: 1,
       allReports: [],
-      coachList: []
+      coachList: [],
+      selectItem: null
     };
   },
   async created() {
@@ -134,6 +135,7 @@ export default {
     const coachlis = await this.getCoachList();
     this.coachList = coachlis;
     this.coachList.push("Все");
+    this.salary = this.config.salary;
     this.loading = false;
   },
 
@@ -141,12 +143,14 @@ export default {
     ...mapGetters({
       // allReports: "REPORTS",
       // coachLists: "COACH"
+      config: "GENERAL"
     })
   },
   methods: {
     ...mapActions({
       getReports: "GET_REPORTS",
-      getCoachList: "GET_COACH_LIST"
+      getCoachList: "GET_COACH_LIST",
+      getCoachGroups: "GET_COACH_GROUPS"
     }),
     selectCoach() {
       if (this.coach != "Все") {
@@ -160,6 +164,7 @@ export default {
         this.tableData = this.sampleTable;
       }
       this.inTotal();
+      // this.calculateBonus();
     },
     inTotal() {
       let count = 0,
@@ -174,6 +179,29 @@ export default {
       this.tableData = this.tableData.filter(g => g.type !== "Всего");
       this.tableData.push({ type: "Всего", count, summ });
     },
+    async calculateBonus() {
+      // console.log("TABLEDATA", this.tableData);
+
+      if (this.coach !== "Все" && this.selectItem) {
+        let date;
+
+        let month =
+          this.selectItem === 1
+            ? new Date().getMonth()
+            : new Date().getMonth() - 1;
+        month++;
+        let year =
+          month === 0 ? new Date().getFullYear() - 1 : new Date().getFullYear();
+
+        date = (month === 0 ? 12 : month) + "-" + year;
+        console.log("date", date);
+        console.log("NEW DATE", new Date());
+
+        let res = await this.getCoachGroups({ date });
+        console.log("RESS GROUPS", res);
+      }
+    },
+
     inMonth(value) {
       let r = [];
       let month = new Date().getMonth();
@@ -185,15 +213,14 @@ export default {
       );
       r.forEach(c => {
         if (c.group.length > 0) {
-          let zp = 2000;
-          if (c.coach === "Юлия") {
-            zp = 2500;
-          }
+          // ГРУППОВАЯ ЗП
+          let zp = this.salary.group;
+
           this.tableData.push({
             coach: c.coach,
             count: c.group.length,
             type: "Группа",
-            summ: c.group.length * zp
+            summ: c.group.length * parseInt(zp)
           });
         }
         if (c.indiv.length > 0) {
@@ -201,7 +228,7 @@ export default {
             coach: c.coach,
             count: c.indiv.length,
             type: "Индив",
-            summ: c.indiv.length * 1500
+            summ: c.indiv.length * parseInt(this.salary.indiv)
           });
         }
       });
@@ -212,15 +239,12 @@ export default {
         );
         if (item) {
           item.count += c.count;
-          let zp = 2000;
-          if (item.coach === "Юлия") {
-            zp = 2500;
-          }
+          let zp = this.salary.group;
 
           if (item.type === "Индив") {
-            item.summ += c.count * 1500;
+            item.summ += c.count * parseInt(this.salary.indiv);
           } else {
-            item.summ += c.count * zp;
+            item.summ += c.count * parseInt(zp);
           }
         } else {
           mass.push(c);
@@ -228,8 +252,10 @@ export default {
       });
 
       this.tableData = mass;
+      // this.calculateBonus(value);
     },
     showReport(item) {
+      this.selectItem = item;
       this.tableData = [];
 
       switch (item) {
@@ -244,16 +270,13 @@ export default {
             );
 
             r.forEach(c => {
-              let zp = 2000;
-              // if (c.coach === "Юлия") {
-              //   zp = 2500;
-              // }
+              let zp = this.salary.group;
               if (c.group.length > 0) {
                 this.tableData.push({
                   coach: c.coach,
                   count: c.group.length,
                   type: "Группа",
-                  summ: c.group.length * zp
+                  summ: c.group.length * parseInt(zp)
                 });
               }
               if (c.indiv.length > 0) {
@@ -261,7 +284,7 @@ export default {
                   coach: c.coach,
                   count: c.indiv.length,
                   type: "Индив",
-                  summ: c.indiv.length * 1500
+                  summ: c.indiv.length * parseInt(this.salary.indiv)
                 });
               }
             });

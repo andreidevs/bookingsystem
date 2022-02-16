@@ -26,7 +26,6 @@
                 <h4>{{ name }}</h4>
                 <v-color-picker
                   v-model="sendData.mainColors[name]"
-                  hide-inputs
                   flat
                   class="ma-2"
                   show-swatches
@@ -39,7 +38,94 @@
           <v-expansion-panel-header
             >Настройки зарплаты</v-expansion-panel-header
           >
-          <v-expansion-panel-content> </v-expansion-panel-content>
+          <v-expansion-panel-content>
+            <v-row>
+              <v-col>
+                <v-text-field
+                  v-model="sendData.salary.group"
+                  label="За групповое занятие"
+                  clearable
+                  dense
+                  outlined
+                ></v-text-field>
+                <v-text-field
+                  v-model="sendData.salary.indiv"
+                  label="За индивидуальное занятие"
+                  clearable
+                  dense
+                  outlined
+                ></v-text-field>
+                <!-- <v-divider></v-divider>
+                <v-checkbox
+                  v-model="sendData.salary.bonus10"
+                  label="Бонус 10%"
+                  clearable
+                  dense
+                  outlined
+                ></v-checkbox>
+                <v-text-field
+                  v-model="sendData.salary.bonus10count"
+                  label="Количество занятий для получения бонуса 10% от абонементов"
+                  clearable
+                  dense
+                  outlined
+                ></v-text-field> -->
+              </v-col>
+            </v-row>
+          </v-expansion-panel-content>
+        </v-expansion-panel>
+        <v-expansion-panel>
+          <v-expansion-panel-header>Цены абонементов</v-expansion-panel-header>
+          <v-expansion-panel-content>
+            <v-row>
+              <v-col>
+                <v-text-field
+                  v-model="sendData.subscribPrice.group8"
+                  label="Группа - 8 занятий"
+                  clearable
+                  dense
+                  outlined
+                ></v-text-field>
+                <v-text-field
+                  v-model="sendData.subscribPrice.group12"
+                  label="Группа - 12 занятий"
+                  clearable
+                  dense
+                  outlined
+                ></v-text-field>
+                <v-text-field
+                  v-model="sendData.subscribPrice.mini"
+                  label="Минигруппа"
+                  clearable
+                  dense
+                  outlined
+                ></v-text-field>
+                <v-text-field
+                  v-model="sendData.subscribPrice.single"
+                  label="Разовые "
+                  clearable
+                  dense
+                  outlined
+                ></v-text-field>
+              </v-col>
+              <v-col>
+                <v-text-field
+                  v-model="sendData.subscribPrice.indiv"
+                  label="Индивидуальные "
+                  clearable
+                  dense
+                  outlined
+                ></v-text-field>
+                <v-text-field
+                  v-model="sendData.subscribPrice.semia"
+                  label="Полугодовой абонемент"
+                  clearable
+                  dense
+                  outlined
+                ></v-text-field
+              ></v-col>
+            </v-row>
+          </v-expansion-panel-content>
         </v-expansion-panel>
       </v-expansion-panels>
       <v-btn @click="save" :loading="loadingBtn" class="mt-4" color="primary"
@@ -68,6 +154,20 @@ export default {
           info: "#20B2AA",
           success: "#FF69B4",
           warning: "#FFFF00"
+        },
+        subscribPrice: {
+          group8: "",
+          group12: "",
+          mini: "",
+          indiv: "",
+          single: "",
+          semia: ""
+        },
+        salary: {
+          group: "",
+          indiv: "",
+          bonus10: true,
+          bonus10count: 7
         }
       }
     };
@@ -80,18 +180,57 @@ export default {
   created() {
     this.loading = true;
     setTimeout(() => {
-      // this.sendData = this.config;
+      if (this.config) this.sendData = this.config;
+
+      if (!Object.prototype.hasOwnProperty.call(this.sendData, "mainColors")) {
+        this.sendData.mainColors = {
+          primary: "#FF69B4",
+          secondary: "#616161",
+          accent: "#778899",
+          error: "#E53935",
+          info: "#20B2AA",
+          success: "#FF69B4",
+          warning: "#FFFF00"
+        };
+      }
+      if (
+        !Object.prototype.hasOwnProperty.call(this.sendData, "subscribPrice")
+      ) {
+        this.sendData.subscribPrice = {
+          group: "",
+          mini: "",
+          indiv: "",
+          single: "",
+          semia: ""
+        };
+      }
+      if (!Object.prototype.hasOwnProperty.call(this.sendData, "salary")) {
+        this.sendData.salary = {
+          group: "",
+          indiv: "",
+          bonus10: true,
+          bonus10count: 7
+        };
+      }
+
       this.loading = false;
-    }, 1500);
+    }, 2000);
   },
 
   methods: {
     ...mapActions({
       saveSettings: "SAVE_GENERAL"
     }),
-    save() {
+    async save() {
       this.loadingBtn = true;
-      this.saveSettings(this.sendData);
+      await this.saveSettings(this.sendData);
+      // CHANGE COLORS
+      if (this.config) {
+        Object.keys(this.config.mainColors).forEach(i => {
+          this.$vuetify.theme.themes.light[i] = this.config.mainColors[i];
+        });
+      }
+
       this.loadingBtn = false;
     }
   }

@@ -48,7 +48,6 @@ export default {
   mutations: {
     set_general(state, values) {
       state.general = values[0];
-      console.log("GENERAL", values[0]);
     },
     SET_ERROR(state, payload) {
       state.error = payload;
