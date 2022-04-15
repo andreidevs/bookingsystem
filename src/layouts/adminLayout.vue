@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <div class="mr-4 ml-4 pb-8 pt-4">
     <v-navigation-drawer v-model="drawer" app>
       <v-list shaped>
         <v-list-item exact link to="/">
@@ -208,7 +208,7 @@
     <v-main>
       <slot />
     </v-main>
-  </v-container>
+  </div>
 </template>
 
 <script>

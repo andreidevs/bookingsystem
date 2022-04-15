@@ -99,14 +99,14 @@
                 outlined
                 color="white"
                 @click="$router.push('/addclient')"
-                >Клиента</v-btn
+                >Клиент</v-btn
               >
               <v-btn
                 small
                 outlined
                 color="white"
                 @click="$router.push('/addgroup')"
-                >Группу</v-btn
+                >Группа</v-btn
               >
               <v-btn
                 small

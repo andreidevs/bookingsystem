@@ -30,22 +30,41 @@ export default {
       config: "GENERAL"
     })
   },
-
+  data() {
+    return {
+      colorsItems: [
+        "accent",
+        "info",
+        "primary",
+        "error",
+        "secondary",
+        "warning",
+        "success"
+      ],
+      internetError: false
+    };
+  },
   components: {
     AdminLayout
   },
 
   async created() {
+    this.colorsItems.forEach(el => {
+      let color = JSON.parse(localStorage.getItem(`${el}`));
+      this.$vuetify.theme.themes.light[el] = color;
+    });
     await this.getConfig();
     if (this.$workbox) {
       this.$workbox.addEventListener("waiting", () => {
         this.showUpgradeUI = true;
       });
     }
+
     // CHANGE MAIN COLORSS
     if (this.config) {
       Object.keys(this.config.mainColors).forEach(i => {
         this.$vuetify.theme.themes.light[i] = this.config.mainColors[i];
+        localStorage.setItem(`${i}`, JSON.stringify(this.config.mainColors[i]));
       });
     } else {
       this.$notify({
@@ -76,10 +95,6 @@ export default {
       this.showUpgradeUI = false;
       await this.$workbox.messageSW({ type: "SKIP_WAITING" });
     }
-  },
-
-  data: () => ({
-    internetError: false
-  })
+  }
 };
 </script>

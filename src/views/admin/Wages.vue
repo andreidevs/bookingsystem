@@ -194,11 +194,8 @@ export default {
           month === 0 ? new Date().getFullYear() - 1 : new Date().getFullYear();
 
         date = (month === 0 ? 12 : month) + "-" + year;
-        console.log("date", date);
-        console.log("NEW DATE", new Date());
 
-        let res = await this.getCoachGroups({ date });
-        console.log("RESS GROUPS", res);
+        await this.getCoachGroups({ date });
       }
     },
 

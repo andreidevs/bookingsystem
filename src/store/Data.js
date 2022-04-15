@@ -1,6 +1,7 @@
 import vue from "vue";
 
 const axios = require("axios");
+const moment = require("moment");
 const telegramAPI =
   "https://api.telegram.org/bot1103706945:AAFblSSGaI0-GlSE6NslEyzPsWHunBW8rHQ/sendMessage?chat_id=-451337290&parse_mode=html&text=";
 export default {
@@ -38,7 +39,7 @@ export default {
     SET_ALL_GROUPS(state, payload) {
       state.allGroups = payload;
     },
-    SET_COACH_GROUPS() { },
+    SET_COACH_GROUPS() {},
     SET_ALL_USERS(state, payload) {
       state.allUsers = payload;
     },
@@ -73,13 +74,13 @@ export default {
         .orderBy("day")
         .get()
 
-        .then(function (querySnapshot) {
-          querySnapshot.forEach(function (doc) {
+        .then(function(querySnapshot) {
+          querySnapshot.forEach(function(doc) {
             // doc.data() is never undefined for query doc snapshots
             data.push(doc.data());
           });
         })
-        .catch(function (error) {
+        .catch(function(error) {
           commit("SET_ERROR", error);
         });
       return data;
@@ -94,8 +95,8 @@ export default {
 
       axios
         .get(telegramAPI + encodeURIComponent(res))
-        .then(function () { })
-        .catch(function (error) {
+        .then(function() {})
+        .catch(function(error) {
           commit("SET_ERROR", error);
         });
     },
@@ -104,14 +105,14 @@ export default {
         .collection("thisdate")
         .doc("0")
         .get()
-        .then(function (doc) {
-          if (doc.data().date !== new Date().format("dd.mm.yyyy")) {
+        .then(function(doc) {
+          if (doc.data().date !== moment().format("DD.MM.YYYY")) {
             dispatch("UPDATE_PAY_TRIGER");
             vue.$db
               .collection("thisdate")
               .doc("0")
               .set({
-                date: new Date().format("dd.mm.yyyy")
+                date: moment().format("DD.MM.YYYY")
               });
           }
         });
@@ -120,30 +121,30 @@ export default {
       let refsIndiv = vue.$db.collection("usersIndiv");
       let refsIndivSofia = vue.$db.collection("indivSofia");
       let refsMini = vue.$db.collection("usersMini");
-      refsIndiv.get().then(function (querySnapshot) {
-        querySnapshot.forEach(function (item) {
+      refsIndiv.get().then(function(querySnapshot) {
+        querySnapshot.forEach(function(item) {
           refsIndiv.doc(item.data().id).update({
             paid: false
           });
         });
       });
-      refsIndivSofia.get().then(function (querySnapshot) {
-        querySnapshot.forEach(function (item) {
+      refsIndivSofia.get().then(function(querySnapshot) {
+        querySnapshot.forEach(function(item) {
           refsIndiv.doc(item.data().id).update({
             paid: false
           });
         });
       });
-      refsMini.get().then(function (querySnapshot) {
-        querySnapshot.forEach(function (item) {
+      refsMini.get().then(function(querySnapshot) {
+        querySnapshot.forEach(function(item) {
           refsMini.doc(item.data().id).update({
             paid: false
           });
         });
       });
       let refGroup = vue.$db.collection("usersGroup");
-      refGroup.get().then(function (querySnapshot) {
-        querySnapshot.forEach(function (item) {
+      refGroup.get().then(function(querySnapshot) {
+        querySnapshot.forEach(function(item) {
           if (item.data().datePayNoformat) {
             let timeDiff = Math.abs(
               new Date().getTime() - item.data().datePayNoformat.seconds * 1000
@@ -166,11 +167,11 @@ export default {
         .add({
           name: payload
         })
-        .then(function () {
+        .then(function() {
           commit("SET_SUCCESS");
           return "success";
         })
-        .catch(function (error) {
+        .catch(function(error) {
           commit("SET_ERROR", error);
           return error;
         });
@@ -185,7 +186,7 @@ export default {
           datePayNoformat: new Date(),
           datePay: new Date().format("dd.mm.yyyy")
         })
-        .then(function () {
+        .then(function() {
           // let d = new Date();
           // d.setMonth(d.getMonth() - 12);
           dispatch("SEND_PAY_REPORT", {
@@ -198,7 +199,7 @@ export default {
           });
           return "success";
         })
-        .catch(function (error) {
+        .catch(function(error) {
           commit("SET_ERROR", error);
           return error;
         });
@@ -212,7 +213,7 @@ export default {
           datePayNoformat: new Date(),
           datePay: new Date().format("dd.mm.yyyy")
         })
-        .then(function () {
+        .then(function() {
           dispatch("SEND_PAY_REPORT", {
             name: payload.name,
             coach: payload.coach,
@@ -223,7 +224,7 @@ export default {
           });
           return "success";
         })
-        .catch(function (error) {
+        .catch(function(error) {
           commit("SET_ERROR", error);
           return error;
         });
@@ -239,7 +240,7 @@ export default {
           datePayNoformat: new Date(),
           datePay: new Date().format("dd.mm.yyyy")
         })
-        .then(function () {
+        .then(function() {
           dispatch("SEND_PAY_REPORT", {
             name: payload.name,
             coach: payload.coach,
@@ -249,7 +250,7 @@ export default {
           });
           return "success";
         })
-        .catch(function (error) {
+        .catch(function(error) {
           commit("SET_ERROR", error);
           return error;
         });
@@ -263,7 +264,7 @@ export default {
           datePayNoformat: new Date(),
           datePay: new Date().format("dd.mm.yyyy")
         })
-        .then(function () {
+        .then(function() {
           dispatch("SEND_PAY_REPORT", {
             name: payload.name,
             coach: payload.coach,
@@ -273,7 +274,7 @@ export default {
           });
           return "success";
         })
-        .catch(function (error) {
+        .catch(function(error) {
           commit("SET_ERROR", error);
           return error;
         });
@@ -283,7 +284,7 @@ export default {
         .collection("usersSingle")
         .doc(payload.id)
         .delete()
-        .then(function () {
+        .then(function() {
           dispatch("SEND_PAY_REPORT", {
             name: payload.name,
             coach: payload.coach,
@@ -295,12 +296,12 @@ export default {
           vue.$db
             .collection("historySingle")
             .add({ ...payload, datePay: new Date().format("dd.mm.yyyy") })
-            .then(function () {
+            .then(function() {
               commit("SET_SUCCESS");
               return "success";
             });
         })
-        .catch(function (error) {
+        .catch(function(error) {
           commit("SET_ERROR", error);
           return error;
         });
@@ -310,8 +311,8 @@ export default {
       vue.$db
         .collection("typeWorkout")
         .get()
-        .then(function (querySnapshot) {
-          querySnapshot.forEach(function (doc) {
+        .then(function(querySnapshot) {
+          querySnapshot.forEach(function(doc) {
             typeWorkoutList.push(doc.data().name);
           });
         });
@@ -323,8 +324,8 @@ export default {
       await vue.$db
         .collection("coach")
         .get()
-        .then(function (querySnapshot) {
-          querySnapshot.forEach(function (doc) {
+        .then(function(querySnapshot) {
+          querySnapshot.forEach(function(doc) {
             coachList.push(doc.data().name);
           });
         });
@@ -351,11 +352,11 @@ export default {
         .set({
           ...payload
         })
-        .then(function () {
+        .then(function() {
           commit("SET_SUCCESS");
           return "success";
         })
-        .catch(function (error) {
+        .catch(function(error) {
           commit("SET_ERROR", error);
           return error;
         });
@@ -365,8 +366,8 @@ export default {
       await vue.$db
         .collection("groups")
         .get()
-        .then(function (querySnapshot) {
-          querySnapshot.forEach(function (doc) {
+        .then(function(querySnapshot) {
+          querySnapshot.forEach(function(doc) {
             if (!trigger) {
               if (!getters.USER.admin && getters.USER.isAuth) {
                 if (getters.USER.name === doc.data().coach)
@@ -387,8 +388,8 @@ export default {
       await vue.$db
         .collection("usersGroup")
         .get()
-        .then(function (querySnapshot) {
-          querySnapshot.forEach(function (doc) {
+        .then(function(querySnapshot) {
+          querySnapshot.forEach(function(doc) {
             if (!getters.USER.admin && getters.USER.isAuth) {
               if (getters.USER.name === doc.data().coach)
                 users.push(doc.data());
@@ -405,8 +406,8 @@ export default {
       await vue.$db
         .collection("usersSingle")
         .get()
-        .then(function (querySnapshot) {
-          querySnapshot.forEach(function (doc) {
+        .then(function(querySnapshot) {
+          querySnapshot.forEach(function(doc) {
             if (!getters.USER.admin && getters.USER.isAuth) {
               if (getters.USER.name === doc.data().coach)
                 users.push(doc.data());
@@ -423,8 +424,8 @@ export default {
       await vue.$db
         .collection("usersIndiv")
         .get()
-        .then(function (querySnapshot) {
-          querySnapshot.forEach(function (doc) {
+        .then(function(querySnapshot) {
+          querySnapshot.forEach(function(doc) {
             if (!trigger) {
               if (!getters.USER.admin && getters.USER.isAuth) {
                 if (getters.USER.name === doc.data().coach)
@@ -445,8 +446,8 @@ export default {
       await vue.$db
         .collection("indivSofia")
         .get()
-        .then(function (querySnapshot) {
-          querySnapshot.forEach(function (doc) {
+        .then(function(querySnapshot) {
+          querySnapshot.forEach(function(doc) {
             users.push(doc.data());
           });
         });
@@ -458,8 +459,8 @@ export default {
       await vue.$db
         .collection("usersMini")
         .get()
-        .then(function (querySnapshot) {
-          querySnapshot.forEach(function (doc) {
+        .then(function(querySnapshot) {
+          querySnapshot.forEach(function(doc) {
             if (!getters.USER.admin && getters.USER.isAuth) {
               if (getters.USER.name === doc.data().coach)
                 users.push(doc.data());
@@ -476,8 +477,8 @@ export default {
       await vue.$db
         .collection("usersGroup")
         .get()
-        .then(function (querySnapshot) {
-          querySnapshot.forEach(function (doc) {
+        .then(function(querySnapshot) {
+          querySnapshot.forEach(function(doc) {
             if (doc.data().uidGroup === payload) {
               if (!getters.USER.admin && getters.USER.isAuth) {
                 if (getters.USER.name === doc.data().coach)
@@ -496,8 +497,8 @@ export default {
       await vue.$db
         .collection("usersMini")
         .get()
-        .then(function (querySnapshot) {
-          querySnapshot.forEach(function (doc) {
+        .then(function(querySnapshot) {
+          querySnapshot.forEach(function(doc) {
             if (doc.data().uidGroup === payload) {
               if (!getters.USER.admin && getters.USER.isAuth) {
                 if (getters.USER.name === doc.data().coach)
@@ -516,8 +517,8 @@ export default {
       await vue.$db
         .collection("historySingle")
         .get()
-        .then(function (querySnapshot) {
-          querySnapshot.forEach(function (doc) {
+        .then(function(querySnapshot) {
+          querySnapshot.forEach(function(doc) {
             report.push(doc.data());
           });
         });
@@ -528,7 +529,7 @@ export default {
       let users, count;
       const refGroup = await vue.$db.collection("groups").doc(payload.uidGroup);
 
-      await refGroup.get().then(function (doc) {
+      await refGroup.get().then(function(doc) {
         users = doc.data().users;
         count = doc.data().count;
         count = parseInt(count) - 1;
@@ -538,7 +539,7 @@ export default {
             count: count.toString(),
             users: users
           })
-          .catch(function (error) {
+          .catch(function(error) {
             commit("SET_ERROR", error);
             return error;
           });
@@ -551,7 +552,7 @@ export default {
         .set({
           ...payload
         })
-        .then(function () {
+        .then(function() {
           dispatch("SUBSTRACT_COUNT_GROUP", payload);
           if (!payload.sendT) {
             dispatch("SEND_FORM_TELEGRAM", {
@@ -564,7 +565,7 @@ export default {
           commit("SET_SUCCESS");
           return "success";
         })
-        .catch(function (error) {
+        .catch(function(error) {
           commit("SET_ERROR", error);
           return error;
         });
@@ -576,7 +577,7 @@ export default {
         .set({
           ...payload
         })
-        .then(function () {
+        .then(function() {
           const text = "Разовое занятие" + " " + payload.nameGroup;
           if (!payload.sendT) {
             dispatch("SEND_FORM_TELEGRAM", {
@@ -589,7 +590,7 @@ export default {
           commit("SET_SUCCESS");
           return "success";
         })
-        .catch(function (error) {
+        .catch(function(error) {
           commit("SET_ERROR", error);
           return error;
         });
@@ -601,7 +602,7 @@ export default {
         .set({
           ...payload
         })
-        .then(function () {
+        .then(function() {
           // const text = "Индивидуальное занятие";
           // dispatch("SEND_FORM_TELEGRAM", {
           //   name: payload.name,
@@ -612,7 +613,7 @@ export default {
           commit("SET_SUCCESS");
           return "success";
         })
-        .catch(function (error) {
+        .catch(function(error) {
           commit("SET_ERROR", error);
           return error;
         });
@@ -624,11 +625,11 @@ export default {
         .set({
           ...payload
         })
-        .then(function () {
+        .then(function() {
           commit("SET_SUCCESS");
           return "success";
         })
-        .catch(function (error) {
+        .catch(function(error) {
           commit("SET_ERROR", error);
           return error;
         });
@@ -640,12 +641,12 @@ export default {
         .set({
           ...payload
         })
-        .then(function () {
+        .then(function() {
           dispatch("SUBSTRACT_COUNT_GROUP", payload);
           commit("SET_SUCCESS");
           return "success";
         })
-        .catch(function (error) {
+        .catch(function(error) {
           commit("SET_ERROR", error);
           return error;
         });
@@ -662,11 +663,11 @@ export default {
           coach: payload.coach,
           uidGroup: payload.uidGroup
         })
-        .then(function () {
+        .then(function() {
           commit("SET_SUCCESS");
           return "success";
         })
-        .catch(function (error) {
+        .catch(function(error) {
           commit("SET_ERROR", error);
           return error;
         });
@@ -683,11 +684,11 @@ export default {
           coach: payload.coach,
           uidGroup: payload.uidGroup
         })
-        .then(function () {
+        .then(function() {
           commit("SET_SUCCESS");
           return "success";
         })
-        .catch(function (error) {
+        .catch(function(error) {
           commit("SET_ERROR", error);
           return error;
         });
@@ -702,11 +703,11 @@ export default {
           subscription: payload.price,
           coach: payload.coach
         })
-        .then(function () {
+        .then(function() {
           commit("SET_SUCCESS");
           return "success";
         })
-        .catch(function (error) {
+        .catch(function(error) {
           commit("SET_ERROR", error);
           return error;
         });
@@ -724,11 +725,11 @@ export default {
           title: payload.title,
           weekDays: payload.weekDays
         })
-        .then(function () {
+        .then(function() {
           commit("SET_SUCCESS");
           return "success";
         })
-        .catch(function (error) {
+        .catch(function(error) {
           commit("SET_ERROR", error);
           return error;
         });
@@ -738,7 +739,7 @@ export default {
         .collection("groups")
         .doc(payload.fromGroup)
         .get()
-        .then(function (doc) {
+        .then(function(doc) {
           let count = 0;
           let users = [];
           let newUsers = [];
@@ -752,12 +753,12 @@ export default {
               count: parseInt(count) + 1,
               users: newUsers
             })
-            .then(function () {
+            .then(function() {
               vue.$db
                 .collection("groups")
                 .doc(payload.toGroup)
                 .get()
-                .then(function (doc) {
+                .then(function(doc) {
                   let count = 0;
                   let users = [];
 
@@ -771,16 +772,16 @@ export default {
                       count: parseInt(count) - 1,
                       users
                     })
-                    .then(function () {
+                    .then(function() {
                       return "success";
                     })
-                    .catch(function (error) {
+                    .catch(function(error) {
                       commit("SET_ERROR", error);
                       return error;
                     });
                 });
             })
-            .catch(function (error) {
+            .catch(function(error) {
               commit("SET_ERROR", error);
               return error;
             });
@@ -791,12 +792,12 @@ export default {
         .collection("usersGroup")
         .doc(payload.id)
         .delete()
-        .then(function () {
+        .then(function() {
           vue.$db
             .collection("groups")
             .doc(payload.uidGroup)
             .get()
-            .then(function (doc) {
+            .then(function(doc) {
               let count = 0;
               let users = [];
               let newUsers = [];
@@ -810,16 +811,16 @@ export default {
                   count: parseInt(count) + 1,
                   users: newUsers
                 })
-                .then(function () {
+                .then(function() {
                   commit("SET_SUCCESS");
                   return "success";
                 })
-                .catch(function (error) {
+                .catch(function(error) {
                   commit("SET_ERROR", error);
                   return error;
                 });
             })
-            .catch(function (error) {
+            .catch(function(error) {
               commit("SET_ERROR", error);
               return error;
             });
@@ -830,12 +831,12 @@ export default {
         .collection("usersMini")
         .doc(payload.id)
         .delete()
-        .then(function () {
+        .then(function() {
           vue.$db
             .collection("groups")
             .doc(payload.uidGroup)
             .get()
-            .then(function (doc) {
+            .then(function(doc) {
               let count = 0;
               let users = [];
               let newUsers = [];
@@ -853,21 +854,21 @@ export default {
                   count: +count + 1,
                   users: newUsers
                 })
-                .then(function () {
+                .then(function() {
                   commit("SET_SUCCESS");
                   return "success";
                 })
-                .catch(function (error) {
+                .catch(function(error) {
                   commit("SET_ERROR", error);
                   return error;
                 });
             })
-            .catch(function (error) {
+            .catch(function(error) {
               commit("SET_ERROR", error);
               return error;
             });
         })
-        .catch(function (error) {
+        .catch(function(error) {
           commit("SET_ERROR", error);
           return error;
         });
@@ -878,11 +879,11 @@ export default {
         .collection("usersGroup")
         .doc(payload)
         .get()
-        .then(function (doc) {
+        .then(function(doc) {
           user = doc.data();
           dispatch("DELETE_USER_GROUP", user);
         })
-        .catch(function (error) {
+        .catch(function(error) {
           commit("SET_ERROR", error);
           return error;
         });
@@ -892,11 +893,11 @@ export default {
         .collection("usersIndiv")
         .doc(payload.id)
         .delete()
-        .then(function () {
+        .then(function() {
           commit("SET_SUCCESS");
           return "success";
         })
-        .catch(function (error) {
+        .catch(function(error) {
           commit("SET_ERROR", error);
           return error;
         });
@@ -906,11 +907,11 @@ export default {
         .collection("indivSofia")
         .doc(payload.id)
         .delete()
-        .then(function () {
+        .then(function() {
           commit("SET_SUCCESS");
           return "success";
         })
-        .catch(function (error) {
+        .catch(function(error) {
           commit("SET_ERROR", error);
           return error;
         });
@@ -920,11 +921,11 @@ export default {
         .collection("usersSingle")
         .doc(payload.id)
         .delete()
-        .then(function () {
+        .then(function() {
           commit("SET_SUCCESS");
           return "success";
         })
-        .catch(function (error) {
+        .catch(function(error) {
           commit("SET_ERROR", error);
           return error;
         });
@@ -934,25 +935,25 @@ export default {
         .collection("groups")
         .doc(payload.id)
         .delete()
-        .then(function () {
+        .then(function() {
           if (payload.users) {
             payload.users.forEach(item => {
               vue.$db
                 .collection("usersGroup")
                 .doc(item)
                 .delete()
-                .then(function () {
+                .then(function() {
                   commit("SET_SUCCESS");
                   return "success";
                 })
-                .catch(function (error) {
+                .catch(function(error) {
                   commit("SET_ERROR", error);
                   return error;
                 });
             });
           }
         })
-        .catch(function (error) {
+        .catch(function(error) {
           commit("SET_ERROR", error);
           return error;
         });

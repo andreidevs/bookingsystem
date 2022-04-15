@@ -334,7 +334,7 @@ export default {
     this.allExpenses = ex;
     this.updateTable();
 
-    this.nameExcel = "Отчет " + new Date().format("DD.MM.YYYY");
+    this.nameExcel = `Отчет  ${this.$moment().format("DD.MM.YYYY")}.xls`;
     this.coachList = coachlist;
     data.forEach(c => {
       Object.values(c).forEach(g => {
@@ -401,21 +401,23 @@ export default {
       this.priceOtherInMonth = 0;
       this.priceExpenses = 0;
       this.totalWork = 0;
-      this.sampleTable.forEach(c => {
-        if (c.type === "Индив") {
-          this.countIndivInMonth++;
-          this.priceIndivInMonth += +c.price;
-        } else if (c.type === "Группа") {
-          this.countGroupInMonth++;
-          this.priceGroupInMonth += +c.price;
-        } else if (c.type === "Разовое") {
-          this.countSingleInMonth++;
-          this.priceSingleInMonth += +c.price;
-        } else {
-          this.countOtherInMonth++;
-          this.priceOtherInMonth += +c.price;
-        }
-      });
+      this.sampleTable
+        .filter(el => el.type)
+        .forEach(c => {
+          if (c.type === "Индив") {
+            this.countIndivInMonth++;
+            this.priceIndivInMonth += +c.price;
+          } else if (c.type === "Группа") {
+            this.countGroupInMonth++;
+            this.priceGroupInMonth += +c.price;
+          } else if (c.type === "Разовое") {
+            this.countSingleInMonth++;
+            this.priceSingleInMonth += +c.price;
+          } else {
+            this.countOtherInMonth++;
+            this.priceOtherInMonth += +c.price;
+          }
+        });
       this.dataExp.forEach(c => {
         this.priceExpenses += +c.price;
       });
@@ -431,10 +433,13 @@ export default {
         this.priceOtherInMonth;
       this.totalWork = this.priceWorkInMonth - this.priceExpenses;
     },
-    toogleGroup() {
+    async toogleGroup() {
       if (this.step === 1) {
         this.step = 2;
-        this.sampleTable = this.tableData.filter(c => c.type === "Группа");
+        this.sampleTable = await this.tableData.filter(
+          c => c.type === "Группа"
+        );
+
         this.groupList = this.sampleTable.map(c => c.nameGroup);
         this.inTotal();
         this.updateFileds();

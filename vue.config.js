@@ -1,14 +1,14 @@
 module.exports = {
   transpileDependencies: ["vuetify"],
   pwa: {
-    name: "EdemDance2",
+    name: "CRMDance",
     description: "Студия пилонного спорта Edem",
-    themeColor: "#FF69B4",
+    themeColor: "#057b47",
     msTileColor: "#fff",
     prefer_related_applications: true,
     appleMobileWebAppCache: "yes",
     manifestOptions: {
-      background_color: "#FF69B4"
+      background_color: "#057b47"
     },
     icons: [
       {

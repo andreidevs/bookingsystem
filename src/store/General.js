@@ -20,13 +20,13 @@ export default {
         .collection("general")
         .get()
 
-        .then(function (querySnapshot) {
-          querySnapshot.forEach(function (doc) {
+        .then(function(querySnapshot) {
+          querySnapshot.forEach(function(doc) {
             data.push(doc.data());
           });
           commit("set_general", data);
         })
-        .catch(function (error) {
+        .catch(function(error) {
           commit("SET_ERROR", error);
         });
     },
@@ -35,11 +35,11 @@ export default {
         .collection("general")
         .doc("main")
         .set(payload)
-        .then(function () {
+        .then(function() {
           commit("SET_SUCCESS");
           return "success";
         })
-        .catch(function (error) {
+        .catch(function(error) {
           commit("SET_ERROR", error);
           return error;
         });

@@ -1,6 +1,7 @@
 {
   "projects": {
-    "default": "edemdance2"
-    // "default": "edemdancemain"
+    "edem2": "edemdance2",
+    "edem1": "edemdancemain",
+    "test": "bookingsystem0"
   }
 }

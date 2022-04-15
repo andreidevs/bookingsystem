@@ -1,0 +1,18 @@
+{
+  "hosting": {
+    "public": "dist",
+    // "site": "edemdance2",
+    "site": "edemdance0",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
+}

@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <div>
     <div class="great_loader" v-show="loading">
       <v-progress-circular indeterminate color="accent" :size="100" />
     </div>
@@ -239,7 +239,7 @@
         <v-icon>mdi-keyboard-backspace</v-icon>Назад
       </v-btn>
     </div>
-  </v-container>
+  </div>
 </template>
 
 <script>

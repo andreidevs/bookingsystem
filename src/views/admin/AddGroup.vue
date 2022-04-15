@@ -4,7 +4,12 @@
       <v-progress-circular indeterminate color="accent" :size="100" />
     </div>
     <div v-show="!loadingCard">
-      <v-card loading="loadingCard" class="mx-auto" max-width="500" outlined>
+      <v-card
+        loading="loadingCard"
+        class="mx-auto pb-8"
+        max-width="500"
+        outlined
+      >
         <v-row>
           <v-col cols="12" class="ml-4">
             <v-card-title class="mb-2">Добавление группы</v-card-title>
