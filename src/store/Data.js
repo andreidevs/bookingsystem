@@ -81,7 +81,7 @@ export default {
           });
         })
         .catch(function (error) {
-          console.error(error);
+          // console.error(error);
           commit("SET_ERROR", error);
         });
       return data;

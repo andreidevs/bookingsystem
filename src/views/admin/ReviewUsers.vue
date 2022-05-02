@@ -158,7 +158,7 @@
       </v-row>
       <v-row justify="center">
         <v-dialog v-model="dialogEditUser" max-width="630">
-          <v-card>
+          <v-card class="p-4">
             <v-card-title class="headline"
               >Редактирование пользователя
             </v-card-title>
