@@ -13,7 +13,7 @@
     "core-js": "^3.6.4",
     "firebase": "^7.24.0",
     "generate-id": "^2.0.1",
-    "moment": "^2.27.0",
+    "moment": "^2.29.4",
     "register-service-worker": "^1.7.1",
     "roboto-fontface": "*",
     "vue": "^2.6.11",
